@@ -13,7 +13,7 @@ job "load-balanced-app" {
     }
 
     service {
-      name = {{ .load_balanced_app.service_name }}
+      name = "{{ .load_balanced_app.service_name }}"
       tags = ["urlprefix-/"]
       port = "http"
 
@@ -37,7 +37,7 @@ job "load-balanced-app" {
       driver = "docker"
 
       config {
-        image = {{ .load_balanced_app.app_image }}
+        image = "{{ .load_balanced_app.app_image }}"
         ports = ["http"]
       }
 
