@@ -58,10 +58,10 @@ frontend http_front
 
 backend http_back
     balance roundrobin
-    server-template webapp {{ .pre_provisioned_slot_count }} _{{ .service_name }}._tcp.service.consul resolvers consul resolve-opts allow-dup-ip resolve-prefer ipv4 check
+    server-template webapp {{ .pre_provisioned_slot_count }} _{{ .haproxy.service_name }}._tcp.service.consul resolvers consul resolve-opts allow-dup-ip resolve-prefer ipv4 check
 
 resolvers consul
-  nameserver consul 127.0.0.1:{{ .consul_dns_port }}
+  nameserver consul 127.0.0.1:{{ .haproxy.consul_dns_port }}
   accepted_payload_size 8192
   hold valid 5s
 EOF
