@@ -14,7 +14,7 @@ job "hello_world" {
     {{ if .hello_world_service.register_consul_service }}
       service {
         name = {{ .hello_world_service.consul_service_name }}
-        tags = {{ .hello_world_service.consul_service_tags }}
+        tags = [{{ range $idx, $tag := .hello_world_service.consul_service_tags }}{{if $idx}},{{end}}{{ $tag | quote }}{{ end }}]
         port = "http"
 
         check {
