@@ -52,8 +52,8 @@ EOF
       }
 
       resources {
-        cpu    = {{ .traefik.resources.cpu }}
-        memory = {{ .traefik.resources.memory }}
+        cpu    = {{ .nginx.resources.cpu }}
+        memory = {{ .nginx.resources.memory }}
       }
     }
   }

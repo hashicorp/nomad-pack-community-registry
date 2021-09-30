@@ -12,19 +12,19 @@ job "hello_world" {
     }
 
     {{ if .hello_world_service.register_consul_service }}
-      service {
-        name = "{{ .hello_world_service.consul_service_name }}"
-        tags = [{{ range $idx, $tag := .hello_world_service.consul_service_tags }}{{if $idx}},{{end}}{{ $tag | quote }}{{ end }}]
-        port = "http"
+    service {
+      name = "{{ .hello_world_service.consul_service_name }}"
+      tags = [{{ range $idx, $tag := .hello_world_service.consul_service_tags }}{{if $idx}},{{end}}{{ $tag | quote }}{{ end }}]
+      port = "http"
 
-        check {
-          name     = "alive"
-          type     = "http"
-          path     = "/"
-          interval = "10s"
-          timeout  = "2s"
-        }
+      check {
+        name     = "alive"
+        type     = "http"
+        path     = "/"
+        interval = "10s"
+        timeout  = "2s"
       }
+    }
     {{ end }}
 
     restart {
@@ -37,7 +37,7 @@ job "hello_world" {
     task "server" {
       driver = "docker"
       config {
-        image = {{ .hello_world_service.docker_image }}
+        image = "{{ .hello_world_service.docker_image }}"
         ports = ["http"]
       }
     }
