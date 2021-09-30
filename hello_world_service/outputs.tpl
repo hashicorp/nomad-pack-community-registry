@@ -1,0 +1,1 @@
+Congrats! You deployed a simple service on Nomad.
