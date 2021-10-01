@@ -1,6 +1,6 @@
 job "traefik" {
-  region      = {{ .traefik.region | quote}}
-  datacenters = [{{ range $idx, $dc := .traefik.datacenters }}{{if $idx}},{{end}}{{ $dc | quote }}{{ end }}]
+  region      = [[ .traefik.region | quote]]
+  datacenters = [ [[ range $idx, $dc := .traefik.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
 
   type        = "service"
 
@@ -9,11 +9,11 @@ job "traefik" {
 
     network {
       port "http" {
-        static = {{ .traefik.http_port }}
+        static = [[ .traefik.http_port ]]
       }
 
       port "api" {
-        static = {{ .traefik.api_port }}
+        static = [[ .traefik.api_port ]]
       }
     }
 
@@ -33,7 +33,7 @@ job "traefik" {
       driver = "docker"
 
       config {
-        image        = "traefik:{{ .traefik.version_tag }}"
+        image        = "traefik:[[ .traefik.version_tag ]]"
         network_mode = "host"
 
         volumes = [
@@ -45,9 +45,9 @@ job "traefik" {
         data = <<EOF
 [entryPoints]
     [entryPoints.http]
-    address = ":{{ .traefik.http_port }}"
+    address = ":[[ .traefik.http_port ]]"
     [entryPoints.traefik]
-    address = ":{{ .traefik.api_port }}"
+    address = ":[[ .traefik.api_port ]]"
 
 [api]
     dashboard = true
@@ -59,7 +59,7 @@ job "traefik" {
     exposedByDefault = false
 
     [providers.consulCatalog.endpoint]
-      address = "127.0.0.1:{{ .traefik.consul_port }}"
+      address = "127.0.0.1:[[ .traefik.consul_port ]]"
       scheme  = "http"
 EOF
 
@@ -67,8 +67,8 @@ EOF
       }
 
       resources {
-        cpu    = {{ .traefik.resources.cpu }}
-        memory = {{ .traefik.resources.memory }}
+        cpu    = [[ .traefik.resources.cpu ]]
+        memory = [[ .traefik.resources.memory ]]
       }
     }
   }

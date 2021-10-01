@@ -1,16 +1,16 @@
 job "fabio" {
-  region      = {{ .fabio.region | quote}}
-  datacenters = [{{ range $idx, $dc := .fabio.datacenters }}{{if $idx}},{{end}}{{ $dc | quote }}{{ end }}]
+  region      = [[ .fabio.region | quote]]
+  datacenters = [ [[ range $idx, $dc := .fabio.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
 
   type = "system"
 
   group "fabio" {
     network {
       port "lb" {
-        static = {{ .fabio.http_port }}
+        static = [[ .fabio.http_port ]]
       }
       port "ui" {
-        static = {{ .fabio.ui_port }}
+        static = [[ .fabio.ui_port ]]
       }
     }
 
@@ -23,8 +23,8 @@ job "fabio" {
       }
 
       resources {
-        cpu    = {{ .fabio.resources.cpu }}
-        memory = {{ .fabio.resources.memory }}
+        cpu    = [[ .fabio.resources.cpu ]]
+        memory = [[ .fabio.resources.memory ]]
       }
     }
   }
