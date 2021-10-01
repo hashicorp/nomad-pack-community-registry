@@ -31,7 +31,7 @@ job "nginx" {
       template {
         data = <<EOF
 upstream backend {
-{{"{{"}} range service {{ .nginx.service_name }} {{"}}"}}
+{{"{{"}} range service {{ .nginx.service_name | quote }} {{"}}"}}
   server {{"{{"}} .Address {{"}}"}}:{{"{{"}} .Port {{"}}"}};
 {{"{{"}} else {{"}}"}}server 127.0.0.1:65535; # force a 502
 {{"{{"}} end {{"}}"}}
