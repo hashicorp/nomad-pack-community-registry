@@ -1,9 +1,9 @@
 job "hello_world" {
-  datacenters = [{{ range $idx, $dc := .hello_world_service.datacenters }}{{if $idx}},{{end}}{{ $dc | quote }}{{ end }}]
+  datacenters = [ [[ range $idx, $dc := .hello_world_service.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
   type = "service"
 
   group "app" {
-    count = {{ .hello_world_service.app_count }}
+    count = [[ .hello_world_service.app_count ]]
 
     network {
       port "http" {
@@ -11,10 +11,10 @@ job "hello_world" {
       }
     }
 
-    {{ if .hello_world_service.register_consul_service }}
+    [[ if .hello_world_service.register_consul_service ]]
     service {
-      name = "{{ .hello_world_service.consul_service_name }}"
-      tags = [{{ range $idx, $tag := .hello_world_service.consul_service_tags }}{{if $idx}},{{end}}{{ $tag | quote }}{{ end }}]
+      name = "[[ .hello_world_service.consul_service_name ]]"
+      tags = [[[ range $idx, $tag := .hello_world_service.consul_service_tags ]][[if $idx]],[[end]][[ $tag | quote ]][[ end ]]]
       port = "http"
 
       check {
@@ -25,7 +25,7 @@ job "hello_world" {
         timeout  = "2s"
       }
     }
-    {{ end }}
+    [[ end ]]
 
     restart {
       attempts = 2
@@ -37,7 +37,7 @@ job "hello_world" {
     task "server" {
       driver = "docker"
       config {
-        image = "{{ .hello_world_service.docker_image }}"
+        image = "[[ .hello_world_service.docker_image ]]"
         ports = ["http"]
       }
     }

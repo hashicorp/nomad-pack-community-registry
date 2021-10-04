@@ -1,13 +1,13 @@
 job "nginx" {
-  region      = {{ .nginx.region | quote}}
-  datacenters = [{{ range $idx, $dc := .nginx.datacenters }}{{if $idx}},{{end}}{{ $dc | quote }}{{ end }}]
+  region      = [[ .nginx.region | quote]]
+  datacenters = [ [[ range $idx, $dc := .nginx.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
 
   group "nginx" {
     count = 1
 
     network {
       port "http" {
-        static = {{ .nginx.http_port }}
+        static = [[ .nginx.http_port ]]
       }
     }
 
@@ -20,7 +20,7 @@ job "nginx" {
       driver = "docker"
 
       config {
-        image = "nginx:{{ .nginx.version_tag }}"
+        image = "nginx:[[ .nginx.version_tag ]]"
         ports = ["http"]
 
         volumes = [
@@ -31,14 +31,14 @@ job "nginx" {
       template {
         data = <<EOF
 upstream backend {
-{{"{{"}} range service {{ .nginx.service_name | quote }} {{"}}"}}
-  server {{"{{"}} .Address {{"}}"}}:{{"{{"}} .Port {{"}}"}};
-{{"{{"}} else {{"}}"}}server 127.0.0.1:65535; # force a 502
-{{"{{"}} end {{"}}"}}
+{{ range service [[ .nginx.service_name | quote ]] }}
+  server {{ .Address }}:{{ .Port }};
+{{ else }}server 127.0.0.1:65535; # force a 502
+{{ end }}
 }
 
 server {
-   listen {{ .nginx.http_port }};
+   listen [[ .nginx.http_port ]];
 
    location / {
       proxy_pass http://backend;
@@ -52,8 +52,8 @@ EOF
       }
 
       resources {
-        cpu    = {{ .nginx.resources.cpu }}
-        memory = {{ .nginx.resources.memory }}
+        cpu    = [[ .nginx.resources.cpu ]]
+        memory = [[ .nginx.resources.memory ]]
       }
     }
   }
