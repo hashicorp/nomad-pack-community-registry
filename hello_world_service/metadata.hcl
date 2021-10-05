@@ -5,7 +5,6 @@ app {
 
 pack {
   name = "hello_world_service"
-  type = "job"
   description = "This deploys a simple applicaton as a service with an optional associated consul service."
   url = ""
   version = "0.0.1"
