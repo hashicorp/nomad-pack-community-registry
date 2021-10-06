@@ -1,5 +1,5 @@
-job "traefik" {
-  region      = [[ .traefik.region | quote]]
+job [[ template "job_name" . ]] {
+  [[ template "region" . ]]
   datacenters = [ [[ range $idx, $dc := .traefik.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
 
   type        = "service"

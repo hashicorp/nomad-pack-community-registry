@@ -1,5 +1,5 @@
-job "haproxy" {
-  region      = [[ .haproxy.region | quote]]
+job [[ template "job_name" . ]] {
+  [[ template "region" . ]]
   datacenters = [ [[ range $idx, $dc := .haproxy.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
 
   type        = "service"
