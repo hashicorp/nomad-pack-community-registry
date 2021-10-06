@@ -1,5 +1,5 @@
-job {{ template "fabio.job_name" . }} {
-  {{ template "region" . }}
+job [[ template "job_name" . ]] {
+  [[ template "region" . ]]
   datacenters = [ [[ range $idx, $dc := .fabio.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
 
   type = "system"
