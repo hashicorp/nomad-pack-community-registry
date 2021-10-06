@@ -1,5 +1,5 @@
-job "nginx" {
-  region      = [[ .nginx.region | quote]]
+job [[ template "job_name" . ]] {
+  [[ template "region" . ]]
   datacenters = [ [[ range $idx, $dc := .nginx.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
 
   group "nginx" {
