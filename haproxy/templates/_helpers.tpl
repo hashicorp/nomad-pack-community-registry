@@ -11,8 +11,7 @@
 // only deploys to a region if specified
 
 [[- define "region" -]]
-[[- if eq .haproxy.region "" -]]
-[[- else -]]
+[[- if not (eq .haproxy.region "") -]]
 region = [[ .haproxy.region | quote]]
 [[- end -]]
 [[- end -]]

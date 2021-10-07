@@ -11,8 +11,7 @@
 // only deploys to a region if specified
 
 [[- define "region" -]]
-[[- if eq .nginx.region "" -]]
-[[- else -]]
+[[- if not (eq .nginx.region "") -]]
 region = [[ .nginx.region | quote]]
 [[- end -]]
 [[- end -]]
