@@ -11,8 +11,7 @@
 // only deploys to a region if specified
 
 [[- define "region" -]]
-[[- if eq .traefik.region "" -]]
-[[- else -]]
+[[- if not (eq .traefik.region "") -]]
 region = [[ .traefik.region | quote]]
 [[- end -]]
 [[- end -]]

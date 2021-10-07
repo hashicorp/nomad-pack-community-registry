@@ -11,8 +11,7 @@
 // only deploys to a region if specified
 
 [[- define "region" -]]
-[[- if eq .fabio.region "" -]]
-[[- else -]]
+[[- if not (eq .fabio.region "") -]]
 region = [[ .fabio.region | quote]]
 [[- end -]]
 [[- end -]]
