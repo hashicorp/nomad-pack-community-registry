@@ -2,6 +2,12 @@ variable "job_name" {
   description = "The name to use as the job name which overrides using the pack name."
   type        = string
   // If "", the pack name will be used
+  default = ""
+}
+
+variable "region" {
+  description = "The region where jobs will be deployed."
+  type        = string
   default     = ""
 }
 
@@ -27,7 +33,7 @@ variable "consul_service_tags" {
   description = "The consul service name for the hello-world application."
   type        = list(string)
   // defaults to integrat with Fabio or Traefik
-  default     = [
+  default = [
     "urlprefix-/",
     "traefik.enable=true",
     "traefik.http.routers.http.rule=Path(`/myapp`)",
