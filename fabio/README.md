@@ -14,3 +14,7 @@ service {
 ```
 
 See the [Load Balancing with Fabio](https://learn.hashicorp.com/tutorials/nomad/load-balancing-fabio) tutorial for more information.
+
+## Dependencies
+
+This pack requires Linux to run properly.
