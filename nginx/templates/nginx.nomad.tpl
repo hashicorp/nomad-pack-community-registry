@@ -2,6 +2,12 @@ job [[ template "job_name" . ]] {
   [[ template "region" . ]]
   datacenters = [ [[ range $idx, $dc := .nginx.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
 
+  // must have linux for network mode
+  constraint {
+    attribute = "${attr.kernel.name}"
+    value     = "linux"
+  }
+
   group "nginx" {
     count = 1
 

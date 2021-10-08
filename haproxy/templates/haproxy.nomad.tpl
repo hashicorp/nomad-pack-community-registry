@@ -4,6 +4,12 @@ job [[ template "job_name" . ]] {
 
   type        = "service"
 
+  // must have linux for network mode
+  constraint {
+    attribute = "${attr.kernel.name}"
+    value     = "linux"
+  }
+
   group "haproxy" {
     count = 1
 
