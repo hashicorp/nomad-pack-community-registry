@@ -26,10 +26,10 @@ job [[ template "job_name" . ]] {
       connect {
         sidecar_service {
           proxy {
-            [[ range $idx, $upstream := .grafana.upstreams ]]
+            [[ range $upstream := .grafana.upstreams ]]
             upstreams {
-              destination_name = $upstream.name
-              local_bind_port  = $upstream.port
+              destination_name = [[ $upstream.name ]]
+              local_bind_port  = [[ $upstream.port ]]
             }
             [[ end ]]
           }
