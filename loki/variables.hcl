@@ -18,27 +18,19 @@ variable "region" {
 }
 
 variable "version_tag" {
-  description = "The docker image version. For options, see https://hub.docker.com/grafana/grafana"
+  description = "The docker image version. For options, see https://hub.docker.com/grafana/loki"
   type        = string
   default     = "latest"
 }
 
 variable "http_port" {
-  description = "The Nomad client port that routes to the Grafana."
+  description = "The Nomad client port that routes to the Loki."
   type        = number
-  default     = 3000
-}
-
-variable "upstreams" {
-  description = ""
-  type = list(object({
-    name = string
-    port = number
-  }))
+  default     = 3100
 }
 
 variable "resources" {
-  description = "The resource to assign to the Grafana service task."
+  description = "The resource to assign to the Loki service task."
   type = object({
     cpu    = number
     memory = number
