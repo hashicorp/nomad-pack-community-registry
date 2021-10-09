@@ -34,7 +34,7 @@ variable "consul_service_tags" {
   type        = list(string)
   // defaults to integrat with Fabio or Traefik
   default = [
-    "urlprefix-/",
+    "urlprefix-/myapp",
     "traefik.enable=true",
     "traefik.http.routers.http.rule=Path(`/myapp`)",
   ]
@@ -43,11 +43,17 @@ variable "consul_service_tags" {
 variable "docker_image" {
   description = "The docker image to deploy."
   type        = string
-  default     = "httpd:latest"
+  default     = "mnomitch/hello_world_server"
 }
 
 variable "app_count" {
   description = "The number of app instances to deploy"
   type        = number
   default     = 2
+}
+
+variable "message" {
+  description = "The message your application will render"
+  type        = string
+  default     = "Hello World!"
 }

@@ -8,7 +8,7 @@ job [[ template "job_name" . ]] {
 
     network {
       port "http" {
-        to = 80
+        to = 8000
       }
     }
 
@@ -37,9 +37,14 @@ job [[ template "job_name" . ]] {
 
     task "server" {
       driver = "docker"
+
       config {
         image = "[[ .hello_world.docker_image ]]"
         ports = ["http"]
+      }
+
+      env {
+        MESSAGE = [[.hello_world.message | quote]]
       }
     }
   }

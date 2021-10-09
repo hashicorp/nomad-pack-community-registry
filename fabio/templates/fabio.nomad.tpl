@@ -4,6 +4,12 @@ job [[ template "job_name" . ]] {
 
   type = "system"
 
+  // must have linux for network mode
+  constraint {
+    attribute = "${attr.kernel.name}"
+    value     = "linux"
+  }
+
   group "fabio" {
     network {
       port "lb" {
@@ -17,9 +23,9 @@ job [[ template "job_name" . ]] {
     task "fabio" {
       driver = "docker"
       config {
-        image = "fabiolb/fabio"
+        image        = "fabiolb/fabio"
         network_mode = "host"
-        ports = ["lb","ui"]
+        ports        = ["lb", "ui"]
       }
 
       resources {
