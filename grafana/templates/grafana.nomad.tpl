@@ -21,7 +21,7 @@ job [[ template "job_name" . ]] {
 
     service {
       name = "grafana"
-      port = "http"
+      port = "[[ .grafana.http_port ]]"
 
       connect {
         sidecar_service {
