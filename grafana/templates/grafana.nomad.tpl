@@ -28,7 +28,7 @@ job [[ template "job_name" . ]] {
           proxy {
             [[ range $upstream := .grafana.upstreams ]]
             upstreams {
-              destination_name = [[ $upstream.name ]]
+              destination_name = [[ $upstream.name | quote ]]
               local_bind_port  = [[ $upstream.port ]]
             }
             [[ end ]]
