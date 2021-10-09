@@ -31,10 +31,10 @@ variable "http_port" {
 
 variable "upstreams" {
   description = ""
-  type = object({
+  type = list(object({
     name = string
     port = number
-  })
+  }))
 }
 
 variable "resources" {
