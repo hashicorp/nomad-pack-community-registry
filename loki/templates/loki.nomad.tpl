@@ -21,7 +21,7 @@ job [[ template "job_name" . ]] {
 
     service {
       name = "loki"
-      port = "http"
+      port = "[[ .loki.http_port ]]"
 
       connect {
         sidecar_service {}
@@ -33,7 +33,6 @@ job [[ template "job_name" . ]] {
 
       config {
         image = "grafana/loki:[[ .loki.version_tag ]]"
-        ports = ["http"]
       }
 
       resources {
