@@ -26,17 +26,21 @@ variable "register_consul_service" {
 variable "consul_service_name" {
   description = "The consul service name for the hello-world application."
   type        = string
-  default     = "hello-world-service"
+  default     = "webapp"
 }
 
 variable "consul_service_tags" {
   description = "The consul service name for the hello-world application."
   type        = list(string)
-  // defaults to integrat with Fabio or Traefik
+  // defaults to integrate with Fabio or Traefik
+  // This routes at the root path "/", to route to this service from
+  // another path, change "urlprefix-/" to "urlprefix-/<PATH>" and
+  // "traefik.http.routers.http.rule=Path(`/`)" to
+  // "traefik.http.routers.http.rule=Path(`/<PATH>`)"
   default = [
-    "urlprefix-/myapp",
+    "urlprefix-/",
     "traefik.enable=true",
-    "traefik.http.routers.http.rule=Path(`/myapp`)",
+    "traefik.http.routers.http.rule=Path(`/`)",
   ]
 }
 

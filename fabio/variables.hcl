@@ -2,7 +2,7 @@ variable "job_name" {
   description = "The name to use as the job name which overrides using the pack name."
   type        = string
   // If "", the pack name will be used
-  default     = ""
+  default = ""
 }
 
 variable "datacenters" {
@@ -37,6 +37,6 @@ variable "resources" {
   })
   default = {
     cpu    = 200,
-    memory = 128
+    memory = 256
   }
 }
