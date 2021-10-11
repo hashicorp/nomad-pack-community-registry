@@ -1,18 +1,18 @@
 variable "job_name" {
-  description = "The name to use as the job name which overrides using the pack name."
+  description = "The name to use as the job name which overrides using the pack name"
   type        = string
   // If "", the pack name will be used
   default = ""
 }
 
 variable "region" {
-  description = "The region where jobs will be deployed."
+  description = "The region where jobs will be deployed"
   type        = string
   default     = ""
 }
 
 variable "datacenters" {
-  description = "A list of datacenters in the region which are eligible for task placement."
+  description = "A list of datacenters in the region which are eligible for task placement"
   type        = list(string)
   default     = ["dc1"]
 }
@@ -36,13 +36,13 @@ variable "register_consul_service" {
 }
 
 variable "consul_service_name" {
-  description = "The consul service name for the hello-world application."
+  description = "The consul service name for the hello-world application"
   type        = string
   default     = "webapp"
 }
 
 variable "consul_service_tags" {
-  description = "The consul service name for the hello-world application."
+  description = "The consul service name for the hello-world application"
   type        = list(string)
   // defaults to integrate with Fabio or Traefik
   // This routes at the root path "/", to route to this service from

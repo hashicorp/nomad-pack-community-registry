@@ -1,6 +1,6 @@
 app {
   url    = "https://grafana.com/oss/loki/"
-  author = "Grafana"
+  author = "Grafana Labs"
 }
 
 pack {
