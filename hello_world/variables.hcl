@@ -17,6 +17,18 @@ variable "datacenters" {
   default     = ["dc1"]
 }
 
+variable "count" {
+  description = "The number of app instances to deploy"
+  type        = number
+  default     = 2
+}
+
+variable "message" {
+  description = "The message your application will render"
+  type        = string
+  default     = "Hello World!"
+}
+
 variable "register_consul_service" {
   description = "If you want to register a consul service for the job"
   type        = bool
@@ -42,22 +54,4 @@ variable "consul_service_tags" {
     "traefik.enable=true",
     "traefik.http.routers.http.rule=Path(`/`)",
   ]
-}
-
-variable "docker_image" {
-  description = "The docker image to deploy."
-  type        = string
-  default     = "mnomitch/hello_world_server"
-}
-
-variable "app_count" {
-  description = "The number of app instances to deploy"
-  type        = number
-  default     = 2
-}
-
-variable "message" {
-  description = "The message your application will render"
-  type        = string
-  default     = "Hello World!"
 }

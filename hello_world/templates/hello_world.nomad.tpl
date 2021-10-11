@@ -4,7 +4,7 @@ job [[ template "job_name" . ]] {
   type = "service"
 
   group "app" {
-    count = [[ .hello_world.app_count ]]
+    count = [[ .hello_world.count ]]
 
     network {
       port "http" {
@@ -39,7 +39,7 @@ job [[ template "job_name" . ]] {
       driver = "docker"
 
       config {
-        image = "[[ .hello_world.docker_image ]]"
+        image = "mnomitch/hello_world_server"
         ports = ["http"]
       }
 
