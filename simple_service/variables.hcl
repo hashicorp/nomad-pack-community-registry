@@ -45,7 +45,7 @@ variable "health_check" {
   description = ""
   type = object({
     path = string
-    interval = number
+    interval = string
     timeout = string
   })
 
@@ -76,6 +76,11 @@ variable "ports" {
     name = string
     port = number
   }))
+
+  default = [{
+    name = "http"
+    port = 8080
+  }]
 }
 
 variable "env_vars" {
@@ -84,6 +89,7 @@ variable "env_vars" {
     key   = string
     value = string
   }))
+  default = []
 }
 
 variable "consul_service_name" {
@@ -109,7 +115,6 @@ variable "resources" {
   type = object({
     cpu    = number
     memory = number
-    memory_max = number
   })
   default = {
     cpu    = 200,

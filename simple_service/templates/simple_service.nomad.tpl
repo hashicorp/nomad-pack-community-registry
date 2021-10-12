@@ -60,18 +60,18 @@ job [[ template "job_name" . ]] {
         ports = ["http"]
       }
 
+      [[ $env_vars_length := len .simple_service.env_vars ]]
+      [[ if not (eq $env_vars_length 0) ]]
       env {
         [[ range $var := .simple_service.env_vars ]]
         [[ $var.key ]] = [[ $var.value ]]
         [[ end ]]
       }
+      [[ end ]]
 
       resources {
         cpu    = [[ .simple_service.resources.cpu ]]
         memory = [[ .simple_service.resources.memory ]]
-        [[if .simple_service.resources.memory_max ]]
-        memory_max = [[ .simple_service.resources.memory_max ]]
-        [[ end ]]
       }
     }
   }
