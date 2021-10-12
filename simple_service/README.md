@@ -79,7 +79,7 @@ services with the specific tags.
 To tag this Consul service to work with Fabio, add `"urlprefix-<PATH>"`
 to the consul_tags. For instance, to route at the root path, you would add `"urlprefix-/"`. To route at the path `"/api/v1"`, you would add '"urlprefix-/api/v1".
 
-To tag this Consul service to work with Traefik, add `"traefik.enable=true"` to the consul_tags, also add `"traefik.http.routers.http.rule=Path(\`<PATH>\`)"`. To route at the root path, you would add `"traefik.http.routers.http.rule=Path(\`/\`)"`. To route at the path `/api/v1`, you would add `"traefik.http.routers.http.rule=Path(\`/api/v1\`)"`.
+To tag this Consul service to work with Traefik, add "traefik.enable=true" to the consul_tags, also add "traefik.http.routers.http.rule=Path(\`<PATH>\`)". To route at the root path, you would add "traefik.http.routers.http.rule=Path(\`/\`)". To route at the path "/api/v1", you would add "traefik.http.routers.http.rule=Path(\`/api/v1\`)".
 
 ```
 register_consul_service = true
