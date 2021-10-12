@@ -17,16 +17,16 @@ variable "datacenters" {
   default     = ["dc1"]
 }
 
-variable "count" {
-  description = "The number of app instances to deploy"
-  type        = number
-  default     = 1
-}
-
 variable "image" {
   description = ""
   type        = string
   default     = "mnomitch/hello_world_server"
+}
+
+variable "count" {
+  description = "The number of app instances to deploy"
+  type        = number
+  default     = 1
 }
 
 variable "restart_attempts" {
@@ -38,7 +38,7 @@ variable "restart_attempts" {
 variable "has_health_check" {
   description = "If you want to register a health check in consul"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "health_check" {
@@ -67,7 +67,7 @@ type = list(object({
 variable "register_consul_service" {
   description = "If you want to register a consul service for the job"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "ports" {
@@ -79,7 +79,7 @@ variable "ports" {
 
   default = [{
     name = "http"
-    port = 8080
+    port = 8000
   }]
 }
 

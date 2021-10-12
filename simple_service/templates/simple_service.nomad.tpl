@@ -7,14 +7,14 @@ job [[ template "job_name" . ]] {
     count = [[ .simple_service.count ]]
 
     network {
-      [[ range $port := .simple_service.ports ]]
+      [[- range $port := .simple_service.ports ]]
       port [[ $port.name | quote ]] {
         to = [[ $port.port ]]
       }
-      [[ end ]]
+      [[- end ]]
     }
 
-    [[ if .simple_service.register_consul_service ]]
+    [[- if .simple_service.register_consul_service ]]
     service {
       name = "[[ .simple_service.consul_service_name ]]"
       port = "[[ .simple_service.consul_service_port ]]"
@@ -23,17 +23,17 @@ job [[ template "job_name" . ]] {
       connect {
         sidecar_service {
           proxy {
-            [[ range $upstream := .simple_service.upstreams ]]
+            [[- range $upstream := .simple_service.upstreams ]]
             upstreams {
               destination_name = [[ $upstream.name | quote ]]
               local_bind_port  = [[ $upstream.port ]]
             }
-            [[ end ]]
+            [[- end ]]
           }
         }
       }
 
-      [[ if .simple_service.has_health_check ]]
+      [[- if .simple_service.has_health_check ]]
       check {
         name     = "alive"
         type     = "http"
@@ -41,9 +41,9 @@ job [[ template "job_name" . ]] {
         interval = [[ .simple_service.health_check.interval | quote ]]
         timeout  = [[ .simple_service.health_check.timeout | quote ]]
       }
-      [[ end ]]
+      [[- end ]]
     }
-    [[ end ]]
+    [[- end ]]
 
     restart {
       attempts = [[ .simple_service.restart_attempts ]]
@@ -60,14 +60,14 @@ job [[ template "job_name" . ]] {
         ports = ["http"]
       }
 
-      [[ $env_vars_length := len .simple_service.env_vars ]]
-      [[ if not (eq $env_vars_length 0) ]]
+      [[- $env_vars_length := len .simple_service.env_vars ]]
+      [[- if not (eq $env_vars_length 0) ]]
       env {
-        [[ range $var := .simple_service.env_vars ]]
+        [[- range $var := .simple_service.env_vars ]]
         [[ $var.key ]] = [[ $var.value ]]
-        [[ end ]]
+        [[- end ]]
       }
-      [[ end ]]
+      [[- end ]]
 
       resources {
         cpu    = [[ .simple_service.resources.cpu ]]
