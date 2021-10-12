@@ -14,10 +14,11 @@ job [[ template "job_name" . ]] {
       [[ end ]]
     }
 
-    [[ if .hello_world.register_consul_service ]]
+    [[ if .simple_service.register_consul_service ]]
     service {
       name = "[[ .simple_service.consul_service_name ]]"
       port = "[[ .simple_service.consul_service_port ]]"
+      tags = [ [[ range $idx, $tag := .simple_service.consul_tags ]][[if $idx]],[[end]][[ $tag | quote ]][[ end ]] ]
 
       connect {
         sidecar_service {

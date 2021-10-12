@@ -34,7 +34,9 @@ Consul service deployed by this pack. Just ensure that the "consul_service_name"
 packs matches this consul_service_name.
 
 The [Fabio](../fabio/README.md) and [Traefik](../traefik/README.md) packs are configured to search for Consul
-services with the specific tags. To automatically tag this Consul service to work with Fabio, set the
-"use_fabio_tags" variable to true. To automatically tag this Consul service to work with Traefik, set the
-"use_traefik_tags" variable to true. For either load balancer, you can set "load_balancer_path" to only
-route to this client when the load_balancer request is at a certain path, for instance "/api".
+services with the specific tags.
+
+To tag this Consul service to work with Fabio, add "urlprefix-<PATH>"
+to the consul_tags. For instance, to route at the root path, you would add "urlprefix-/". To route at the path "/api/v1", you would add '"urlprefix-/api/v1".
+
+To tag this Consul service to work with Traefik, add "traefik.enable=true" to the consul_tags, also add "traefik.http.routers.http.rule=Path(`<PATH>`)". To route at the root path, you would add "traefik.http.routers.http.rule=Path(`/`)". To route at the path "/api/v1", you would add "traefik.http.routers.http.rule=Path(`/api/v1`)".

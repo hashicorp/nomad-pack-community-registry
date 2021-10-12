@@ -23,6 +23,47 @@ variable "count" {
   default     = 1
 }
 
+variable "image" {
+  description = ""
+  type        = string
+  default     = "mnomitch/hello_world_server"
+}
+
+variable "restart_attempts" {
+  description = "The number of times the task should restart on updates"
+  type        = number
+  default     = 2
+}
+
+variable "has_health_check" {
+  description = "If you want to register a health check in consul"
+  type        = bool
+  default     = true
+}
+
+variable "health_check" {
+  description = ""
+  type = object({
+    path = string
+    interval = number
+    timeout = string
+  })
+
+  default = {
+    path = "/"
+    interval = "10s"
+    timeout  = "2s"
+  }
+}
+
+variable "upstreams" {
+description = ""
+type = list(object({
+  name   = string
+  port = string
+  }))
+}
+
 variable "register_consul_service" {
   description = "If you want to register a consul service for the job"
   type        = bool
@@ -51,11 +92,24 @@ variable "consul_service_name" {
   default     = "service"
 }
 
+variable "consul_service_port" {
+  description = "The consul service name for the application"
+  type        = string
+  default     = "http"
+}
+
+variable "consul_tags" {
+  description = ""
+  type = list(string)
+  default = []
+}
+
 variable "resources" {
   description = "The resource to assign to the Nginx system task that runs on every client"
   type = object({
     cpu    = number
     memory = number
+    memory_max = number
   })
   default = {
     cpu    = 200,
@@ -63,17 +117,8 @@ variable "resources" {
   }
 }
 
-// variable "consul_service_tags" {
-//   description = "The consul service name for the hello-world application"
-//   type        = list(string)
-//   // defaults to integrate with Fabio or Traefik
-//   // This routes at the root path "/", to route to this service from
-//   // another path, change "urlprefix-/" to "urlprefix-/<PATH>" and
-//   // "traefik.http.routers.http.rule=Path(`/`)" to
-//   // "traefik.http.routers.http.rule=Path(`/<PATH>`)"
-//   default = [
-//     "urlprefix-/",
-//     "traefik.enable=true",
-//     "traefik.http.routers.http.rule=Path(`/`)",
-//   ]
-// }
+variable "consul_tags" {
+  description = "The consul service name for the hello-world application"
+  type        = list(string)
+  default = []
+}
