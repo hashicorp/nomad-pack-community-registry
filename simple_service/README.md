@@ -4,7 +4,7 @@ This pack is a used to deploy a Docker image to as a service job to Nomad.
 
 This is ideal for configuring and deploying a simple web application to Nomad.
 
-## Customizing the Image
+## Customizing the Docker Image
 
 The docker image deployed can be replaced with a variable. In the example
 below, we will deploy and run `httpd:latest`.
@@ -33,7 +33,7 @@ In this case, we'll write the port values to a file called `./overrides.hcl`:
 Then pass the file into the run command:
 
 ```
-nomad-pack run simple_service --f ./overrides.hcl`"
+nomad-pack run simple_service -f ./overrides.hcl`"
 ```
 
 ## Customizing Resources
@@ -76,10 +76,10 @@ packs matches this consul_service_name.
 The [Fabio](../fabio/README.md) and [Traefik](../traefik/README.md) packs are configured to search for Consul
 services with the specific tags.
 
-To tag this Consul service to work with Fabio, add "urlprefix-<PATH>"
-to the consul_tags. For instance, to route at the root path, you would add "urlprefix-/". To route at the path "/api/v1", you would add '"urlprefix-/api/v1".
+To tag this Consul service to work with Fabio, add `"urlprefix-<PATH>"`
+to the consul_tags. For instance, to route at the root path, you would add `"urlprefix-/"`. To route at the path `"/api/v1"`, you would add '"urlprefix-/api/v1".
 
-To tag this Consul service to work with Traefik, add "traefik.enable=true" to the consul_tags, also add "traefik.http.routers.http.rule=Path(`<PATH>`)". To route at the root path, you would add "traefik.http.routers.http.rule=Path(`/`)". To route at the path "/api/v1", you would add "traefik.http.routers.http.rule=Path(`/api/v1`)".
+To tag this Consul service to work with Traefik, add `"traefik.enable=true"` to the consul_tags, also add `"traefik.http.routers.http.rule=Path(\`<PATH>\`)"`. To route at the root path, you would add `"traefik.http.routers.http.rule=Path(\`/\`)"`. To route at the path `/api/v1`, you would add `"traefik.http.routers.http.rule=Path(\`/api/v1\`)"`.
 
 ```
 register_consul_service = true
