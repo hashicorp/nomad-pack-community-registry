@@ -2,9 +2,6 @@
 
 This is a registry of community-maintained packs for [Nomad Pack](https://github.com/hashicorp/nomad-pack).
 
-This differs from the default [Nomad Pack Registry](https://github.com/hashicorp/nomad-pack-registry) which
-is fully maintained by HashiCorp.
-
 # Writing your own Packs
 
 For guidance on writing your own packs, see the [Writing Packs Guide](https://github.com/hashicorp/nomad-pack/blob/main/docs/writing-packs.md) in the Nomad Pack repository.
