@@ -6,7 +6,9 @@ job [[ template "full_job_name" . ]] {
   group "autoscaler" {
 
     network {
-      port [[ .nomad_autoscaler.autoscaler_agent_network.autoscaler_http_port_label | quote ]] {}
+      port [[ .nomad_autoscaler.autoscaler_agent_network.autoscaler_http_port_label | quote ]] {
+        to = 8080
+      }
     }
 
     task "autoscaler_agent" {
