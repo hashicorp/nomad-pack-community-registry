@@ -9,6 +9,7 @@ deployed via the [Docker][docker_driver] or [exec][exec_driver] drivers.
 - `datacenters` (list(string) ["dc1"]) - A list of datacenters in the region which are eligible for 
 task placement.
 - `region` (string "global") - The region where the job should be placed.
+- `namespace` (string "default") - The namespace where the job should be placed.
 - `autoscaler_agent_network` (object) - The Nomad Autoscaler network configuration options.
   * `autoscaler_http_port_label` (string "http") - The label name to use for the Nomad Autoscaler
 HTTP API.
@@ -27,7 +28,10 @@ passed to the autoscaler.
   * `memory` (number 256) - Specifies the memory required in MB.
 - `autoscaler_agent_task_service` (object) - Configuration options of the Nomad Autoscaler service and check.
   * `enabled` (bool true) - Whether the service and check should be configured.
-  * `name` (string "nomad-autoscaler") - Specifies the name this service will be advertised as in Consul.
+  * `service_name` (string "nomad-autoscaler") - Specifies the name this service will be advertised
+as in Consul.
+  * `service_tags` (list(string) []) - Specifies the list of tags to associate with the Nomad
+Autoscaler service.
   * `check_interval` (string "3s") - Specifies the frequency of the health checks that Consul will perform.
   * `check_timeout` (string "1s") - Specifies how long Consul will wait for a health check query to succeed.
 

@@ -2,6 +2,7 @@ job [[ template "full_job_name" . ]] {
 
   region      = [[ .nomad_autoscaler.region | quote ]]
   datacenters = [ [[ range $idx, $dc := .nomad_autoscaler.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
+  namespace   = [[ .nomad_autoscaler.namespace | quote ]]
 
   group "autoscaler" {
 
@@ -64,8 +65,9 @@ job [[ template "full_job_name" . ]] {
 
       [[- if .nomad_autoscaler.autoscaler_agent_task_service.enabled ]]
       service {
-        name = [[ .nomad_autoscaler.autoscaler_agent_task_service.name | quote ]]
+        name = [[ .nomad_autoscaler.autoscaler_agent_task_service.service_name | quote ]]
         port = [[ .nomad_autoscaler.autoscaler_agent_network.autoscaler_http_port_label | quote ]]
+        tags = [ [[ range $idx, $tag := .nomad_autoscaler.autoscaler_agent_task_service.service_tags ]][[if $idx]],[[end]][[ $tag | quote ]][[ end ]] ]
 
         check {
           type     = [[ .nomad_autoscaler.autoscaler_agent_network.autoscaler_http_port_label | quote ]]

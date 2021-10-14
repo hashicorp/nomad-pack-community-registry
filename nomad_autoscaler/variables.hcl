@@ -16,6 +16,12 @@ variable "region" {
   default     = "global"
 }
 
+variable "namespace" {
+  description = "The namespace where the job should be placed."
+  type        = string
+  default     = "default"
+}
+
 variable "autoscaler_agent_network" {
   description = "The Nomad Autoscaler network configuration options."
   type = object({
@@ -60,13 +66,15 @@ variable "autoscaler_agent_task_service" {
   description = "Configuration options of the Nomad Autoscaler service and check."
   type = object({
     enabled        = bool
-    name           = string
+    service_name   = string
+    service_tags   = list(string)
     check_interval = string
     check_timeout  = string
   })
   default = {
     enabled        = true
-    name           = "nomad-autoscaler",
+    service_name   = "nomad-autoscaler",
+    service_tags   = [],
     check_interval = "3s",
     check_timeout  = "1s",
   }
