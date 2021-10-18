@@ -20,7 +20,7 @@ region = [[ .promtail.region | quote]]
 [[- define "promtail_config" -]]
 [[- if (eq .promtail.config_file "") -]]
 server:
-  http_listen_port: 9080
+  http_listen_port: [[ .promtail.http_port ]]
   log_level: [[ .promtail.log_level ]]
 
 positions:

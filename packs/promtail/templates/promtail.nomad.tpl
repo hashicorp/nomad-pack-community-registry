@@ -49,7 +49,6 @@ job [[ template "job_name" . ]] {
 
     task "promtail" {
       driver = "docker"
-      privileged = true
       
       template {
         destination = "local/promtail-config.yaml"
