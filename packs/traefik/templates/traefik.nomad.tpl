@@ -1,81 +1,78 @@
 job [[ template "job_name" . ]] {
-  [[ template "region" . ]]
+
+  region      = [[ .traefik.region | quote]]
   datacenters = [ [[ range $idx, $dc := .traefik.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
-
-  type        = "service"
-
-  // must have linux for network mode
+  type        = "system"
+  [[ if .traefik.constraints ]][[ range $idx, $constraint := .traefik.constraints ]]
   constraint {
-    attribute = "${attr.kernel.name}"
-    value     = "linux"
+    attribute = [[ $constraint.attribute | quote ]]
+    value     = [[ $constraint.value | quote ]]
+    [[- if ne $constraint.operator "" ]]
+    operator  = [[ $constraint.operator | quote ]]
+    [[- end ]]
   }
+  [[- end ]][[- end ]]
 
   group "traefik" {
-    count = 1
 
     network {
-      port "http" {
-        static = [[ .traefik.http_port ]]
+      mode = [[ .traefik.traefik_group_network.mode | quote ]]
+      [[- range $label, $to := .traefik.traefik_group_network.ports ]]
+      port [[ $label | quote ]] {
+        static = [[ $to ]]
+        to     = [[ $to ]]
       }
-
-      port "api" {
-        static = [[ .traefik.api_port ]]
-      }
-    }
-
-    service {
-      name = "traefik"
-
-      check {
-        name     = "alive"
-        type     = "tcp"
-        port     = "http"
-        interval = "10s"
-        timeout  = "2s"
-      }
+      [[- end ]]
     }
 
     task "traefik" {
-      driver = "docker"
+      driver = [[ .traefik.traefik_task.driver | quote ]]
 
       config {
-        image        = "traefik:[[ .traefik.version_tag ]]"
-        network_mode = "host"
+        [[- if ( eq .traefik.traefik_task.driver "docker" ) ]]
+        image = "traefik:[[ .traefik.traefik_task.version ]]"
+        [[- if .traefik.traefik_group_network.ports ]]
+        [[- $ports := keys .traefik.traefik_group_network.ports ]]
+        ports = [ [[ range $idx, $label := $ports ]][[if $idx]],[[end]][[ $label | quote ]][[ end ]] ]
+        [[- end ]]
+        [[- end ]]
 
+        [[- if ne .traefik.traefik_task_app_config "" ]]
         volumes = [
           "local/traefik.toml:/etc/traefik/traefik.toml",
         ]
+        [[- end ]]
       }
 
+[[- if ne .traefik.traefik_task_app_config "" ]]
       template {
         data = <<EOF
-[entryPoints]
-    [entryPoints.http]
-    address = ":[[ .traefik.http_port ]]"
-    [entryPoints.traefik]
-    address = ":[[ .traefik.api_port ]]"
-
-[api]
-    dashboard = true
-    insecure  = true
-
-# Enable Consul Catalog configuration backend.
-[providers.consulCatalog]
-    prefix           = "traefik"
-    exposedByDefault = false
-
-    [providers.consulCatalog.endpoint]
-      address = "127.0.0.1:[[ .traefik.consul_port ]]"
-      scheme  = "http"
+[[ .traefik.traefik_task_app_config ]]
 EOF
 
         destination = "local/traefik.toml"
       }
+[[- end ]]
 
       resources {
-        cpu    = [[ .traefik.resources.cpu ]]
-        memory = [[ .traefik.resources.memory ]]
+        cpu    = [[ .traefik.traefik_task_resources.cpu ]]
+        memory = [[ .traefik.traefik_task_resources.memory ]]
       }
+      [[ if .traefik.traefik_task_services ]][[ range $idx, $service := .traefik.traefik_task_services ]]
+      service {
+        name = [[ $service.service_name | quote ]]
+        port = [[ $service.service_port_label | quote ]]
+
+        [[- if $service.check_enabled ]]
+        check {
+          type     = [[ $service.check_type | quote ]]
+          path     = [[ $service.check_path | quote ]]
+          interval = [[ $service.check_interval | quote ]]
+          timeout  = [[ $service.check_timeout | quote ]]
+        }
+        [[- end ]]
+      }
+      [[- end ]][[ end ]]
     }
   }
 }
