@@ -24,7 +24,7 @@ variable "service_name" {
 }
 
 variable "version_tag" {
-  description = "The docker image version. For options, see https://hub.docker.com/_/nginx"
+  description = "The docker image version. For options, see https://hub.docker.com/_/fluentd"
   type        = string
   default     = "v1.14-1"
 }

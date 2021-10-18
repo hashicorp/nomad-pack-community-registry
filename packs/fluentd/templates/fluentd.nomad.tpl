@@ -1,6 +1,6 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [ [[ range $idx, $dc := .nginx.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
+  datacenters = [ [[ range $idx, $dc := .fluentd.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
 
   type = "service"
 
