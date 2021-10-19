@@ -15,7 +15,7 @@ The following variables are settable when running this pack.
 ### Optional
 
 * `datacenters` (`list(string)`, `["dc1"]`) - An array of Nomad datacenter names.
-* `region` (`string`, `"global"`) - The region where the job should be placed.
+* `region` (`string`, `""`) - The region where the job should be placed.
 * `namespace` (`string`, `""`) - Optional namespace to run the job in.
 * `count` (`number`, `1`) - Number of agent processes to run.
 * `resources` (`object`) - Resources required to run the task.
