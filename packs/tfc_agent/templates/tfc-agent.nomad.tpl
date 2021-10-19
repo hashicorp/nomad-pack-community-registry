@@ -10,19 +10,15 @@ job "tfc-agent" {
     task "tfc-agent" {
       driver = "docker"
 
+      [[ if .tfc_agent.agent_otlp_cert ]]
+      artifact {
+        source = [[ .tfc_agent.agent_otlp_cert | quote ]]
+        destination = "/home/tfc-agent/certs/otlp.pem"
+      }
+      [[ end ]]
+
       config {
         image = "hashicorp/tfc-agent:[[ .tfc_agent.agent_version ]]"
-
-        [[ if .tfc_agent.agent_otlp_cert_file ]]
-        mounts = [
-          {
-            type = "bind"
-            source = [[ .tfc_agent.agent_otlp_cert_file | quote ]]
-            target = "/home/tfc-agent/certs/otlp.pem"
-            readonly = true
-          }
-        ]
-        [[ end ]]
       }
 
       env {
@@ -34,7 +30,7 @@ job "tfc-agent" {
         TFC_AGENT_LOG_LEVEL    = [[ .tfc_agent.agent_log_level | quote ]]
 
         [[ if .tfc_agent.agent_log_json ]]TFC_AGENT_LOG_JSON = "true"[[end]]
-        [[ if .tfc_agent.agent_otlp_cert_file ]]TFC_AGENT_OTLP_CERT_FILE = "certs/otlp.pem"[[end]]
+        [[ if .tfc_agent.agent_otlp_cert ]]TFC_AGENT_OTLP_CERT_FILE = "certs/otlp.pem"[[end]]
       }
 
       resources {

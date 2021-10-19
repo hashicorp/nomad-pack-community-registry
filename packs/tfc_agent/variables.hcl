@@ -81,8 +81,8 @@ variable "agent_otlp_address" {
   default     = ""
 }
 
-variable "agent_otlp_cert_file" {
-  description = "Path to a client TLS certificate to secure OTLP connections of gRPC (requires volumes to be enabled)"
+variable "agent_otlp_cert" {
+  description = "Path in go-getter format to a client TLS certificate to secure OTLP connections"
   type        = string
   default     = ""
 }

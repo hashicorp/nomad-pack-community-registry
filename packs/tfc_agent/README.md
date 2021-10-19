@@ -46,3 +46,6 @@ The following variables are settable when running this pack.
   as they become available, within the same major version series.
 * `agent_otlp_address` (`string`, `""`) - Optional OpenTelemetry gRPC endpoint
   for submitting agent metrics and tracing data.
+* `agent_otlp_cert` (`string`, `""`) - Optional go-getter path to a TLS
+  certificate for encrypting gRPC connections made by the OpenTelemetry client
+  library.
