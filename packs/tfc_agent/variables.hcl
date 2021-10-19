@@ -37,7 +37,7 @@ variable "resources" {
 variable "tfc_address" {
   description = "The address of the Terraform Cloud installation"
   type        = string
-  default     = "https://app.terraform.io"
+  default     = ""
 }
 
 variable "agent_token" {
@@ -60,7 +60,7 @@ variable "agent_name" {
 variable "agent_log_level" {
   description = "Granularity of logs to print. 'trace', 'debug', 'info', 'warn', and 'error' are accepted."
   type        = string
-  default     = "info"
+  default     = ""
 }
 
 variable "agent_log_json" {
@@ -72,7 +72,13 @@ variable "agent_log_json" {
 variable "agent_auto_update" {
   description = "Automatically update agents while they are running. 'patch', 'minor', or 'disabled' are accepted."
   type        = string
-  default     = "minor"
+  default     = ""
+}
+
+variable "agent_single" {
+  description = "Modifies agent behavior to handle at most one job and exit"
+  type        = bool
+  default     = false
 }
 
 variable "agent_otlp_address" {
