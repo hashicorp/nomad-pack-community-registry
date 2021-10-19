@@ -6,6 +6,6 @@ app {
 pack {
   name        = "tfc_agent"
   description = "Terraform Cloud Agent"
-  url         = "https://github.com/hashicorp/nomad-pack-community-registry/tree/main/tfc-agent"
+  url         = "https://github.com/hashicorp/nomad-pack-community-registry/tree/main/tfc_agent"
   version     = "0.1.0"
 }
