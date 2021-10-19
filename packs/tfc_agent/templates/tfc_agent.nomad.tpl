@@ -1,8 +1,8 @@
 job "tfc-agent" {
-  region      = [[ .tfc_agent.region | quote ]]
-  datacenters = [ [[ range $idx, $dc := .tfc_agent.datacenters ]][[ if $idx ]],[[ end ]][[ $dc | quote ]][[ end ]] ]
-  namespace   = [[ .tfc_agent.namespace | quote ]]
-  type        = "service"
+  [[ template "region" . ]]
+  [[ template "datacenters" . ]]
+  [[ template "namespace" . ]]
+  type = "service"
 
   group "tfc-agent" {
     count = [[ .tfc_agent.count ]]
