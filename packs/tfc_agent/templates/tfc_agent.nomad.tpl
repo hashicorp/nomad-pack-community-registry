@@ -1,4 +1,4 @@
-job "tfc-agent" {
+job [[ template "job_name" . ]] {
   [[ template "region" . ]]
   [[ template "datacenters" . ]]
   [[ template "namespace" . ]]

@@ -14,6 +14,7 @@ The following variables are settable when running this pack.
 
 ### Optional
 
+* `job_name` (`string`, `""`) - The name of the job to register.
 * `datacenters` (`list(string)`, `["dc1"]`) - An array of Nomad datacenter names.
 * `region` (`string`, `""`) - The region where the job should be placed.
 * `namespace` (`string`, `""`) - Optional namespace to run the job in.

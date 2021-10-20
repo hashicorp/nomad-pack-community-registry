@@ -1,3 +1,9 @@
+variable "job_name" {
+  description = "The name of the job to register"
+  type        = string
+  default     = ""
+}
+
 variable "datacenters" {
   description = "A list of datacenters in the region which are eligible for task placement."
   type        = list(string)
