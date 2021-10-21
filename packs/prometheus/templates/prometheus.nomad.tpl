@@ -3,6 +3,15 @@ job [[ template "full_job_name" . ]] {
   region      = [[ .prometheus.region | quote ]]
   datacenters = [ [[ range $idx, $dc := .prometheus.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
   namespace   = [[ .prometheus.namespace | quote ]]
+  [[ if .prometheus.constraints ]][[ range $idx, $constraint := .prometheus.constraints ]]
+  constraint {
+    attribute = [[ $constraint.attribute | quote ]]
+    value     = [[ $constraint.value | quote ]]
+    [[- if ne $constraint.operator "" ]]
+    operator  = [[ $constraint.operator | quote ]]
+    [[- end ]]
+  }
+  [[- end ]][[- end ]]
 
   group "prometheus" {
 
