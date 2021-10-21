@@ -11,14 +11,14 @@ $ nomad agent -dev
 
 To run the pack:
 ```bash
-$ nomad-pack run . --var static_port=8080
+$ nomad-pack run caasperli --var static_port=8080
 ```
 
 The Caasperli app can be accessed on http://127.0.0.1:8080.
 
 To destroy the pack:
 ```bash
-$ nomad-pack destroy .
+$ nomad-pack destroy caasperli
 ```
 
 ## Variables
