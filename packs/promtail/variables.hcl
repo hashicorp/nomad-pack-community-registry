@@ -14,7 +14,7 @@ variable "service_name" {
 variable "service_check_name" {
   description = "Name of the service check registered with the Consul Service"
   type		    = string
-  default     = "Readiness"
+  default     = "readiness"
 }
 
 variable "datacenters" {
