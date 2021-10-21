@@ -6,7 +6,7 @@ This is a registry of community-maintained packs for [Nomad Pack](https://github
 
 For guidance on writing your own packs, see the [Writing Packs Guide](https://github.com/hashicorp/nomad-pack/blob/main/docs/writing-packs.md) in the Nomad Pack repository.
 
-# Contributions and Feebdack
+# Contributions and Feedback
 
 Contributions are welcome in any form.
 
