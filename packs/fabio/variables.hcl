@@ -1,36 +1,76 @@
 variable "job_name" {
-  description = "The name to use as the job name which overrides using the pack name"
+  description = "The name to use as the job name which overrides using the pack name."
   type        = string
-  // If "", the pack name will be used
-  default = ""
+  default     = ""
 }
 
 variable "datacenters" {
-  description = "A list of datacenters in the region which are eligible for task placement"
+  description = "A list of datacenters in the region which are eligible for task placement."
   type        = list(string)
   default     = ["dc1"]
 }
 
 variable "region" {
-  description = "The region where the job should be placed"
+  description = "The region where the job should be placed."
+  type        = string
+  default     = "global"
+}
+
+variable "namespace" {
+  description = "The namespace where the job should be placed."
+  type        = string
+  default     = "default"
+}
+
+variable "constraints" {
+  description = "Constraints to apply to the entire job."
+  type        = list(object({
+    attribute = string
+    operator  = string
+    value     = string
+  }))
+  default = [
+    {
+      attribute = "$${attr.kernel.name}",
+      value     = "linux",
+      operator  = "",
+    },
+  ]
+}
+
+variable "fabio_group_network" {
+  description = "The Fabio group network configuration options."
+  type        = object({
+    mode  = string
+    ports = map(number)
+  })
+  default = {
+    mode  = "bridge",
+    ports = {
+      "http" = 9999,
+      "ui"   = 9998,
+    },
+  }
+}
+
+variable "fabio_task_config" {
+  description = "Configuration options to use for the Fabio task driver config."
+  type        = object({
+    version = string
+  })
+  default     = {
+    version = "1.5.15-go1.15.5",
+  }
+}
+
+variable "fabio_task_app_properties" {
+  description = "The contents of a Fabio properties file to pass to the Fabio app."
   type        = string
   default     = ""
 }
 
-variable "http_port" {
-  description = "The Nomad client port that routes to the Fabio. This port will be where you visit your load balanced application"
-  type        = number
-  default     = 9999
-}
-
-variable "ui_port" {
-  description = "The port assigned to visit the Fabio UI"
-  type        = number
-  default     = 9998
-}
-
-variable "resources" {
-  description = "The resource to assign to the Fabio system task that runs on every client"
+variable "fabio_task_resources" {
+  description = "The resource to assign to the Fabio task."
   type = object({
     cpu    = number
     memory = number
