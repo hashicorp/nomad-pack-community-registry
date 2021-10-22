@@ -1,36 +1,59 @@
 job [[ template "job_name" . ]] {
-  [[ template "region" . ]]
-  datacenters = [ [[ range $idx, $dc := .fabio.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
 
-  type = "system"
-
-  // must have linux for network mode
+  region      = [[ .fabio.region | quote]]
+  datacenters = [ [[ range $idx, $dc := .fabio.datacenters ]][[if $idx]], [[end]][[ $dc | quote ]][[ end ]] ]
+  type        = "system"
+  namespace   = [[ .fabio.namespace | quote]]
+  [[ if .fabio.constraints ]][[ range $idx, $constraint := .fabio.constraints ]]
   constraint {
-    attribute = "${attr.kernel.name}"
-    value     = "linux"
+    attribute = [[ $constraint.attribute | quote ]]
+    value     = [[ $constraint.value | quote ]]
+    [[- if ne $constraint.operator "" ]]
+    operator  = [[ $constraint.operator | quote ]]
+    [[- end ]]
   }
+  [[- end ]][[- end ]]
 
   group "fabio" {
+
     network {
-      port "lb" {
-        static = [[ .fabio.http_port ]]
+      mode = [[ .fabio.fabio_group_network.mode | quote ]]
+      [[- range $label, $to := .fabio.fabio_group_network.ports ]]
+      port [[ $label | quote ]] {
+        static = [[ $to ]]
       }
-      port "ui" {
-        static = [[ .fabio.ui_port ]]
-      }
+      [[- end ]]
     }
 
     task "fabio" {
       driver = "docker"
       config {
-        image        = "fabiolb/fabio"
-        network_mode = "host"
-        ports        = ["lb", "ui"]
+        image = "fabiolb/fabio:[[ .fabio.fabio_task_config.version ]]"
+        [[- if .fabio.fabio_group_network.ports ]]
+        [[- $ports := keys .fabio.fabio_group_network.ports ]]
+        ports = [ [[ range $idx, $label := $ports ]][[if $idx]], [[end]][[ $label | quote ]][[ end ]] ]
+        [[- end ]]
+
+        [[- if ne .fabio.fabio_task_app_properties "" ]]
+        volumes = [
+            "local/fabio.properties:/etc/fabio/fabio.properties",
+        ]
+        [[- end ]]
       }
 
+      [[- if ne .fabio.fabio_task_app_properties "" ]]
+       template {
+         data = <<EOF
+[[ .fabio.fabio_task_app_properties ]]
+EOF
+
+         destination = "local/fabio.properties"
+       }
+       [[- end ]]
+
       resources {
-        cpu    = [[ .fabio.resources.cpu ]]
-        memory = [[ .fabio.resources.memory ]]
+        cpu    = [[ .fabio.fabio_task_resources.cpu ]]
+        memory = [[ .fabio.fabio_task_resources.memory ]]
       }
     }
   }
