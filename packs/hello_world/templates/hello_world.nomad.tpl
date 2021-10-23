@@ -1,6 +1,6 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [ [[ range $idx, $dc := .hello_world.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
+  datacenters = [[ .hello_world.datacenters | toJson ]]
   type = "service"
 
   group "app" {
@@ -15,7 +15,7 @@ job [[ template "job_name" . ]] {
     [[ if .hello_world.register_consul_service ]]
     service {
       name = "[[ .hello_world.consul_service_name ]]"
-      tags = [ [[ range $idx, $tag := .hello_world.consul_service_tags ]][[if $idx]],[[end]][[ $tag | quote ]][[ end ]] ]
+      tags = [[ .hello_world.consul_service_tags | toJson ]]
       port = "http"
 
       check {
