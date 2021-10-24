@@ -1,7 +1,7 @@
 job [[ template "job_name" . ]] {
 
   region      = [[ .fabio.region | quote]]
-  datacenters = [ [[ range $idx, $dc := .fabio.datacenters ]][[if $idx]], [[end]][[ $dc | quote ]][[ end ]] ]
+  datacenters = [[ .fabio.datacenters | toPrettyJson ]]
   type        = "system"
   namespace   = [[ .fabio.namespace | quote]]
   [[ if .fabio.constraints ]][[ range $idx, $constraint := .fabio.constraints ]]
@@ -31,7 +31,7 @@ job [[ template "job_name" . ]] {
         image = "fabiolb/fabio:[[ .fabio.fabio_task_config.version ]]"
         [[- if .fabio.fabio_group_network.ports ]]
         [[- $ports := keys .fabio.fabio_group_network.ports ]]
-        ports = [ [[ range $idx, $label := $ports ]][[if $idx]], [[end]][[ $label | quote ]][[ end ]] ]
+        ports = [[ $ports | toPrettyJson ]]
         [[- end ]]
 
         [[- if ne .fabio.fabio_task_app_properties "" ]]

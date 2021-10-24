@@ -1,7 +1,7 @@
 job [[ template "full_job_name" . ]] {
 
   region      = [[ .prometheus.region | quote ]]
-  datacenters = [ [[ range $idx, $dc := .prometheus.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
+  datacenters = [[ .prometheus.datacenters | toPrettyJson ]]
   namespace   = [[ .prometheus.namespace | quote ]]
   [[ if .prometheus.constraints ]][[ range $idx, $constraint := .prometheus.constraints ]]
   constraint {
@@ -29,10 +29,7 @@ job [[ template "full_job_name" . ]] {
 
       config {
         image = "prom/prometheus:v[[ .prometheus.prometheus_task.version ]]"
-
-        args = [ [[ range $idx, $dc := .prometheus.prometheus_task.cli_args ]][[if $idx]],[[end]][[ $dc | quote ]]
-        [[end]] ]
-
+        args = [[ .prometheus.prometheus_task.cli_args | toPrettyJson ]]
         volumes = [
           "local/config:/etc/prometheus/config",
         ]
@@ -60,7 +57,7 @@ EOH
       service {
         name = [[ $service.service_name | quote ]]
         port = [[ $service.service_port_label | quote ]]
-        tags = [ [[ range $idx, $dc := $service.service_tags ]][[if $idx]],[[end]][[ $dc | quote ]][[end]] ]
+        tags = [[ $service.service_tags | toPrettyJson ]]
 
         check {
           type     = "http"

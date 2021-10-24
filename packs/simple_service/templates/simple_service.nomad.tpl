@@ -1,6 +1,6 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [ [[ range $idx, $dc := .simple_service.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
+  datacenters = [[ .simple_service.datacenters | toPrettyJson ]]
   type = "service"
 
   group "app" {
@@ -18,7 +18,7 @@ job [[ template "job_name" . ]] {
     service {
       name = "[[ .simple_service.consul_service_name ]]"
       port = "[[ .simple_service.consul_service_port ]]"
-      tags = [ [[ range $idx, $tag := .simple_service.consul_tags ]][[if $idx]],[[end]][[ $tag | quote ]][[ end ]] ]
+      tags = [[ .simple_service.consul_tags | toPrettyJson ]]
 
       connect {
         sidecar_service {
