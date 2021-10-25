@@ -1,70 +1,40 @@
 job [[ template "job_name" . ]] {
 
   [[ template "region" . ]]
-
   datacenters = [ [[ range $idx, $dc := .promtail.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
-  type = "system"
+  namespace   = [[ .promtail.namespace | quote ]]
+  type        = "system"
   
-  constraint {
-    attribute = "${attr.kernel.name}"
-    value     = "linux"
-  }
+  [[ template "constraints" .promtail.constraints ]]
 
   group "promtail" {
-    count = 1
-
     network {
-      mode = "bridge"
-      port "http" {
-        to = [[ .promtail.http_port ]]
-      }
-    }
-
-    service {
-      name = [[ .promtail.service_name | quote ]]
-      port = "http"
-      [[- if not (eq (len .promtail.upstreams) 0) ]] // Render Connect upstreams if defined
-      connect {
-        sidecar_service {
-          proxy {
-            [[- range $upstream := .promtail.upstreams ]]
-            upstreams {
-              destination_name = [[ $upstream.name | quote ]]
-              local_bind_port  = [[ $upstream.port ]]
-            }
-            [[- end ]]
-          }
-        }
+      mode = [[ .promtail.promtail_group_network.mode | quote ]]
+      [[- range $label, $to := .promtail.promtail_group_network.ports ]]
+      port [[ $label | quote ]] {
+        to = [[ $to ]]
       }
       [[- end ]]
-      check {
-        name = [[ .promtail.service_check_name | quote ]]
-        port = "http"
-        type = "http"
-        path = "/ready"
-        timeout = "2s"
-        interval = "10s"
-      }
     }
+
+    [[- if .promtail.promtail_task_services ]]
+    [[ template "service" .promtail.promtail_group_services ]]
+    [[- end ]]
 
     task "promtail" {
       driver = "docker"
       
       template {
         destination = "local/promtail-config.yaml"
-        data = <<EOT
-[[ template "promtail_config" . ]]
-EOT
+        data = <<-EOT
+        [[ template "promtail_config" . ]]
+        EOT
       }
 
       config {
         image = "grafana/promtail:[[ .promtail.version_tag ]]"
-        args = [
-          "-config.file=/etc/promtail/promtail-config.yaml",
-          "-log.level=[[ .promtail.log_level ]]"
-        ]
-
-        privileged = [[ if or (.promtail.mount_journal) (.promtail.mount_machine_id) (.promtail.privileged_container) ]]true[[ else ]]false[[ end ]]
+        privileged = [[ if or (eq .promtail.config_file "") (.promtail.privileged) ]]true[[ else ]]false[[ end ]]
+        args = [ [[ range $idx, $dc := .promtail.container_args ]][[if $idx]], [[end]][[ $dc | quote ]][[ end ]] ]
 
         mount {
           type = "bind"
@@ -73,24 +43,15 @@ EOT
           readonly = false
           bind_options { propagation = "rshared" }
         }
-        [[ if .promtail.mount_journal ]]
-        mount {
-          type = "bind"
-          target = "/var/log/journal"
-          source = "/var/log/journal"
-          readonly = true
-          bind_options { propagation = "rshared" }
-        }
-        [[ end ]]
-        [[ if .promtail.mount_machine_id ]]
-        mount {
-          type = "bind"
-          target = "/etc/machine-id"
-          source = "/etc/machine-id"
-          readonly = false
-          bind_options { propagation = "rshared" }
-        }
-        [[ end ]]
+
+        [[- if (eq .promtail.config_file "") ]]
+        [[ template "mounts" .promtail.default_mounts ]]
+        [[- end ]]
+
+        [[- if gt (len .promtail.extra_mounts) 0 ]]
+        [[ template "mounts" .promtail.extra_mounts ]]
+        [[- end ]]
+
       }
       resources {
         cpu    = [[ .promtail.resources.cpu ]]

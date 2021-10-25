@@ -1,20 +1,19 @@
 variable "job_name" {
   description = "The name to use as the job name which overrides using the pack name."
   type        = string
-  // If "", the pack name will be used
   default     = ""
 }
 
 variable "service_name" {
   description = "Name used to register the Consul Service"
-  type		    = string
+  type        = string
   default     = "promtail"
 }
 
-variable "service_check_name" {
-  description = "Name of the service check registered with the Consul Service"
-  type		    = string
-  default     = "readiness"
+variable "namespace" {
+  description = "The namespace where the job should be placed."
+  type        = string
+  default     = "default"
 }
 
 variable "datacenters" {
@@ -35,10 +34,86 @@ variable "version_tag" {
   default     = "latest"
 }
 
-variable "http_port" {
-  description = "The Nomad client port that routes to the Promtail."
-  type        = number
-  default     = 9080
+variable "privileged" {
+  description = "Controls whether the container will be run as a privileged container"
+  type        = bool
+  default     = false
+}
+
+variable "config_file" {
+  description = "Path to custom Promtail configuration file."
+  type        = string
+  default     = ""
+}
+
+// Default config options used when no config file is specified
+variable "client_urls" {
+  description = "A list of client url's for promtail to send it's data to."
+  type        = list(string)
+  default     = []
+}
+
+variable "journal_max_age" {
+  description = "Maximum age of journald entries to scrape."
+  type        = string
+  default     = "12h"
+}
+
+variable "constraints" {
+  description = "Constraints to apply to the entire job."
+  type = list(object({
+    attribute = string
+    operator  = string
+    value     = string
+  }))
+  default = [
+    {
+      attribute = "$${attr.kernel.name}",
+      value     = "linux",
+      operator  = "",
+    },
+  ]
+}
+
+variable "promtail_group_network" {
+  description = "The Promtail network configuration options."
+  type = object({
+    mode  = string
+    ports = map(number)
+  })
+  default = {
+    mode = "bridge",
+    ports = {
+      "http" = 9090,
+    },
+  }
+}
+
+variable "promtail_group_services" {
+  description = "Configuration options of the promtail services and checks."
+  type = list(object({
+    service_port_label = string
+    service_name       = string
+    service_tags       = list(string)
+    check_enabled      = bool
+    check_path         = string
+    check_interval     = string
+    check_timeout      = string
+    upstreams = list(object({
+      name = string
+      port = number
+    }))
+  }))
+  default = [{
+    service_port_label = "http",
+    service_name       = "promtail",
+    service_tags       = [],
+    upstreams          = [],
+    check_enabled      = true,
+    check_path         = "/ready",
+    check_interval     = "3s",
+    check_timeout      = "1s",
+  }]
 }
 
 variable "resources" {
@@ -53,56 +128,66 @@ variable "resources" {
   }
 }
 
-variable "config_file" {
-  description = "Path to custom Promtail configuration file."
-  type		= string
-  default = ""
+variable "container_args" {
+  description = "Arguments passed to the Promtail docker container"
+  type        = list(string)
+  default = [
+    "-config.file=/etc/promtail/promtail-config.yaml",
+    "-log.level=info"
+  ]
 }
 
-variable "mount_journal" {
-  description = "Controls whether /var/log/journal is mounted in the container. If true, container will be run privileged."
-  type		= bool
-  default = true
-}
-
-variable "mount_machine_id" {
-  description = "Controls whether /etc/machine-id is mounted in the container. If true, container will be run privileged."
-  type		= bool
-  default = true
-}
-
-// Default configuration mounts paths /var/log/journal and /etc/machine-id from 
-//   the nomad client. This requires a privileged container.
-variable "privileged_container" {
-  description = "Run as a privileged container. Setting mount_journal or mount_machine_id to true will override this."
-  type		= bool
-  default = false
-}
-
-// Default config options used when no config file is specified
-variable "client_urls" {
-  description = "A list of client url's for promtail to send it's data to."
-  type		= list(string)
-  default = []
-}
-
-variable "journal_max_age" {
-  description = "Maximum age of journald entries to scrape."
-  type		= string
-  default = "12h"
-}
-
-variable "log_level" {
-  description = "Promtail log level configuration."
-  type		= string
-  default = "info"
-}
-
-variable "upstreams" {
-  description = "Define Connect Upstreams used by Promtail."
+variable "extra_mounts" {
+  description = "Additional mounts to create in the Promtail container"
   type = list(object({
-    name = string
-    port = number
+    type     = string
+    source   = string
+    target   = string
+    readonly = bool
+    bind_options = list(object({
+      name  = string
+      value = string
+    }))
   }))
   default = []
+}
+
+variable "default_mounts" {
+  description = "Mounts that are configured when using the default Promtail configuration"
+  type = list(object({
+    type     = string
+    source   = string
+    target   = string
+    readonly = bool
+    bind_options = list(object({
+      name  = string
+      value = string
+    }))
+  }))
+  default = [
+    {
+      type     = "bind"
+      target   = "/var/log/journal"
+      source   = "/var/log/journal"
+      readonly = true
+      bind_options = [
+        {
+          name  = "propagation"
+          value = "rshared"
+        },
+      ]
+    },
+    {
+      type     = "bind"
+      target   = "/etc/machine-id"
+      source   = "/etc/machine-id"
+      readonly = false
+      bind_options = [
+        {
+          name  = "propagation",
+          value = "rshared"
+        },
+      ]
+    }
+  ]
 }

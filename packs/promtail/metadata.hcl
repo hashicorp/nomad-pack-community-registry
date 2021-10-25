@@ -1,6 +1,6 @@
 app {
   url    = "https://grafana.com/docs/promtail/latest/clients/promtail"
-  author = "Ricky Grassmuck"
+  author = "Grafana"
 }
 
 pack {
