@@ -1,7 +1,7 @@
 job [[ template "job_name" . ]] {
 
   region      = [[ .traefik.region | quote]]
-  datacenters = [ [[ range $idx, $dc := .traefik.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
+  datacenters = [[ .traefik.datacenters | toPrettyJson ]]
   type        = "system"
   [[ if .traefik.constraints ]][[ range $idx, $constraint := .traefik.constraints ]]
   constraint {
@@ -33,7 +33,7 @@ job [[ template "job_name" . ]] {
         image = "traefik:[[ .traefik.traefik_task.version ]]"
         [[- if .traefik.traefik_group_network.ports ]]
         [[- $ports := keys .traefik.traefik_group_network.ports ]]
-        ports = [ [[ range $idx, $label := $ports ]][[if $idx]],[[end]][[ $label | quote ]][[ end ]] ]
+        ports = [[ $ports | toPrettyJson ]]
         [[- end ]]
         [[- end ]]
 

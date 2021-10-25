@@ -1,7 +1,7 @@
 job [[ template "job_name" . ]] {
 
   region      = [[ .prometheus_node_exporter.region | quote]]
-  datacenters = [ [[ range $idx, $dc := .prometheus_node_exporter.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
+  datacenters = [[ .prometheus_node_exporter.datacenters | toPrettyJson ]]
   type        = "system"
   [[ if .prometheus_node_exporter.constraints ]][[ range $idx, $constraint := .prometheus_node_exporter.constraints ]]
   constraint {
@@ -45,7 +45,7 @@ job [[ template "job_name" . ]] {
       service {
         name = [[ $service.service_name | quote ]]
         port = [[ $service.service_port_label | quote ]]
-        tags = [ [[ range $idx, $tag := $service.service_tags ]][[if $idx]], [[end]][[ $tag | quote ]][[ end ]] ]
+        tags = [[ $service.service_tags | toPrettyJson ]]
 
         [[- if $service.check_enabled ]]
         check {

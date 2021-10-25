@@ -10,5 +10,5 @@
 [[- $fullArgs := prepend .nomad_autoscaler.autoscaler_agent_task.additional_cli_args "agent" -]]
 [[- if .nomad_autoscaler.autoscaler_agent_task.scaling_policy_files ]][[ $fullArgs = append $fullArgs "-policy-dir=${NOMAD_TASK_DIR}/policies" ]][[- end -]]
 [[- if .nomad_autoscaler.autoscaler_agent_task.config_files ]][[ $fullArgs = append $fullArgs "-config=${NOMAD_TASK_DIR}/config" ]][[- end -]]
-[ [[ range $idx, $arg := $fullArgs ]][[if $idx]],[[end]][[ $arg | quote ]][[ end ]] ]
+[[ $fullArgs | toPrettyJson ]]
 [[- end -]]
