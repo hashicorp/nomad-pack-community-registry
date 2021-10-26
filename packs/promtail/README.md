@@ -14,6 +14,10 @@ This pack allows passing a pre-made Promtail configuration file by setting the `
 
 If no custom configuration file is provided, a default template will be used which is configured to scrape systemd-journal logs by default. You will need to set the `client_urls` variable with a list of URL's in order for promtail to ship the logs. **Using the default configuration sets the container to be run as privileged**.
 
+## Container Privilege
+
+This container runs the Promtail task as a ***Privileged*** container.
+
 ## Variables
 
 | Name | Description | Type | Default | Required |

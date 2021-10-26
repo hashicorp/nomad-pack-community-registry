@@ -29,12 +29,6 @@ variable "version_tag" {
   default     = "latest"
 }
 
-variable "privileged" {
-  description = "Controls whether the container will be run as a privileged container"
-  type        = bool
-  default     = false
-}
-
 variable "config_file" {
   description = "Path to custom Promtail configuration file."
   type        = string
