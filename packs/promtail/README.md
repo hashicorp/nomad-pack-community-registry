@@ -20,7 +20,6 @@ If no custom configuration file is provided, a default template will be used whi
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_job_name"></a> [job\_name](#input\_job\_name) | The name to use as the job name which overrides using the pack name. | `string` | `""` | no |
-| <a name="input_service_name"></a> [service\_name](#input\_service\_name) | Name used to register the Consul Service | `string` | `"promtail"` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | The namespace where the job should be placed. | `string` | `"default"` | no |
 | <a name="input_datacenters"></a> [datacenters](#input\_datacenters) | A list of datacenters in the region which are eligible for task placement. | `list(string)` | <pre>[<br>  "dc1"<br>]</pre> | no |
 | <a name="input_region"></a> [region](#input\_region) | The region where the job should be placed. | `string` | `"global"` | no |
