@@ -21,3 +21,5 @@ This pack can be used to run [Drone][drone] server and Drone agent on your Nomad
 | server_task_resources | object                              | The resource to assign to the server task.                                 |
 | agent_task_resources  | object                              | The resource to assign to the agent task.                                  |
 | task_services         | object                              | Configuration options of the Prometheus services and checks.               |
+
+[docker_driver]: (https://www.nomadproject.io/docs/drivers/docker)
