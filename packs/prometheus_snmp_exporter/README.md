@@ -1,6 +1,7 @@
 # Prometheus SNMP exporter
 
-This pack can be used to run Prometheus SNMP exporter.
+This pack can be used to run [Prometheus SNMP exporter][prom_snmp_exporter]. It currently supports
+being run by the [Docker driver][docker_driver].
 
 ## Variables
 
@@ -80,3 +81,5 @@ The default value for this variable configures a service for the SNMP exporter a
 ```
 
 [job_constraint]: (https://www.nomadproject.io/docs/job-specification/constraint)
+[prom_snmp_exporter]: (https://github.com/prometheus/snmp_exporter)
+[docker_driver]: (https://www.nomadproject.io/docs/drivers/docker)

@@ -1,7 +1,7 @@
 [[- $vars := .prometheus_snmp_exporter -]]
 job [[ template "full_job_name" . ]] {
   region      = [[ $vars.region | quote ]]
-  datacenters = [ [[ range $idx, $dc := $vars.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
+  datacenters = [[ $vars.datacenters | toPrettyJson ]]
   namespace   = [[ $vars.namespace | quote ]]
 
   type = [[ $vars.job_type | quote ]]
@@ -45,7 +45,7 @@ job [[ template "full_job_name" . ]] {
       service {
         name = [[ $service.service_name | quote ]]
         port = [[ $service.service_port_label | quote ]]
-        tags = [ [[ range $idx, $dc := $service.service_tags ]][[if $idx]],[[end]][[ $dc | quote ]][[end]] ]
+        tags = [[ $service.service_tags | toPrettyJson ]]
         [[- if $service.check_enabled ]]
         check {
           type     = "http"
