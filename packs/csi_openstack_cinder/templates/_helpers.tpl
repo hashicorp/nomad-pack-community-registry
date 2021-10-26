@@ -16,8 +16,20 @@ region = [[ .csi_openstack_cinder.region | quote]]
 [[- end -]]
 [[- end -]]
 
+[[- define "constraints" -]]
+[[- range $idx, $constraint := . ]]
+  constraint {
+    attribute = [[ $constraint.attribute | quote ]]
+    [[ if $constraint.operator -]]
+    operator  = [[ $constraint.operator | quote ]]
+    [[ end -]]
+    value     = [[ $constraint.value | quote ]]
+  }
+[[- end ]]
+[[- end -]]
+
 [[- define "vault_config" -]]
-    [[ if .csi_openstack_cinder.vault_config.enabled ]]
+    [[ if .vault_config.enabled ]]
     vault {
       [[- if .csi_openstack_cinder.vault_config.enabled ]]
       policies      = [ [[- range $idx, $pol := .csi_openstack_cinder.vault_config.policies -]][[if $idx]], [[end]][[ $pol | quote ]][[- end -]] ]

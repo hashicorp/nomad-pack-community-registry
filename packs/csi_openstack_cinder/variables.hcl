@@ -1,8 +1,7 @@
 variable "job_name" {
   description = "The name to use as the job name which overrides using the pack name"
   type        = string
-  // If "", the pack name will be used
-  default = ""
+  default     = ""
 }
 
 variable "datacenters" {
@@ -17,22 +16,75 @@ variable "region" {
   default     = "global"
 }
 
+variable "constraints" {
+  description = "Constraints to apply to the entire job."
+  type = list(object({
+    attribute = string
+    operator  = string
+    value     = string
+  }))
+  default = [
+    {
+      attribute = "$${attr.platform.aws.placement.availability-zone}",
+      value     = "nova",
+      operator  = "",
+    },
+  ]
+}
+
+variable "job_restart_config" {
+  type = object({
+    attempts = number
+    delay    = string
+    mode     = string
+    interval = string
+  })
+  default = {
+    attempts = 5
+    delay    = "15s"
+    mode     = "delay"
+    interval = "5m"
+  }
+}
+
 variable "cloud_conf_file" {
   description = "Path to custom cloud.conf file to be mounted to the CSI containers. For reference, see https://github.com/kubernetes/cloud-provider-openstack/blob/master/docs/openstack-cloud-controller-manager/using-openstack-cloud-controller-manager.md#global"
-  type		= string
-  default = ""
+  type        = string
+  default     = ""
 }
 
 variable "csi_plugin_id" {
   description = "The ID to register the CSI plugin with."
-  type		    = string
+  type        = string
   default     = "csi-cinder"
 }
 
-variable "csi_driver_log_level" {
-  description = "Set the CSI Drivers log verbosity. From 1-5, increasing verbosity with each higher value"
-  type		    = number
-  default     = 3
+variable "version_tag" {
+  description = "The docker image version. For options, see https://hub.docker.com/r/k8scloudprovider/cinder-csi-plugin"
+  type        = string
+  default     = "latest"
+}
+
+variable "cinder_node_args" {
+  description = "Arguments passed to the Cinder CSI Node docker container"
+  type        = list(string)
+  default = [
+    "/bin/cinder-csi-plugin",
+    "-v=3",
+    "--endpoint=unix:///csi/csi.sock",
+    "--cloud-config=/etc/config/cloud.conf",
+  ]
+}
+
+variable "cinder_controller_args" {
+  description = "Arguments passed to the Cinder CSI Node docker container"
+  type        = list(string)
+  default = [
+    "/bin/cinder-csi-plugin",
+    "-v=3",
+    "--endpoint=unix:///csi/csi.sock",
+    "--cloud-config=/etc/config/cloud.conf",
+  ]
 }
 
 variable "vault_config" {

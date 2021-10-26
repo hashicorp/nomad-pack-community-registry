@@ -1,0 +1,4 @@
+[Global]
+auth-url="https://keystone.cloud.example.net:5000/v3"
+application-credential-id="f9f4aaf8-3680-11ec-89d6-0242ac110002"
+application-credential-secret="imAvwSfkjuzw2ocaieF9t9+vAGRJ3YpBdnQ/+IUeoa0="

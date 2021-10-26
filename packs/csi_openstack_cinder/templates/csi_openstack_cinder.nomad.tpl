@@ -1,19 +1,23 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [ [[ range $idx, $dc := .csi_openstack_cinder.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
+
+  datacenters = [[ .csi_openstack_cinder.datacenters | toPrettyJson ]]
+
   type = system
+
   group "nodes" {
+
     restart {
-      attempts = 5
-      delay    = "15s"
-      mode     = "delay"
-      interval = "5m"
+      attempts = [[ .csi_openstack_cinder.job_restart_config.attempts ]]
+      delay    = [[ .csi_openstack_cinder.job_restart_config.delay ]]
+      mode     = [[ .csi_openstack_cinder.job_restart_config.mode ]]
+      interval = [[ .csi_openstack_cinder.job_restart_config.interval ]]
     }
-    constraint {    
-        attribute = "${attr.platform.aws.placement.availability-zone}"
-        value     = "nova"  
-    }
-    [[ template "vault_config" . ]]
+    
+    [[ template "constraints" .csi_openstack_cinder.constraints ]]
+
+    [[- template "vault_config" .csi_openstack_cinder -]]
+
     task "cinder-node" {
       driver = "docker"
       template {
@@ -24,7 +28,8 @@ job [[ template "job_name" . ]] {
         change_mode = "restart"
       }
       config {
-        image = "docker.io/k8scloudprovider/cinder-csi-plugin:latest"
+        image = "docker.io/k8scloudprovider/cinder-csi-plugin:[[ .csi_openstack_cinder.version_tag ]]"
+
         mount {
             type     = "bind"
             target   = "/etc/config/cloud.conf"
@@ -34,13 +39,7 @@ job [[ template "job_name" . ]] {
               propagation = "rshared"
             }
           }
-
-        args = [
-          "/bin/cinder-csi-plugin",
-          "-v=[[ .csi_openstack_cinder.csi_driver_log_level ]]",
-          "--endpoint=unix:///csi/csi.sock",
-          "--cloud-config=/etc/config/cloud.conf",
-        ]
+        args = [[ .csi_openstack_cinder.cinder_node_args | toPrettyJson ]]
         privileged = true
       }
 
@@ -60,7 +59,7 @@ job [[ template "job_name" . ]] {
         change_mode = "restart"
       }
       config {
-        image = "docker.io/k8scloudprovider/cinder-csi-plugin:latest"
+        image = "docker.io/k8scloudprovider/cinder-csi-plugin:[[ .csi_openstack_cinder.version_tag ]]"
         mount {
             type     = "bind"
             target   = "/etc/config/cloud.conf"
@@ -71,12 +70,8 @@ job [[ template "job_name" . ]] {
             }
           }
 
-        args = [
-          "/bin/cinder-csi-plugin",
-          "-v=[[ .csi_openstack_cinder.csi_driver_log_level ]]",
-          "--endpoint=unix:///csi/csi.sock",
-          "--cloud-config=/etc/config/cloud.conf",
-        ]
+        args = [[ .csi_openstack_cinder.cinder_node_args | toPrettyJson ]]
+
       }
 
       csi_plugin {
