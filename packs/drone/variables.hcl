@@ -136,7 +136,7 @@ variable "task_services" {
   }))
   default = [{
     service_port_label = "drone-server",
-    service_name       = "drone-server",
+    service_name       = "drone",
     service_tags       = [],
     check_interval     = "3s",
     check_timeout      = "1s",
