@@ -57,9 +57,12 @@ job [[ template "job_name" . ]] {
 
       config {
         image = [[.wordpress.mariadb_task_image | quote]]
-        volumes = [
-          "[[.wordpress.mariadb_task_volume_path]]:/var/lib/mysql",
-        ]
+      }
+      
+      volume_mount {
+        volume      = "mariadb"
+        destination = "/var/lib/mysql"
+        read_only   = false
       }
 
       [[- $mariadb_task_env_vars_length := len .wordpress.mariadb_task_env_vars ]]
