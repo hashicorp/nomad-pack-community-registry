@@ -1,7 +1,7 @@
 job [[ template "job_name" . ]] {
 
   [[ template "region" . ]]
-  datacenters = [ [[ range $idx, $dc := .promtail.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
+  datacenters = [[ .promtail.datacenters | toPrettyJson ]]
   namespace   = [[ .promtail.namespace | quote ]]
   type        = "system"
   
