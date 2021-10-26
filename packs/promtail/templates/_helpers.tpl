@@ -68,7 +68,7 @@ region = [[ .promtail.region | quote]]
     service {
       name = [[ $service.service_name | quote ]]
       port = [[ $service.service_port_label | quote ]]
-      tags = [ [[- range $idx, $dc := $service.service_tags ]][[if $idx]],[[end]][[ $dc | quote ]][[ end -]] ]
+      tags = [[ $service.service_tags | toPrettyJson ]]
       [[- if gt (len $service.upstreams) 0 ]] 
       connect {
         sidecar_service {
