@@ -34,7 +34,7 @@ job [[ template "job_name" . ]] {
       config {
         image = "grafana/promtail:[[ .promtail.version_tag ]]"
         privileged = [[ if or (eq .promtail.config_file "") (.promtail.privileged) ]]true[[ else ]]false[[ end ]]
-        args = [ [[ range $idx, $dc := .promtail.container_args ]][[if $idx]], [[end]][[ $dc | quote ]][[ end ]] ]
+        args = [[ .promtail.container_args | toPrettyJson ]]
 
         mount {
           type = "bind"
