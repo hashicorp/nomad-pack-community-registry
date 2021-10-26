@@ -4,11 +4,6 @@ variable "job_name" {
   default     = ""
 }
 
-variable "service_name" {
-  description = "Name used to register the Consul Service"
-  type        = string
-  default     = "promtail"
-}
 
 variable "namespace" {
   description = "The namespace where the job should be placed."
