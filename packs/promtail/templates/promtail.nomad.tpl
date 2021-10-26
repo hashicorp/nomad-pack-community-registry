@@ -27,7 +27,7 @@ job [[ template "job_name" . ]] {
       template {
         destination = "local/promtail-config.yaml"
         data = <<-EOT
-        [[ template "promtail_config" . ]]
+[[ template "promtail_config" . ]]
         EOT
       }
 
