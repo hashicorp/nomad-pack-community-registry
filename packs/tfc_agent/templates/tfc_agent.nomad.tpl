@@ -38,6 +38,9 @@ job [[ template "job_name" . ]] {
         memory = [[ .tfc_agent.resources.memory ]]
       }
 
+      # Allow the tfc-agent to drain its own work gracefully when asked to
+      # shut down. Draining tfc-agent work may include waiting for a Terraform
+      # plan or apply operation to finish, thus the generous window.
       kill_timeout = "2h"
     }
   }
