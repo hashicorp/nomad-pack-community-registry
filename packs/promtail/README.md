@@ -8,7 +8,6 @@ This pack deploys Promtail as a Nomad [System Job](https://www.nomadproject.io/d
 
 This pack requires Linux clients to run properly.
 
-
 ## Configuration
 
 This pack allows passing a pre-made Promtail configuration file by setting the `config_file` variable to a filepath relative to the directory the `nomad-pack` command is being called from. If the custom config file being used will require the promtail container to rune as a privileged container, you must set the `privileged_container` variable to `true`.
