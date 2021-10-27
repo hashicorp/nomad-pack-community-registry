@@ -1,4 +1,23 @@
-Nginx successfully deployed.
+Nomad Ingress Nginx successfully deployed.
 
-See the Load Balancing with Nginx tutorial for more information:
-https://learn.hashicorp.com/tutorials/nomad/load-balancing-nginx
+Define service meta values or tags to start using it.
+
+    service {
+      name = "webapp"
+      port = "http"
+
+      tags = [
+        "nomad_ingress_enabled=true",
+        "nomad_ingress_hostname=webapp.example.com",
+      ]
+    }
+
+    service {
+      name = "webapp"
+      port = "http"
+
+      meta {
+        nomad_ingress_enabled  = true
+        nomad_ingress_hostname = "webapp.example.com"
+      }
+    }
