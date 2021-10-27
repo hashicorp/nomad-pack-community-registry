@@ -1,6 +1,6 @@
 app {
-  url    = "https://www.nomadproject.io/"
-  author = "HashiCorp Nomad Team"
+  url    = "https://www.nginx.com/"
+  author = "F5 Networks"
 }
 
 pack {

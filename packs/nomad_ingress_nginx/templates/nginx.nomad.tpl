@@ -1,14 +1,9 @@
 job "[[template "job_name" .]]" {
-  region = "[[.nomad_ingress_nginx.region]]"
+  type = "[[.nomad_ingress_nginx.job_type]]"
 
-  datacenters = [
-    [[- range .nomad_ingress_nginx.datacenters]]
-    "[[.]]",
-    [[- end]]
-  ]
-
-  namespace = "[[.nomad_ingress_nginx.namespace]]"
-  type      = "[[.nomad_ingress_nginx.job_type]]"
+  region      = "[[.nomad_ingress_nginx.region]]"
+  datacenters = [[.nomad_ingress_nginx.datacenters | toPrettyJson]]
+  namespace   = "[[.nomad_ingress_nginx.namespace]]"
 
   constraint {
     attribute = "${attr.consul.version}"
@@ -30,7 +25,7 @@ job "[[template "job_name" .]]" {
       port "[[.name]]" {
         static = [[.port]]
         [[- if .host_network]]
-        host_network = [[.nomad_ingress_nginx.http_port_host_network]]
+        host_network = "[[.host_network]]"
         [[- end]]
       }
       [[end]]

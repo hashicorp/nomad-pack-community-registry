@@ -1,6 +1,6 @@
 # Nomad Ingress Nginx
 
-This pack deploys an Ngix reverse proxy that is automatically configured to
+This pack deploys an Nginx reverse proxy that is automatically configured to
 handle traffic ingress to allocations based on service meta values and tags.
 
 Jobs can register themselves in the ingress by annotating their services either
@@ -47,7 +47,6 @@ In this example, you will use the [`fake-service`] sample app, so add an entry
 like this to your `/etc/hosts` file:
 
 ```
-...
 <YOUR_IP> fake.example.com
 ```
 
