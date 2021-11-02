@@ -1,6 +1,10 @@
 # Drone
 
-This pack can be used to run [Drone][drone] server and Drone agent on your Nomad cluster. It currently supports being run by the [Docker][docker_driver], and is configured by environment variables.
+This pack can be used to run [Drone][https://drone.io] server and Drone agent on your Nomad cluster. It currently supports being run by the [Docker][https://www.nomadproject.io/docs/drivers/docker], and is configured by environment variables.
+
+In order to launch Drone, you must provide credentials to your Source Control Management provider of choice. Click on the version control
+system you want to use, such as GitHub, GitLab, or Bitbucket, in the [Drone Documentation](https://readme.drone.io/server/overview/) for
+more information on which environment variables to provide. These environment variables should be set in `drone_server_cfg` and `drone_agent_cfg`.
 
 ## Variables
 
@@ -21,5 +25,3 @@ This pack can be used to run [Drone][drone] server and Drone agent on your Nomad
 | server_task_resources | object                              | The resource to assign to the server task.                                 |
 | agent_task_resources  | object                              | The resource to assign to the agent task.                                  |
 | task_services         | object                              | Configuration options of the Prometheus services and checks.               |
-
-[docker_driver]: (https://www.nomadproject.io/docs/drivers/docker)
