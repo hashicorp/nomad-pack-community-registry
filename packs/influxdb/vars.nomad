@@ -7,4 +7,6 @@ docker_influxdb_env_vars = {
   "docker_influxdb_init_org" : "my-org",
   "docker_influxdb_init_bucket" : "my-bucket",
 }
+config_volume_name = "config_volume"
+data_volume_name = "data_volume"
 register_consul_service = true

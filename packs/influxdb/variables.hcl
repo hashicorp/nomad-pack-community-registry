@@ -50,7 +50,7 @@ variable "image_tag" {
   default     = "2.0.9"
 }
 
-variable "influxdb_task_resources" {
+variable "task_resources" {
   description = "Resources used by InfluxDB task."
   type = object({
     cpu    = number
@@ -78,6 +78,28 @@ variable "consul_service_tags" {
   description = "The consul service name for the application."
   type        = list(string)
   default     = []
+}
+
+variable "data_volume_name" {
+  description = "The name of the dedicated data volume you want InfluxDB to use."
+  type        = string
+}
+
+variable "data_volume_type" {
+  description = "The type of the dedicated data volume you want InfluxDB to use."
+  type        = string
+  default     = "host"
+}
+
+variable "config_volume_name" {
+  description = "The name of the dedicated config volume you want InfluxDB to use."
+  type        = string
+}
+
+variable "config_volume_type" {
+  description = "The type of the dedicated config volume you want InfluxDB to use."
+  type        = string
+  default     = "host"
 }
 
 variable "docker_influxdb_env_vars" {

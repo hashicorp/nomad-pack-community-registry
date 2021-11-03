@@ -47,6 +47,22 @@ job [[ template "job_name" . ]] {
     }
     [[ end ]]
 
+    [[ if .influxdb.config_volume_name ]]
+    volume "[[.influxdb.config_volume_name]]" {
+      type      = "[[.influxdb.config_volume_type]]"
+      read_only = false
+      source    = "[[.influxdb.config_volume_name]]"
+    }
+    [[end]]
+
+    [[ if .influxdb.data_volume_name ]]
+    volume "[[.influxdb.data_volume_name]]" {
+      type      = "[[.influxdb.data_volume_type]]"
+      read_only = false
+      source    = "[[.influxdb.data_volume_name]]"
+    }
+    [[end]]
+
     restart {
       attempts = 2
       interval = "30m"
@@ -54,8 +70,66 @@ job [[ template "job_name" . ]] {
       mode = "fail"
     }
 
+    [[ if .influxdb.data_volume_name ]]
+    task "chown" {
+        lifecycle {
+            hook = "prestart"
+        }
+
+        volume_mount {
+          volume      = "[[ .influxdb.data_volume_name ]]"
+          destination = "/var/lib/influxdb2"
+          read_only   = false
+        }
+
+        driver = "exec"
+        user = "root"
+        config = {
+            command = "chown"
+            args = ["-R", "1000:1000", "/var/lib/influxdb2"]
+        }
+    }
+    [[end]]
+
+    [[ if .influxdb.config_volume_name ]]
+    task "chown" {
+        lifecycle {
+            hook = "prestart"
+        }
+
+        volume_mount {
+          volume      = "[[ .influxdb.config_volume_name ]]"
+          destination = "/etc/influxdb2"
+          read_only   = false
+        }
+
+        driver = "exec"
+        user = "root"
+        config = {
+            command = "chown"
+            args = ["-R", "1000:1000", "/etc/influxdb2"]
+        }
+    }
+    [[end]]
+
     task [[ template "job_name" . ]] {
       driver = "docker"
+
+      [[ if .influxdb.data_volume_name ]]
+      volume_mount {
+        volume      = "[[ .influxdb.data_volume_name ]]"
+        destination = "/var/lib/influxdb2"
+        read_only   = false
+      }
+      [[end]]
+
+      [[ if .influxdb.config_volume_name ]]
+      volume_mount {
+        volume      = "[[ .influxdb.config_volume_name ]]"
+        destination = "/etc/influxdb2"
+        read_only   = false
+      }
+      [[end]]
 
       config {
         image = "[[ .influxdb.image_name ]]:[[ .influxdb.image_tag ]]"
@@ -69,8 +143,8 @@ job [[ template "job_name" . ]] {
       }
       [[ end ]]
       resources {
-        cpu    = [[ .influxdb.influxdb_task_resources.cpu ]]
-        memory = [[ .influxdb.influxdb_task_resources.memory ]]
+        cpu    = [[ .influxdb.task_resources.cpu ]]
+        memory = [[ .influxdb.task_resources.memory ]]
       }
     }
   }
