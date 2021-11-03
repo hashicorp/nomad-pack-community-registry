@@ -50,6 +50,14 @@ job [[ template "job_name" . ]] {
     }
     [[ end ]]
 
+    [[ if .jenkins.volume_name ]]
+    volume "[[.jenkins.volume_name]]" {
+      type      = "[[.jenkins.volume_type]]"
+      read_only = false
+      source    = "[[.jenkins.volume_name]]"
+    }
+    [[end]]
+
     restart {
       attempts = 2
       interval = "30m"
@@ -57,14 +65,14 @@ job [[ template "job_name" . ]] {
       mode = "fail"
     }
 
-    [[ if .jenkins.jenkins_volume ]]
+    [[ if .jenkins.volume_name ]]
     task "chown" {
         lifecycle {
             hook = "prestart"
         }
 
         volume_mount {
-          volume      = "[[ .jenkins.jenkins_volume ]]"
+          volume      = "[[ .jenkins.volume_name ]]"
           destination = "/var/jenkins_home"
           read_only   = false
         }
@@ -81,9 +89,9 @@ job [[ template "job_name" . ]] {
     task [[ template "job_name" . ]] {
       driver = "docker"
 
-      [[ if .jenkins.jenkins_volume ]]
+      [[ if .jenkins.volume_name ]]
       volume_mount {
-        volume      = "[[ .jenkins.jenkins_volume ]]"
+        volume      = "[[ .jenkins.volume_name ]]"
         destination = "/var/jenkins_home"
         read_only   = false
       }
@@ -101,8 +109,8 @@ job [[ template "job_name" . ]] {
       }
       [[ end ]]
       resources {
-        cpu    = [[ .jenkins.jenkins_task_resources.cpu ]]
-        memory = [[ .jenkins.jenkins_task_resources.memory ]]
+        cpu    = [[ .jenkins.task_resources.cpu ]]
+        memory = [[ .jenkins.task_resources.memory ]]
       }
     }
   }

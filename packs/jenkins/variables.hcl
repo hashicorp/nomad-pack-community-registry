@@ -50,7 +50,7 @@ variable "image_tag" {
   default     = "2.318"
 }
 
-variable "jenkins_task_resources" {
+variable "task_resources" {
   description = "Resources used by jenkins task."
   type = object({
     cpu    = number
@@ -80,9 +80,15 @@ variable "consul_service_tags" {
   default     = []
 }
 
-variable "jenkins_volume" {
+variable "volume_name" {
   description = "The name of the volume you want Jenkins to use."
   type        = string
+}
+
+variable "volume_type" {
+  description = "The type of the volume you want Jenkins to use."
+  type        = string
+  default     = "host"
 }
 
 variable "docker_jenkins_env_vars" {
