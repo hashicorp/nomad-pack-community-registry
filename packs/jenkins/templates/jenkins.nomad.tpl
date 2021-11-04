@@ -79,7 +79,7 @@ job [[ template "job_name" . ]] {
 
       driver = "exec"
       user = "root"
-      config = {
+      config {
           command = "chown"
           args = ["-R", "1000:1000", "/var/jenkins_home"]
       }
