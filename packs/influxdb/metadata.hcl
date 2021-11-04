@@ -1,6 +1,6 @@
 app {
-  url    = "https://github.com/hashicorp/nomad-pack"
-  author = "HashiCorp"
+  url    = "https://www.influxdata.com/"
+  author = "InfluxDB"
 }
 
 pack {

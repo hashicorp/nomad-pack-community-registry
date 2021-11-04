@@ -1,11 +1,11 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [ [[ range $idx, $dc := .influxdb.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
+  datacenters = [[ .influxdb.datacenters | toPrettyJson ]]
   type = "service"
-  [[ if .influxdb.namespace ]]
+  [[- if .influxdb.namespace ]]
   namespace   = [[ .influxdb.namespace | quote ]]
-  [[end]]
-  [[ if .influxdb.constraints ]][[ range $idx, $constraint := .influxdb.constraints ]]
+  [[- end]]
+  [[- if .influxdb.constraints ]][[ range $idx, $constraint := .influxdb.constraints ]]
   constraint {
     [[- if ne $constraint.attribute "" ]]
     attribute = [[ $constraint.attribute | quote ]]
@@ -29,7 +29,7 @@ job [[ template "job_name" . ]] {
       }
     }
 
-    [[ if .influxdb.register_consul_service ]]
+    [[- if .influxdb.register_consul_service ]]
     service {
       name = "[[ .influxdb.consul_service_name ]]"
       [[if ne (len .influxdb.consul_service_tags) 0 ]]
@@ -45,23 +45,23 @@ job [[ template "job_name" . ]] {
         timeout  = "2s"
       }
     }
-    [[ end ]]
+    [[- end ]]
 
-    [[ if .influxdb.config_volume_name ]]
+    [[- if .influxdb.config_volume_name ]]
     volume "[[.influxdb.config_volume_name]]" {
       type      = "[[.influxdb.config_volume_type]]"
       read_only = false
       source    = "[[.influxdb.config_volume_name]]"
     }
-    [[end]]
+    [[- end]]
 
-    [[ if .influxdb.data_volume_name ]]
+    [[- if .influxdb.data_volume_name ]]
     volume "[[.influxdb.data_volume_name]]" {
       type      = "[[.influxdb.data_volume_type]]"
       read_only = false
       source    = "[[.influxdb.data_volume_name]]"
     }
-    [[end]]
+    [[- end]]
 
     restart {
       attempts = 2
@@ -70,7 +70,7 @@ job [[ template "job_name" . ]] {
       mode = "fail"
     }
 
-    [[ if .influxdb.data_volume_name ]]
+    [[- if .influxdb.data_volume_name ]]
     task "chown" {
         lifecycle {
             hook = "prestart"
@@ -89,9 +89,9 @@ job [[ template "job_name" . ]] {
             args = ["-R", "1000:1000", "/var/lib/influxdb2"]
         }
     }
-    [[end]]
+    [[- end]]
 
-    [[ if .influxdb.config_volume_name ]]
+    [[- if .influxdb.config_volume_name ]]
     task "chown" {
         lifecycle {
             hook = "prestart"
@@ -110,38 +110,38 @@ job [[ template "job_name" . ]] {
             args = ["-R", "1000:1000", "/etc/influxdb2"]
         }
     }
-    [[end]]
+    [[- end]]
 
     task [[ template "job_name" . ]] {
       driver = "docker"
 
-      [[ if .influxdb.data_volume_name ]]
+      [[- if .influxdb.data_volume_name ]]
       volume_mount {
         volume      = "[[ .influxdb.data_volume_name ]]"
         destination = "/var/lib/influxdb2"
         read_only   = false
       }
-      [[end]]
+      [[- end]]
 
-      [[ if .influxdb.config_volume_name ]]
+      [[- if .influxdb.config_volume_name ]]
       volume_mount {
         volume      = "[[ .influxdb.config_volume_name ]]"
         destination = "/etc/influxdb2"
         read_only   = false
       }
-      [[end]]
+      [[- end]]
 
       config {
         image = "[[ .influxdb.image_name ]]:[[ .influxdb.image_tag ]]"
         ports = ["http"]
       }
-      [[if ne (len .influxdb.docker_influxdb_env_vars) 0 ]]
+      [[- if ne (len .influxdb.docker_influxdb_env_vars) 0 ]]
       env {
         [[ range $key, $var := .influxdb.docker_influxdb_env_vars ]]
         [[if ne (len $var) 0 ]][[ $key | upper ]] = [[ $var | quote ]][[ end ]]
         [[ end ]]
       }
-      [[ end ]]
+      [[- end ]]
       resources {
         cpu    = [[ .influxdb.task_resources.cpu ]]
         memory = [[ .influxdb.task_resources.memory ]]
