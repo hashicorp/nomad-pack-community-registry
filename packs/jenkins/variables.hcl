@@ -22,6 +22,16 @@ variable "namespace" {
   type        = string
 }
 
+variable "plugins" {
+  description = "A list of jenkins plugins to install. See https://github.com/jenkinsci/docker/blob/master/README.md#plugin-installation-manager-cli-preview-1 for more info."
+  type        = list(string)
+}
+
+variable "jasc_config" {
+  description = "Use the Jenkins as Code plugin to configure jenkins. This requires the configuration-as-code plugin to be installed."
+  type        = string
+}
+
 variable "constraints" {
   description = "Constraints to apply to the entire job."
   type = list(object({
@@ -47,7 +57,7 @@ variable "image_name" {
 variable "image_tag" {
   description = "The docker image tag."
   type        = string
-  default     = "2.318"
+  default     = "lts-jdk11"
 }
 
 variable "task_resources" {

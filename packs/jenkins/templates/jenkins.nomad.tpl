@@ -68,7 +68,8 @@ job [[ template "job_name" . ]] {
     [[- if .jenkins.volume_name ]]
     task "chown" {
       lifecycle {
-          hook = "prestart"
+        hook    = "prestart"
+        sidecar = false
       }
 
       volume_mount {
@@ -77,11 +78,49 @@ job [[ template "job_name" . ]] {
         read_only   = false
       }
 
-      driver = "exec"
-      user = "root"
+      driver = "docker"
       config {
-          command = "chown"
-          args = ["-R", "1000:1000", "/var/jenkins_home"]
+        image   = "busybox:stable"
+        command = "sh"
+        args    = ["-c", "chown -R 1000:1000 /var/jenkins_home"]
+      }
+
+      resources {
+        cpu    = 200
+        memory = 128
+      }
+    }
+    [[- end ]]
+
+    [[- if .jenkins.plugins ]]
+    task "install-plugins" {
+      driver = "docker"
+      volume_mount {
+        volume      = "[[ .jenkins.volume_name ]]"
+        destination = "/var/jenkins_home"
+        read_only   = false
+      }
+      config {
+        image   = "[[ .jenkins.image_name ]]:[[ .jenkins.image_tag ]]"
+        command = "jenkins-plugin-cli"
+        args    = ["-f", "/var/jenkins_home/plugins.txt", "--plugin-download-directory", "/var/jenkins_home/plugins/"]
+        volumes = [
+          "local/plugins.txt:/var/jenkins_home/plugins.txt",
+        ]
+      }
+    
+      lifecycle {
+        hook    = "prestart"
+        sidecar = false
+      }
+
+      template {
+        data = <<EOF
+[[ range $plugin := .jenkins.plugins ]][[ $plugin]]
+[[ end ]]
+EOF
+        destination   = "local/plugins.txt"
+        change_mode   = "noop"
       }
     }
     [[- end ]]
@@ -100,6 +139,11 @@ job [[ template "job_name" . ]] {
       config {
         image = "[[ .jenkins.image_name ]]:[[ .jenkins.image_tag ]]"
         ports = ["http","jnlp"]
+        [[- if .jenkins.jasc_config ]]
+        volumes = [
+          "local/jasc.yaml:/var/jenkins_home/jenkins.yaml",
+        ]
+        [[ end ]]
       }
       [[if ne (len .jenkins.docker_jenkins_env_vars) 0 ]]
       env {
@@ -108,6 +152,17 @@ job [[ template "job_name" . ]] {
         [[ end ]]
       }
       [[ end ]]
+
+      [[- if .jenkins.jasc_config]]
+      template {
+        data = <<EOF
+[[ .jenkins.jasc_config ]]
+EOF
+        change_mode   = "noop"
+        destination   = "local/jasc.yaml"
+      }
+      [[ end ]]
+
       resources {
         cpu    = [[ .jenkins.task_resources.cpu ]]
         memory = [[ .jenkins.task_resources.memory ]]
