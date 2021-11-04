@@ -1,11 +1,11 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [ [[ range $idx, $dc := .jenkins.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
+  datacenters = [[ .jenkins.datacenters | toPrettyJson ]]
   type = "service"
-  [[ if .jenkins.namespace ]]
+  [[- if .jenkins.namespace ]]
   namespace   = [[ .jenkins.namespace | quote ]]
-  [[end]]
-  [[ if .jenkins.constraints ]][[ range $idx, $constraint := .jenkins.constraints ]]
+  [[- end ]]
+  [[- if .jenkins.constraints ]][[ range $idx, $constraint := .jenkins.constraints ]]
   constraint {
     [[- if ne $constraint.attribute "" ]]
     attribute = [[ $constraint.attribute | quote ]]
@@ -32,12 +32,12 @@ job [[ template "job_name" . ]] {
       }
     }
 
-    [[ if .jenkins.register_consul_service ]]
+    [[- if .jenkins.register_consul_service ]]
     service {
       name = "[[ .jenkins.consul_service_name ]]"
-      [[if ne (len .jenkins.consul_service_tags) 0 ]]
-      tags = [ [[ range $idx, $tag := .jenkins.consul_service_tags ]][[if $idx]],[[end]][[ $tag | quote ]][[ end ]] ]
-      [[ end ]]
+      [[- if ne (len .jenkins.consul_service_tags) 0 ]]
+      tags = [[ .jenkins.consul_service_tags | toPrettyJson ]]
+      [[- end ]]
       port = "http"
 
       check {
@@ -48,15 +48,15 @@ job [[ template "job_name" . ]] {
         timeout  = "2s"
       }
     }
-    [[ end ]]
+    [[- end ]]
 
-    [[ if .jenkins.volume_name ]]
+    [[- if .jenkins.volume_name ]]
     volume "[[.jenkins.volume_name]]" {
       type      = "[[.jenkins.volume_type]]"
       read_only = false
       source    = "[[.jenkins.volume_name]]"
     }
-    [[end]]
+    [[- end ]]
 
     restart {
       attempts = 2
@@ -65,37 +65,37 @@ job [[ template "job_name" . ]] {
       mode = "fail"
     }
 
-    [[ if .jenkins.volume_name ]]
+    [[- if .jenkins.volume_name ]]
     task "chown" {
-        lifecycle {
-            hook = "prestart"
-        }
+      lifecycle {
+          hook = "prestart"
+      }
 
-        volume_mount {
-          volume      = "[[ .jenkins.volume_name ]]"
-          destination = "/var/jenkins_home"
-          read_only   = false
-        }
-
-        driver = "exec"
-        user = "root"
-        config = {
-            command = "chown"
-            args = ["-R", "1000:1000", "/var/jenkins_home"]
-        }
-    }
-    [[end]]
-
-    task [[ template "job_name" . ]] {
-      driver = "docker"
-
-      [[ if .jenkins.volume_name ]]
       volume_mount {
         volume      = "[[ .jenkins.volume_name ]]"
         destination = "/var/jenkins_home"
         read_only   = false
       }
-      [[end]]
+
+      driver = "exec"
+      user = "root"
+      config = {
+          command = "chown"
+          args = ["-R", "1000:1000", "/var/jenkins_home"]
+      }
+    }
+    [[- end ]]
+
+    task [[ template "job_name" . ]] {
+      driver = "docker"
+
+      [[- if .jenkins.volume_name ]]
+      volume_mount {
+        volume      = "[[ .jenkins.volume_name ]]"
+        destination = "/var/jenkins_home"
+        read_only   = false
+      }
+      [[- end ]]
 
       config {
         image = "[[ .jenkins.image_name ]]:[[ .jenkins.image_tag ]]"
