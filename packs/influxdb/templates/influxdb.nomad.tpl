@@ -74,6 +74,7 @@ job [[ template "job_name" . ]] {
     task "chown" {
         lifecycle {
             hook = "prestart"
+            sidecar = false
         }
 
         volume_mount {
@@ -82,11 +83,16 @@ job [[ template "job_name" . ]] {
           read_only   = false
         }
 
-        driver = "exec"
-        user = "root"
+        driver = "docker"
         config = {
-            command = "chown"
-            args = ["-R", "1000:1000", "/var/lib/influxdb2"]
+          image   = "busybox:stable"
+          command = "sh"
+          args    = ["-c", "chown -R 1000:1000 /var/lib/influxdb2"]
+        }
+
+        resources {
+          cpu    = 200
+          memory = 128
         }
     }
     [[- end]]
@@ -95,6 +101,7 @@ job [[ template "job_name" . ]] {
     task "chown" {
         lifecycle {
             hook = "prestart"
+            sidecar = false
         }
 
         volume_mount {
@@ -103,11 +110,17 @@ job [[ template "job_name" . ]] {
           read_only   = false
         }
 
-        driver = "exec"
+        driver = "docker"
         user = "root"
         config = {
-            command = "chown"
-            args = ["-R", "1000:1000", "/etc/influxdb2"]
+            image   = "busybox:stable"
+            command = "sh"
+            args    = ["-c", "chown -R 1000:1000 /etc/influxdb2"]
+        }
+
+        resources {
+            cpu    = 200
+            memory = 128
         }
     }
     [[- end]]
