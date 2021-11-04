@@ -80,7 +80,7 @@ job [[ template "job_name" . ]] {
 
       driver = "docker"
       config {
-        image   = "busybox:latest"
+        image   = "busybox:stable"
         command = "sh"
         args    = ["-c", "chown -R 1000:1000 /var/jenkins_home"]
       }
