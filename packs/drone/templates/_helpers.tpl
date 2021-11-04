@@ -1,0 +1,7 @@
+[[- define "full_job_name" -]]
+[[- if eq .drone.job_name "" -]]
+[[- .nomad_pack.pack.name | quote -]]
+[[- else -]]
+[[- .drone.job_name | quote -]]
+[[- end -]]
+[[- end -]]
