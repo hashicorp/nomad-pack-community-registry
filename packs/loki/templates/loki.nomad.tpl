@@ -17,6 +17,10 @@ job [[ template "job_name" . ]] {
       port "http" {
         to = [[ .loki.http_port ]]
       }
+
+      port "grpc" {
+        to = [[ .loki.grpc_port ]]
+      }
     }
 
     service {
@@ -33,12 +37,31 @@ job [[ template "job_name" . ]] {
 
       config {
         image = "grafana/loki:[[ .loki.version_tag ]]"
+        [[- if ne .loki.loki_yaml "" ]]
+        args = [
+          "--config.file=/etc/loki/config/loki.yml",
+        ]
+        volumes = [
+          "local/config:/etc/loki/config",
+        ]
+        [[- end ]]
       }
 
       resources {
         cpu    = [[ .loki.resources.cpu ]]
         memory = [[ .loki.resources.memory ]]
       }
+
+      [[- if ne .loki.loki_yaml "" ]]
+      template {
+        data = <<EOH
+[[ .loki.loki_yaml ]]
+EOH
+        change_mode   = "signal"
+        change_signal = "SIGHUP"
+        destination   = "local/config/loki.yml"
+      }
+      [[- end ]]
     }
   }
 }

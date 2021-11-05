@@ -29,6 +29,12 @@ variable "http_port" {
   default     = 3100
 }
 
+variable "grpc_port" {
+  description = "The Nomad client port that routes to the Loki."
+  type        = number
+  default     = 9095
+}
+
 variable "resources" {
   description = "The resource to assign to the Loki service task."
   type = object({
@@ -39,4 +45,10 @@ variable "resources" {
     cpu    = 200,
     memory = 256
   }
+}
+
+variable "loki_yaml" {
+  description = "The Loki configuration to pass to the task."
+  type        = string
+  default     = ""
 }
