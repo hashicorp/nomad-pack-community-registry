@@ -27,6 +27,6 @@ This pack contains all you need to deploy jenkins (version 2 by default) in Noma
 You can pass the right environment variables to Jenkins.
 An example of the `docker_jenkins_env_vars` to use is in the `vars.nomad` file.
 
-## Jenkins Nomad Cloud Workers
+## Jenkins as Code
 
-An example as to how the `nomad` plugin can be used to create and configur3e an auto-scaling pool of jenkins worker nodes is in the `vars_cloud.nomad` file.
+An example as to how the `configuration-as-code` plugin can be used to create and configure jenkins is in the `vars_jasc.nomad` file.
