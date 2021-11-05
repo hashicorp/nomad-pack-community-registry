@@ -44,7 +44,7 @@ variable "nats_image_name" {
   default     = "docker.io/library/nats-streaming"
 }
 
-variable "basic_auth_image_name" {
+variable "auth_plugin_image_name" {
   description = "The faasd basic auth docker image name."
   type        = string
   default     = "ghcr.io/openfaas/basic-auth"
@@ -62,9 +62,9 @@ variable "queue_worker_image_name" {
   default     = "ghcr.io/openfaas/queue-worker"
 }
 
-variable "faasd_image_tag" {
+variable "faasd_version" {
   type    = string
-  default = "0.13.0"
+  default = "0.14.3"
 }
 
 variable "nats_image_tag" {
@@ -173,10 +173,10 @@ variable "register_provider_consul_service" {
   default     = false
 }
 
-variable "basic_auth_consul_service_name" {
+variable "auth_consul_service_name" {
   description = "The consul service name for the basic authentication task."
   type        = string
-  default     = "basic-auth"
+  default     = "faasd-auth"
 }
 
 variable "provider_consul_service_name" {
@@ -188,30 +188,37 @@ variable "provider_consul_service_name" {
 variable "nats_consul_service_name" {
   description = "The consul service name for the nats task."
   type        = string
-  default     = "nats"
+  default     = "faasd-nats"
 }
 
 variable "gateway_consul_service_name" {
   description = "The consul service name for the gateway task."
   type        = string
-  default     = "gateway"
+  default     = "faasd-gateway"
 }
 
-variable "faasd_monitoring_consul_service_name" {
-  description = "The consul service name for the monitoring task."
-  type        = string
-  default     = "faasd-monitoring"
+variable "consul_service_tags" {
+  description = "The consul service name for the application."
+  type        = list(string)
+  default     = []
 }
 
-variable "volume_name" {
-  description = "The name of the volume you want faasd to use."
-  type        = string
+variable "dns_servers" {
+  description = "The dns server(s) you want faasd service resolve names to"
+  type        = list(string)
+  default     = []
 }
 
-variable "volume_type" {
-  description = "The type of the volume you want faasd to use."
-  type        = string
-  default     = "host"
+variable "basic_auth_user" {
+  description = "Username for Faasd gateway authentication"
+  type = string
+  default = "admin"
+}
+
+variable "basic_auth_password" {
+  description = "Password for Faasd gateway authentication"
+  type = string
+  default = "password"
 }
 
 variable "docker_faasd_env_vars" {
