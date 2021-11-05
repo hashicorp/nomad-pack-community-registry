@@ -162,11 +162,6 @@ variable "register_gateway_consul_service" {
   type        = bool
   default     = false
 }
-variable "register_monitoring_consul_service" {
-  description = "If you want to register a consul service for the monitoring task."
-  type        = bool
-  default     = false
-}
 variable "register_provider_consul_service" {
   description = "If you want to register a consul service for the provider task."
   type        = bool
