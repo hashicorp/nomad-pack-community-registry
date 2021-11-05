@@ -32,7 +32,7 @@ variable "constraints" {
   default = [
     {
       attribute = "$${attr.kernel.name}",
-      value     = "(linux|darwin)",
+      value     = "linux",
       operator  = "regexp",
     },
   ]
