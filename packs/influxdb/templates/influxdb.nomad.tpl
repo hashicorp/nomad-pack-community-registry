@@ -84,7 +84,7 @@ job [[ template "job_name" . ]] {
         }
 
         driver = "docker"
-        config = {
+        config {
           image   = "busybox:stable"
           command = "sh"
           args    = ["-c", "chown -R 1000:1000 /var/lib/influxdb2"]
@@ -112,7 +112,7 @@ job [[ template "job_name" . ]] {
 
         driver = "docker"
         user = "root"
-        config = {
+        config {
             image   = "busybox:stable"
             command = "sh"
             args    = ["-c", "chown -R 1000:1000 /etc/influxdb2"]
