@@ -143,7 +143,7 @@ job [[ template "job_name" . ]] {
       mode     = "delay"
     }
 
-    task "download-faasd" {
+    task "prepare_faasd" {
       lifecycle {
         hook    = "prestart"
       }
