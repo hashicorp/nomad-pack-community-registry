@@ -68,7 +68,8 @@ job [[ template "job_name" . ]] {
     [[- if .jenkins.volume_name ]]
     task "chown" {
       lifecycle {
-          hook = "prestart"
+        hook    = "prestart"
+        sidecar = false
       }
 
       volume_mount {
@@ -77,11 +78,16 @@ job [[ template "job_name" . ]] {
         read_only   = false
       }
 
-      driver = "exec"
-      user = "root"
+      driver = "docker"
       config {
-          command = "chown"
-          args = ["-R", "1000:1000", "/var/jenkins_home"]
+        image   = "busybox:stable"
+        command = "sh"
+        args    = ["-c", "chown -R 1000:1000 /var/jenkins_home"]
+      }
+
+      resources {
+        cpu    = 200
+        memory = 128
       }
     }
     [[- end ]]
