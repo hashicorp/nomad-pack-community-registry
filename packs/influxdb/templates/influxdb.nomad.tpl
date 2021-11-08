@@ -71,7 +71,7 @@ job [[ template "job_name" . ]] {
     }
 
     [[- if .influxdb.data_volume_name ]]
-    task "chown" {
+    task "chown_data_volume" {
         lifecycle {
             hook = "prestart"
             sidecar = false
@@ -98,7 +98,7 @@ job [[ template "job_name" . ]] {
     [[- end]]
 
     [[- if .influxdb.config_volume_name ]]
-    task "chown" {
+    task "chown_config_volume" {
         lifecycle {
             hook = "prestart"
             sidecar = false
