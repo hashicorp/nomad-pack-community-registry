@@ -6,6 +6,22 @@ variable "job_name" {
   default = ""
 }
 
+variable "constraints" {
+  description = "Constraints to apply to the entire job. Docker Volumes are required due to databases."
+  type        = list(object({
+    attribute = string
+    operator  = string
+    value     = string
+  }))
+  default = [
+    {
+      attribute = "$${attr.driver.docker.volumes.enabled}",
+      value     = "true",
+      operator  = "",
+    },
+  ]
+}
+
 variable "region" {
   description = "The region where jobs will be deployed"
   type        = string

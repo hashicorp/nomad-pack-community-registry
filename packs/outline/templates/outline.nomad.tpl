@@ -3,6 +3,16 @@ job [[ template "job_name" . ]] {
   datacenters = [ [[ range $idx, $dc := .outline.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
   type = "service"
 
+  [[ if .outline.constraints ]][[ range $idx, $constraint := .outline.constraints ]]
+  constraint {
+    attribute = [[ $constraint.attribute | quote ]]
+    value     = [[ $constraint.value | quote ]]
+    [[- if ne $constraint.operator "" ]]
+    operator  = [[ $constraint.operator | quote ]]
+    [[- end ]]
+  }
+  [[- end ]][[- end ]]
+
   group "outline-postgresql" {
     count = 1
 
