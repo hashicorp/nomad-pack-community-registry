@@ -191,7 +191,7 @@ job [[ template "job_name" . ]] {
       }
     }
 
-    task "basic-auth-plugin" {
+    task "basic_auth_plugin" {
       driver = "docker"
 
       config {
@@ -258,7 +258,7 @@ job [[ template "job_name" . ]] {
       }
     }
 
-    task "queue-worker" {
+    task "queue_worker" {
       driver = "docker"
       config {
         image = "[[.faasd.queue_worker_image_name]]:[[.faasd.queue_worker_image_tag]]"
