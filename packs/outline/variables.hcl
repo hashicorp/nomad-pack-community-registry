@@ -19,6 +19,11 @@ variable "constraints" {
       value     = "true",
       operator  = "",
     },
+    {
+      attribute = "$${attr.driver.raw_exec}",
+      value     = "1",
+      operator  = "",
+    }
   ]
 }
 
