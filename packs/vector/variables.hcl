@@ -35,6 +35,11 @@ variable "constraints" {
       value     = "linux",
       operator  = "",
     },
+    {
+      attribute = "$${attr.driver.docker.volumes.enabled}",
+      value     = "true",
+      operator  = "",
+    }
   ]
 }
 

@@ -11,6 +11,18 @@ The inbuilt configuration file is configured to read from 3 sources:
 Additionally, Docker logs will be sent to the specified [Loki](https://vector.dev/docs/reference/configuration/sinks/loki/) endpoint (with support for basic authentication) and host/Nomad metrics to the specified [Prometheus](https://vector.dev/docs/reference/configuration/sinks/prometheus_remote_write/) endpoint (also with support for basic authentication).
 
 ## Requirements
+### Loki and Prometheus
+Running instances of Loki and Prometheus are required and are not deployed with this pack.
+
+Vector will collect:
+  - Docker logs: forwarding them to a running Loki instance;
+  - Host metrics: forwarding them to a running Prometheus instance.
+
+Nomad packs for [Loki](https://github.com/hashicorp/nomad-pack-community-registry/tree/main/packs/loki) and [Prometheus](https://github.com/hashicorp/nomad-pack-community-registry/tree/main/packs/prometheus) are readily available for a self-hosted solution.
+
+[Grafana Cloud](https://grafana.com/products/cloud/), Grafana Labs' managed service, is also supported by this pack with basic authentication.
+
+### Nomad
 Clients that expect to run this job require:
 - Docker volumes to be enabled within their Docker plugin stanza, due to read-only bind mounts of /proc, /sys and /var/run/docker.sock:
 ```hcl
