@@ -48,9 +48,8 @@ variable "job_restart_config" {
 }
 
 variable "cloud_conf_file" {
-  description = "Path to custom cloud.conf file to be mounted to the CSI containers. For reference, see https://github.com/kubernetes/cloud-provider-openstack/blob/master/docs/openstack-cloud-controller-manager/using-openstack-cloud-controller-manager.md#global"
+  description = "[REQUIRED] Path to custom cloud.conf file to be mounted to the CSI containers. For reference, see https://github.com/kubernetes/cloud-provider-openstack/blob/master/docs/openstack-cloud-controller-manager/using-openstack-cloud-controller-manager.md#global"
   type        = string
-  default     = ""
 }
 
 variable "csi_plugin_id" {
@@ -60,31 +59,15 @@ variable "csi_plugin_id" {
 }
 
 variable "version_tag" {
-  description = "The docker image version. For options, see https://hub.docker.com/r/k8scloudprovider/cinder-csi-plugin"
+  description = "The docker image version. For options, see https://github.com/kubernetes/cloud-provider-openstack/releases"
   type        = string
   default     = "latest"
 }
 
-variable "cinder_node_args" {
-  description = "Arguments passed to the Cinder CSI Node docker container"
-  type        = list(string)
-  default = [
-    "/bin/cinder-csi-plugin",
-    "-v=3",
-    "--endpoint=unix:///csi/csi.sock",
-    "--cloud-config=/etc/config/cloud.conf",
-  ]
-}
-
-variable "cinder_controller_args" {
-  description = "Arguments passed to the Cinder CSI Node docker container"
-  type        = list(string)
-  default = [
-    "/bin/cinder-csi-plugin",
-    "-v=3",
-    "--endpoint=unix:///csi/csi.sock",
-    "--cloud-config=/etc/config/cloud.conf",
-  ]
+variable "cinder_log_level" {
+  description = "The log level to run the csi driver at. Valid values 1 through 5"
+  type        = string
+  default     = "3"
 }
 
 variable "vault_config" {

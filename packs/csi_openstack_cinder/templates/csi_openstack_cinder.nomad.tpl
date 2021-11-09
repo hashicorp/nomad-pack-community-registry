@@ -1,22 +1,20 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-
   datacenters = [[ .csi_openstack_cinder.datacenters | toPrettyJson ]]
-
-  type = system
+  type = "system"
 
   group "nodes" {
 
     restart {
       attempts = [[ .csi_openstack_cinder.job_restart_config.attempts ]]
-      delay    = [[ .csi_openstack_cinder.job_restart_config.delay ]]
-      mode     = [[ .csi_openstack_cinder.job_restart_config.mode ]]
-      interval = [[ .csi_openstack_cinder.job_restart_config.interval ]]
+      delay    = [[ .csi_openstack_cinder.job_restart_config.delay | quote ]]
+      mode     = [[ .csi_openstack_cinder.job_restart_config.mode | quote ]]
+      interval = [[ .csi_openstack_cinder.job_restart_config.interval | quote ]]
     }
     
     [[ template "constraints" .csi_openstack_cinder.constraints ]]
 
-    [[- template "vault_config" .csi_openstack_cinder -]]
+    [[- template "vault_config" .csi_openstack_cinder ]]
 
     task "cinder-node" {
       driver = "docker"
@@ -39,7 +37,12 @@ job [[ template "job_name" . ]] {
               propagation = "rshared"
             }
           }
-        args = [[ .csi_openstack_cinder.cinder_node_args | toPrettyJson ]]
+        args = [
+          "/bin/cinder-csi-plugin",
+          "-v=[[ .csi_openstack_cinder.cinder_log_level ]]",
+          "--endpoint=unix:///csi/csi.sock",
+          "--cloud-config=/etc/config/cloud.conf",
+        ]
         privileged = true
       }
 
@@ -70,8 +73,12 @@ job [[ template "job_name" . ]] {
             }
           }
 
-        args = [[ .csi_openstack_cinder.cinder_node_args | toPrettyJson ]]
-
+        args = [
+          "/bin/cinder-csi-plugin",
+          "-v=[[ .csi_openstack_cinder.cinder_log_level ]]",
+          "--endpoint=unix:///csi/csi.sock",
+          "--cloud-config=/etc/config/cloud.conf",
+        ]
       }
 
       csi_plugin {
