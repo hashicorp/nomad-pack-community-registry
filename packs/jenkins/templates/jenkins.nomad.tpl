@@ -79,6 +79,7 @@ job [[ template "job_name" . ]] {
       }
 
       driver = "docker"
+
       config {
         image   = "busybox:stable"
         command = "sh"
