@@ -1,4 +1,4 @@
-# Grafana
+# Jaeger
 
 [Jaeger](https://www.jaegertracing.io/) is open source software for tracing transactions between distributed services. It’s used for monitoring and troubleshooting complex microservices environments.
 
