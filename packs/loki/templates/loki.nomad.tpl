@@ -2,11 +2,15 @@ job [[ template "job_name" . ]] {
   [[ template "region" . ]]
   datacenters = [[ .loki.datacenters | toPrettyJson ]]
 
-  // must have linux for network mode
+  [[ if .loki.constraints ]][[ range $idx, $constraint := .loki.constraints ]]
   constraint {
-    attribute = "${attr.kernel.name}"
-    value     = "linux"
+    attribute = [[ $constraint.attribute | quote ]]
+    value     = [[ $constraint.value | quote ]]
+    [[- if ne $constraint.operator "" ]]
+    operator  = [[ $constraint.operator | quote ]]
+    [[- end ]]
   }
+  [[- end ]][[- end ]]
 
   group "loki" {
     count = 1
