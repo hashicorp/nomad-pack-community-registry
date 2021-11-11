@@ -8,6 +8,8 @@ This pack contains all you need to deploy jenkins (version 2 by default) in Noma
 - `job_name` (string) - The name to use as the job name which overrides using the pack name.
 - `region` (string) - The region where jobs will be deployed.
 - `datacenters` (list of strings) - A list of datacenters in the region which are eligible for task placement.
+- `plugins` (list of strings) - A list of jenkins plugins to install.
+- `jasc_config` (string) - Use the Jenkins as Code plugin to configure jenkins.
 - `namespace` (string) - The namespace where the job should be placed.
 - `constraints` (string) - Constraints to apply to the entire job.
 - `image_name` (string) - The docker image name.
@@ -24,3 +26,7 @@ This pack contains all you need to deploy jenkins (version 2 by default) in Noma
 
 You can pass the right environment variables to Jenkins.
 An example of the `docker_jenkins_env_vars` to use is in the `vars.nomad` file.
+
+## Jenkins as Code
+
+An example as to how the `configuration-as-code` plugin can be used to create and configure jenkins is in the `vars_jasc.nomad` file.
