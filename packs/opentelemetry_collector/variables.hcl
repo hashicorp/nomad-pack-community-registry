@@ -20,23 +20,41 @@ variable "region" {
 variable "consul_service_name" {
   description = "The consul service you wish to load balance"
   type        = string
-  default     = "webapp"
+  default     = "telemetry"
 }
 
-variable "version_tag" {
-  description = "The docker image version. For options, see https://hub.docker.com/_/nginx"
+variable "container_registry" {
+  description = "The docker registry to pull the image from."
   type        = string
-  default     = "1.21"
+  default     = ""
 }
 
-variable "http_port" {
-  description = "The Nomad client port that routes to the Nginx. This port will be where you visit your load balanced application"
+variable "container_image_name" {
+  description = "The name of the image to pull."
+  type        = string
+  default     = "otel/opentelemetry-collector"
+}
+
+variable "container_version_tag" {
+  description = "The docker image version. For options, see https://hub.docker.com/r/otel/opentelemetry-collector"
+  type        = string
+  default     = "0.38.0"
+}
+
+variable "config_yaml_path" {
+  description = "The YAML config for the collector."
+  type        = string
+  default     = "templates/otel_config.yaml"
+}
+
+variable "otlp_port" {
+  description = "The port the collector should export on."
   type        = number
-  default     = 8082
+  default     = 4317
 }
 
 variable "resources" {
-  description = "The resource to assign to the Nginx system task that runs on every client"
+  description = "The resource to assign to the OpenTelemetry Collector system task that runs on every client"
   type = object({
     cpu    = number
     memory = number
