@@ -12,14 +12,85 @@ job [[ template "job_name" . ]] {
     count = 1
 
     network {
+      port "metrics" {
+        to = 8888
+      }
+
+      # Receivers
       port "otlp" {
-        static = [[ .opentelemetry_collector.otlp_port ]]
+        to = 4317
+      }
+
+      port "jaeger-grpc" {
+        to = 14250
+      }
+
+      port "jaeger-thrift-http" {
+        to = 14268
+      }
+
+      port "zipkin" {
+        to = 9411
+      }
+
+      # Extensions
+      port "health-check" {
+        to = 13133
+      }
+
+      port "zpages" {
+        to = 55679
       }
     }
 
     service {
-      name = "opentelemetry-collector"
+      name = "otel-collector"
+      port = "health-check"
+      tags = ["health"]
+
+      check {
+        type     = "http"
+        port     = "health-check"
+        path     = "/"
+        interval = "5s"
+        timeout  = "2s"
+      }
+    }
+
+    service {
+      name = "otel-collector"
       port = "otlp"
+      tags = ["otlp"]
+    }
+
+    service {
+      name = "otel-collector"
+      port = "jaeger-grpc"
+      tags = ["jaeger-grpc"]
+    }
+
+    service {
+      name = "otel-collector"
+      port = "jaeger-thrift-http"
+      tags = ["jaeger-thrift-http"]
+    }
+
+    service {
+      name = "otel-collector"
+      port = "zipkin"
+      tags = ["zipkin"]
+    }
+
+    service {
+      name = "otel-agent"
+      port = "metrics"
+      tags = ["metrics"]
+    }
+
+    service {
+      name = "otel-agent"
+      port = "zpages"
+      tags = ["zpages"]
     }
 
     task "opentelemetry_collector" {
@@ -27,50 +98,53 @@ job [[ template "job_name" . ]] {
 
       config {
         image   = "[[ .opentelemetry_collector.container_registry ]][[ .opentelemetry_collector.container_image_name ]]:[[ .opentelemetry_collector.container_version_tag ]]"
-        args    = [ "--config", "/etc/otel/config.yaml" ]
-        ports   = [ "otlp" ]
+        args    = [ "--config=/etc/otel/config.yaml" ]
+        ports   = [ "metrics", "otlp", "jaeger-grpc", "jaeger-thrift-http", "zipkin", "health-check", "zpages",]
         volumes = [ "local:/etc/otel" ]
       }
 
       template {
-        data          = <<-EOF
+        destination = "local/config.yaml"
+        data        = <<-EOF
+          ---
           receivers:
             otlp:
               protocols:
                 grpc:
                 http:
+            jaeger:
+              protocols:
+                grpc:
+                thrift_http:
+            zipkin: {}
 
           processors:
             batch:
-
-          exporters:
-            otlp:
-              endpoint: localhost:4317
+            memory_limiter:
+              # Same as --mem-ballast-size-mib CLI argument
+              ballast_size_mib: 683
+              # 80% of maximum memory up to 2G
+              limit_mib: 1500
+              # 25% of limit up to 2G
+              spike_limit_mib: 512
+              check_interval: 5s
 
           extensions:
-            health_check:
-            pprof:
-            zpages:
+            health_check: {}
+            zpages: {}
+
+          exporters:
+            prometheus:
+              endpoint: "localhost:8889"
+              namespace: "default"
 
           service:
-            extensions: [health_check,pprof,zpages]
+            extensions: [health_check, zpages]
             pipelines:
-              traces:
-                receivers: [otlp]
-                processors: [batch]
-                exporters: [otlp]
               metrics:
                 receivers: [otlp]
-                processors: [batch]
-                exporters: [otlp]
-              logs:
-                receivers: [otlp]
-                processors: [batch]
-                exporters: [otlp]
-        EOF
-        destination   = "local/config.yaml"
-        change_mode   = "signal"
-        change_signal = "SIGHUP"
+                exporters: [prometheus]
+          EOF
       }
 
       resources {
