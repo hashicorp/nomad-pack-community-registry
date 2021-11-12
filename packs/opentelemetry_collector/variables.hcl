@@ -47,12 +47,6 @@ variable "config_yaml_path" {
   default     = "templates/otel_config.yaml"
 }
 
-variable "otlp_port" {
-  description = "The port the collector should export on."
-  type        = number
-  default     = 4317
-}
-
 variable "resources" {
   description = "The resource to assign to the OpenTelemetry Collector system task that runs on every client"
   type = object({
