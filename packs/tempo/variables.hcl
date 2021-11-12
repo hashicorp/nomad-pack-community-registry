@@ -5,6 +5,22 @@ variable "job_name" {
   default = ""
 }
 
+variable "constraints" {
+  description = "Constraints to apply to the entire job."
+  type        = list(object({
+    attribute = string
+    operator  = string
+    value     = string
+  }))
+  default = [
+    {
+      attribute = "$${attr.kernel.name}",
+      value     = "linux",
+      operator  = "",
+    },
+  ]
+}
+
 variable "datacenters" {
   description = "A list of datacenters in the region which are eligible for task placement."
   type        = list(string)
