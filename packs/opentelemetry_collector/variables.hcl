@@ -41,10 +41,49 @@ variable "container_version_tag" {
   default     = "0.38.0"
 }
 
-variable "config_yaml_path" {
+variable "config_yaml" {
   description = "The YAML config for the collector."
   type        = string
-  default     = "templates/otel_config.yaml"
+  default     = <<-EOF
+  ---
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+        http:
+    jaeger:
+      protocols:
+        grpc:
+        thrift_http:
+    zipkin: {}
+
+  processors:
+    batch:
+    memory_limiter:
+      # Same as --mem-ballast-size-mib CLI argument
+      ballast_size_mib: 683
+      # 80% of maximum memory up to 2G
+      limit_mib: 1500
+      # 25% of limit up to 2G
+      spike_limit_mib: 512
+      check_interval: 5s
+
+  extensions:
+    health_check: {}
+    zpages: {}
+
+  exporters:
+    prometheus:
+      endpoint: "localhost:8889"
+      namespace: "default"
+
+  service:
+    extensions: [health_check, zpages]
+    pipelines:
+      metrics:
+        receivers: [otlp]
+        exporters: [prometheus]
+  EOF
 }
 
 variable "resources" {
