@@ -1,6 +1,8 @@
 # This example configures a basic OTel Collector to receive traces over OTLP or Jager, and ships them
 # to a OTLP endpoint
 
+job_type = "service"
+
 task_config = {
   image   = "otel/opentelemetry-collector-contrib"
   version = "0.38.0"
