@@ -1,6 +1,6 @@
 app {
   url = "https://opentelemetry.io/docs/collector/"
-  author = "Inuits"
+  author = "Bryan Honof <bjth@inuits.eu>"
 }
 
 pack {
