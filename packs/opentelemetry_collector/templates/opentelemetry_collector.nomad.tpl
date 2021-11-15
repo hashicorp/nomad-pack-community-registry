@@ -12,35 +12,7 @@ job [[ template "job_name" . ]] {
     count = 1
 
     network {
-      port "metrics" {
-        to = 8888
-      }
-
-      # Receivers
-      port "otlp" {
-        to = 4317
-      }
-
-      port "jaeger-grpc" {
-        to = 14250
-      }
-
-      port "jaeger-thrift-http" {
-        to = 14268
-      }
-
-      port "zipkin" {
-        to = 9411
-      }
-
-      # Extensions
-      port "health-check" {
-        to = 13133
-      }
-
-      port "zpages" {
-        to = 55679
-      }
+      [[ template "network_ports" . ]]
     }
 
     service {

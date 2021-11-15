@@ -41,6 +41,24 @@ variable "container_version_tag" {
   default     = "0.38.0"
 }
 
+variable "network_ports" {
+  description = "A list of maps describing the ports to open"
+  type = list(object({
+    name = string
+    port = number
+  }))
+  default = [
+    {
+      name = "otpl"
+      port = 4317
+    },
+    {
+      name = "metrics"
+      port = 8888
+    }
+  ]
+}
+
 variable "config_yaml" {
   description = "The YAML config for the collector."
   type        = string

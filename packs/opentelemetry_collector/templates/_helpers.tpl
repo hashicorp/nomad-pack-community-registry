@@ -15,3 +15,10 @@
 region = [[ .opentelemetry_collector.region | quote]]
 [[- end -]]
 [[- end -]]
+[[- define "network_ports" -]]
+[[- range .opentelemetry_collector.network_ports ]]
+port [[ .name | quote ]] {
+  to = [[ .port ]]
+}
+[[ end -]]
+[[- end -]]
