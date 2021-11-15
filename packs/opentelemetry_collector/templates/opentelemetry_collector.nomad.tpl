@@ -12,6 +12,10 @@ job [[ template "job_name" . ]] {
     count = 1
 
     network {
+      port "health-check" {
+        to = 13133
+      }
+
       [[ template "network_ports" . ]]
     }
 
@@ -44,7 +48,7 @@ job [[ template "job_name" . ]] {
       config {
         image   = "[[ .opentelemetry_collector.container_registry ]][[ .opentelemetry_collector.container_image_name ]]:[[ .opentelemetry_collector.container_version_tag ]]"
         args    = [ "--config=/etc/otel/config.yaml" ]
-        ports   = [[ template "container_ports" . ]]
+        ports   = [ "health-check",[[ template "container_ports" . ]] ]
         volumes = [ "local:/etc/otel" ]
       }
 

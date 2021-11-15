@@ -25,7 +25,7 @@ port [[ .name | quote ]] {
 [[- end -]]
 
 [[- define "container_ports" -]]
-[ [[- range .opentelemetry_collector.network_ports ]] [[ .name | quote ]],[[ end ]] ]
+[[- range .opentelemetry_collector.network_ports ]] [[ .name | quote ]],[[ end ]]
 [[- end -]]
 
 [[- define "services" -]]
