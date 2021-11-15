@@ -42,7 +42,7 @@ variable "container_version_tag" {
 }
 
 variable "network_ports" {
-  description = "A list of maps describing the ports to open"
+  description = "A list of maps describing the ports in the network stanza"
   type = list(object({
     name = string
     port = number
