@@ -69,38 +69,33 @@ variable "config_yaml" {
       protocols:
         grpc:
         http:
-    jaeger:
-      protocols:
-        grpc:
-        thrift_http:
-    zipkin: {}
 
   processors:
     batch:
-    memory_limiter:
-      # Same as --mem-ballast-size-mib CLI argument
-      ballast_size_mib: 683
-      # 80% of maximum memory up to 2G
-      limit_mib: 1500
-      # 25% of limit up to 2G
-      spike_limit_mib: 512
-      check_interval: 5s
 
   extensions:
     health_check: {}
     zpages: {}
 
   exporters:
-    prometheus:
-      endpoint: "localhost:8889"
-      namespace: "default"
+    file:
+      path: ./dump.json
 
   service:
     extensions: [health_check, zpages]
     pipelines:
       metrics:
         receivers: [otlp]
-        exporters: [prometheus]
+        processors: [batch]
+        exporters: [file]
+      traces:
+        receivers: [otlp]
+        processors: [batch]
+        exporters: [file]
+      logs:
+        receivers: [otlp]
+        processors: [batch]
+        exporters: [file]
   EOF
 }
 
