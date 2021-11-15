@@ -1,0 +1,1 @@
+alertmanager successfully deployed.
