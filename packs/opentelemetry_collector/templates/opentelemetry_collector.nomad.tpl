@@ -68,18 +68,19 @@ job [[ template "job_name" . ]] {
     task "opentelemetry_collector" {
       driver = "docker"
 
-      config {
-        image   = "[[ .opentelemetry_collector.container_registry ]][[ .opentelemetry_collector.container_image_name ]]:[[ .opentelemetry_collector.container_version_tag ]]"
-        args    = [ "--config=/etc/otel/config.yaml" ]
-        ports   = [ "metrics", "otlp", "jaeger-grpc", "jaeger-thrift-http", "zipkin", "health-check", "zpages",]
-        volumes = [ "local:/etc/otel" ]
-      }
 
       template {
         destination = "local/config.yaml"
         data        = <<-EOF
 [[ .opentelemetry_collector.config_yaml ]]
         EOF
+      }
+
+      config {
+        image   = "[[ .opentelemetry_collector.container_registry ]][[ .opentelemetry_collector.container_image_name ]]:[[ .opentelemetry_collector.container_version_tag ]]"
+        args    = [ "--config=/etc/otel/config.yaml" ]
+        ports   = [[ template "container_ports" . ]]
+        volumes = [ "local:/etc/otel" ]
       }
 
       resources {

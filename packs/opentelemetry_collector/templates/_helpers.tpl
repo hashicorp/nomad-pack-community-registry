@@ -15,6 +15,7 @@
 region = [[ .opentelemetry_collector.region | quote]]
 [[- end -]]
 [[- end -]]
+
 [[- define "network_ports" -]]
 [[- range .opentelemetry_collector.network_ports ]]
 port [[ .name | quote ]] {
@@ -22,3 +23,8 @@ port [[ .name | quote ]] {
 }
 [[ end -]]
 [[- end -]]
+
+[[- define "container_ports" -]]
+[ [[- range .opentelemetry_collector.network_ports ]] [[ .name | quote ]],[[ end ]] ]
+[[- end -]]
+
