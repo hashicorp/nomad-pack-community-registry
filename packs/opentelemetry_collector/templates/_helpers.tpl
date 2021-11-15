@@ -28,3 +28,11 @@ port [[ .name | quote ]] {
 [ [[- range .opentelemetry_collector.network_ports ]] [[ .name | quote ]],[[ end ]] ]
 [[- end -]]
 
+[[- define "services" -]]
+[[- range .opentelemetry_collector.network_ports ]]
+service {
+  port = [[ .name | quote ]]
+  tags = [ [[ .name | quote ]] ]
+}
+[[ end -]]
+[[- end -]]

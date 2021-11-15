@@ -29,45 +29,10 @@ job [[ template "job_name" . ]] {
       }
     }
 
-    service {
-      name = "otel-collector"
-      port = "otlp"
-      tags = ["otlp"]
-    }
-
-    service {
-      name = "otel-collector"
-      port = "jaeger-grpc"
-      tags = ["jaeger-grpc"]
-    }
-
-    service {
-      name = "otel-collector"
-      port = "jaeger-thrift-http"
-      tags = ["jaeger-thrift-http"]
-    }
-
-    service {
-      name = "otel-collector"
-      port = "zipkin"
-      tags = ["zipkin"]
-    }
-
-    service {
-      name = "otel-agent"
-      port = "metrics"
-      tags = ["metrics"]
-    }
-
-    service {
-      name = "otel-agent"
-      port = "zpages"
-      tags = ["zpages"]
-    }
+    [[ template "services" . ]]
 
     task "opentelemetry_collector" {
       driver = "docker"
-
 
       template {
         destination = "local/config.yaml"
