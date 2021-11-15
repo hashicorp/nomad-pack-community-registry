@@ -68,3 +68,9 @@ variable "loki_yaml" {
   type        = string
   default     = ""
 }
+
+variable "rules_yaml" {
+  description = "The Loki rules to pass to the task."
+  type        = string
+  default     = ""
+}

@@ -47,6 +47,9 @@ job [[ template "job_name" . ]] {
         ]
         volumes = [
           "local/config:/etc/loki/config",
+          [[- if ne .loki.rules_yaml "" ]]
+          "local/rules:/etc/loki/rules/default",
+          [[- end ]]
         ]
         [[- end ]]
       }
@@ -64,6 +67,17 @@ EOH
         change_mode   = "signal"
         change_signal = "SIGHUP"
         destination   = "local/config/loki.yml"
+      }
+      [[- end ]]
+
+      [[- if ne .loki.rules_yaml "" ]]
+      template {
+        data = <<EOH
+[[ .loki.rules_yaml ]]
+EOH
+        change_mode   = "signal"
+        change_signal = "SIGHUP"
+        destination   = "local/rules/rules.yaml"
       }
       [[- end ]]
     }
