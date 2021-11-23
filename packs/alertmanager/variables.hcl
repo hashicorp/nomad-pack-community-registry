@@ -8,7 +8,7 @@ variable "job_name" {
 variable "count" {
   description = "How many instances to start."
   type        = string
-  default = "1"
+  default     = "1"
 }
 
 variable "constraints" {
