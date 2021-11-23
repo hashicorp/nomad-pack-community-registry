@@ -49,7 +49,7 @@ variable "region" {
 variable "version_tag" {
   description = "The docker image version. For options, see https://hub.docker.com/r/prom/alertmanager"
   type        = string
-  default     = "latest"
+  default     = "v0.23.0"
 }
 
 variable "http_port" {
