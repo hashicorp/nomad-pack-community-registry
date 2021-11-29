@@ -33,7 +33,7 @@ variable "update" {
     progress_deadline = string
     auto_revert       = bool
   })
-  default = {
+  default     = {
     min_healthy_time  = "10s",
     healthy_deadline  = "5m",
     progress_deadline = "10m",
@@ -73,19 +73,19 @@ variable "consul_service_port" {
 
 variable "consul_tags" {
   description = "Tags to use for job"
-  type = list(string)
-  default = [
+  type        = list(string)
+  default     = [
     "database"
   ]
 }
 
 variable "network" {
   description = "Job network specifications"
-  type = list(object({
+  type        = list(object({
     name = string
     port = number
   }))
-  default = [{
+  default     = [{
     name = "db"
     port = 6379
   }]
@@ -126,11 +126,11 @@ variable "image" {
 
 variable "resources" {
   description = "Resources to assign this job"
-  type = object({
+  type        = object({
     cpu    = number
     memory = number
   })
-  default = {
+  default     = {
     cpu    = 500,
     memory = 500
   }
@@ -139,8 +139,8 @@ variable "resources" {
 // Redis.conf Configuration Variables
 variable "conf_bind_addrs" {
   description = "What addresses to bind Redis"
-  type = list(string)
-  default = [
+  type        = list(string)
+  default     = [
     "127.0.0.1",
     "-::1",
   ]
@@ -148,12 +148,12 @@ variable "conf_bind_addrs" {
 
 variable "conf_tcp_timeout" {
   description = "Client idle timeout -- Default (0) to disable"
-  type = number
-  default = 0
+  type        = number
+  default     = 0
 }
 
 variable "conf_logfile_path" {
   description = "Path of log file"
-  type = string
-  default = ""
+  type        = string
+  default     = ""
 }

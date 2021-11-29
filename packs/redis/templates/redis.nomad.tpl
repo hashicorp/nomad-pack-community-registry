@@ -1,7 +1,7 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
   datacenters = [ [[ range $idx, $dc := .redis.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
-  type = "service"
+  type        = "service"
 
   group "redis" {
     count = [[ .redis.app_count ]]
@@ -55,8 +55,8 @@ job [[ template "job_name" . ]] {
     restart {
       attempts = [[ .redis.restart_attempts ]]
       interval = "30m"
-      delay = "15s"
-      mode = "fail"
+      delay    = "15s"
+      mode     = "fail"
     }
 
     task "redis" {
