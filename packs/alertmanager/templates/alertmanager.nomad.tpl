@@ -16,16 +16,36 @@ job [[ template "job_name" . ]] {
     count = [[ .alertmanager.count ]]
 
     network {
-      mode = "bridge"
-
-      port "http" {
-        to = [[ .alertmanager.http_port ]]
+      mode = [[ .alertmanager.alertmanager_group_network.mode | quote ]]
+      [[- range $label, $to := .alertmanager.alertmanager_group_network.ports ]]
+      port [[ $label | quote ]] {
+        to = [[ $to ]]
       }
+      [[- end ]]
+    }
 
-      port "cluster" {
-        to = [[ .alertmanager.cluster_port ]]
+    [[- if .alertmanager.alertmanager_task_services ]]
+    [[- range $idx, $service := .alertmanager.alertmanager_task_services ]]
+    service {
+      name = [[ $service.service_name | quote ]]
+      port = [[ $service.service_port_label | quote ]]
+      tags = [[ $service.service_tags | toPrettyJson ]]
+
+      [[ if $service.connect_enabled ]]
+      connect {
+        sidecar_service {}
+      }
+      [[ end ]]
+
+      check {
+        type     = "http"
+        path     = [[ $service.check_path | quote ]]
+        interval = [[ $service.check_interval | quote ]]
+        timeout  = [[ $service.check_timeout | quote ]]
       }
     }
+    [[- end ]]
+    [[- end ]]
 
     [[ if .alertmanager.register_consul_service ]]
     service {

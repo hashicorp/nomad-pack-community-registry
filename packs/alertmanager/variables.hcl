@@ -34,6 +34,20 @@ variable "container_args" {
   ]
 }
 
+variable "alertmanager_group_network" {
+  description = "The node exporter network configuration options."
+  type        = object({
+    mode  = string
+    ports = map(number)
+  })
+  default = {
+    mode  = "bridge",
+    ports = {
+      "http" = 9093,
+    },
+  }
+}
+
 variable "datacenters" {
   description = "A list of datacenters in the region which are eligible for task placement."
   type        = list(string)
@@ -52,18 +66,6 @@ variable "version_tag" {
   default     = "v0.23.0"
 }
 
-variable "http_port" {
-  description = "The Nomad client port that routes to the alertmanager."
-  type        = number
-  default     = 9093
-}
-
-variable "cluster_port" {
-  description = "The Nomad client port that routes to the alertmanager."
-  type        = number
-  default     = 9094
-}
-
 variable "resources" {
   description = "The resource to assign to the alertmanager service task."
   type = object({
@@ -76,37 +78,28 @@ variable "resources" {
   }
 }
 
-variable "register_consul_service" {
-  description = "If you want to register a consul service for the job"
-  type        = bool
-  default     = true
-}
-
-variable "register_consul_connect_enabled" {
-  description = "If you want to run the consul service with connect enabled. This will only work with register_consul_service = true"
-  type        = bool
-  default     = true
-}
-
-variable "consul_service_name" {
-  description = "The consul service name for the hello-world application"
-  type        = string
-  default     = "alertmanager"
-}
-
-variable "consul_service_tags" {
-  description = "The consul service name for the hello-world application"
-  type        = list(string)
-  // defaults to integrate with Fabio or Traefik
-  // This routes at the root path "/", to route to this service from
-  // another path, change "urlprefix-/" to "urlprefix-/<PATH>" and
-  // "traefik.http.routers.http.rule=Path(`/`)" to
-  // "traefik.http.routers.http.rule=Path(`/<PATH>`)"
-  default = [
-    "urlprefix-/",
-    "traefik.enable=true",
-    "traefik.http.routers.http.rule=Path(`/`)",
-  ]
+variable "alertmanager_task_services" {
+  description = "Configuration options of the alertmanager services and checks."
+  type        = list(object({
+    service_port_label = string
+    service_name       = string
+    service_tags       = list(string)
+    check_enabled      = bool
+    check_path         = string
+    check_interval     = string
+    check_timeout      = string
+    connect_enabled    = bool
+  }))
+  default = [{
+    service_port_label = "http",
+    service_name       = "alertmanager",
+    service_tags       = [],
+    check_enabled      = true,
+    check_path         = "/-/healthy",
+    check_interval     = "3s",
+    check_timeout      = "1s",
+    connect_enabled    = true,
+  }]
 }
 
 variable "alertmanager_yaml" {

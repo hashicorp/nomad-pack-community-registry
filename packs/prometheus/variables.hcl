@@ -120,19 +120,9 @@ EOF
 }
 
 variable "prometheus_task_app_rules_yaml" {
-  description = "The Prometheus configuration to pass to the task."
+  description = "Yaml configuration for the alerts to setup in prometheus."
   type        = string
-  default     = <<EOF
----
-groups:
-- name: AllInstances
-  rules:
-  - alert: PrometheusAlertmanagerE2eDeadManSwitch
-    expr: vector(1)
-    for: 0m
-    labels:
-      severity: critical
-EOF
+  default     = ""
 }
 
 variable "prometheus_task_resources" {
