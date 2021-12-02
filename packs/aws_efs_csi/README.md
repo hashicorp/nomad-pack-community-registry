@@ -13,7 +13,7 @@ be provided with access to AWS EFS through AWS IAM.
 - `region` (string "global") - The region where the job should be placed.
 - `constraints` (list(object)) - Constraints to apply to the entire job.
 - `resources` (object) - The resource to assign to the plugin task.
-- `image` (string "amazon/aws-efs-csi-driver:master") - The Docker image to run on the plugin tasks. 
+- `image` (string "amazon/aws-efs-csi-driver:master") - The Docker image to run on the plugin tasks.
 - `csi_id` (string "aws-efs") - The CSI ID to use for this plugin.
 
 ### `constraints` List of Objects
@@ -35,7 +35,7 @@ variable list of objects for the default configuration is shown below and uses a
       attribute = "$${attr.kernel.name}",
       value     = "linux",
       operator  = null,
-    }, 
+    },
     {
       attribute = "$${attr.driver.docker.privileged.enabled}",
       value     = true,
@@ -46,14 +46,14 @@ variable list of objects for the default configuration is shown below and uses a
 
 ### `resources` Object
 
--`cpu` (number 100) - Specifies the CPU required to run this task in MHz.
--`memory` (number 128) - Specifies the memory required in MB.
+- `cpu` (number 100) - Specifies the CPU required to run this task in MHz.
+- `memory` (number 128) - Specifies the memory required in MB.
 
 
 ## Volume creation example
-The plugin currently only by creating new access points to existing EFS file systems. So you'll first have 
-to provision a new EFS file system. The capacity in the volume spec is not used, but is required by the 
-CSI Volume API. 
+The plugin currently only by creating new access points to existing EFS file systems. So you'll first have
+to provision a new EFS file system. The capacity in the volume spec is not used, but is required by the
+CSI Volume API.
 
 #### **`volume.hcl`**
 ```hcl
