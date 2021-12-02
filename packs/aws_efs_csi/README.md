@@ -18,7 +18,7 @@ be provided with access to AWS EFS through AWS IAM.
 
 ### `constraints` List of Objects
 
-[Nomad job specification constraints][job_constraint] allows restricting the set of eligible nodes
+[Nomad job specification constraints](https://www.nomadproject.io/docs/job-specification/constraint) allows restricting the set of eligible nodes
 on node task will run.
 
 - `attribute` (string) - Specifies the name or reference of the attribute to examine for the
