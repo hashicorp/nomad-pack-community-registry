@@ -43,6 +43,11 @@ variable list of objects for the default configuration is shown below and uses a
     }
 ]
 ```
+Below is also an example of how to pass `constraints` to the CLI with with the -var argument.
+```bash
+nomad-pack run -var 'constraints=[{"attribute":"$${meta.my_custom_value}","operator":">","value":"3"}]' packs/aws_efs_csi
+```
+When setting the `constrains` variable manually its default value will be overriden.
 
 ### `resources` Object
 
