@@ -28,7 +28,7 @@ on node task will run.
   operation.
 
 By default the job will run on hosts running linux and having Docker privileged mode enabled. The HCL
-variable list of objects is shown below and uses a double dollar sign for escaping:
+variable list of objects for the default configuration is shown below and uses a double dollar sign for escaping:
 ```hcl
 [
     {
