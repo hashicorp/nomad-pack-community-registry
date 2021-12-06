@@ -1,6 +1,6 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .boundary.datacenters ]]
+  datacenters = [[ .postgres.datacenters ]]
   group "postgres" {
     network {
       port "postgres" {
