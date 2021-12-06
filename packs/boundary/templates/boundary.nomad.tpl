@@ -19,6 +19,8 @@ job [[ template "job_name" . ]] {
     }
 
     task "boundary" {
+      driver = "docker"
+      
       config {
         image = "hashicorp/boundary"
       }

@@ -8,6 +8,8 @@ job [[ template "job_name" . ]] {
       }
     }
     task "postgres" {
+      driver = "docker"
+      
       config {
         image = "postgres"
       }
