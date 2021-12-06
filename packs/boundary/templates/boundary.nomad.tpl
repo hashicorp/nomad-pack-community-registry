@@ -1,6 +1,6 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .boundary.datacenters ]]
+  datacenters = [[ .boundary.datacenters | toPrettyJson ]]
   group "boundary_controller" {
     count = [[ .boundary.controller_count ]]
     network {
@@ -20,7 +20,7 @@ job [[ template "job_name" . ]] {
 
     task "boundary" {
       driver = "docker"
-      
+
       config {
         image = "hashicorp/boundary"
       }
