@@ -1,4 +1,5 @@
 app {
+  url    = "https://www.postgresql.org/"
   author = "paladin-devops"
 }
 

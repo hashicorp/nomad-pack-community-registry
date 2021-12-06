@@ -1,4 +1,5 @@
 app {
+  url    = "https://www.boundaryproject.io/"
   author = "paladin-devops"
 }
 
