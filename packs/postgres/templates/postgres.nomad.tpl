@@ -16,8 +16,8 @@ job [[ template "job_name" . ]] {
         env         = true
         destination = "secrets/config.env"
         data        = <<EOF
-POSTGRES_USER=[[ postgres.username ]]
-POSTGRES_PASSWORD=[[ postgres.password ]]
+POSTGRES_USER=[[ .postgres.username ]]
+POSTGRES_PASSWORD=[[ .postgres.password ]]
 EOF
       }
     }
