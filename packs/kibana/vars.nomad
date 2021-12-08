@@ -8,6 +8,5 @@ docker_kibana_env_vars = {
   "xpack_security_enabled" = "false",
 }
 config_volume_name = "kibana_config"
-data_volume_name = "kibana_data"
 kibana_keystore_name = "keystore"
 register_consul_service = true

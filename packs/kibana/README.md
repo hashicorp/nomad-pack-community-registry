@@ -17,9 +17,7 @@ This pack contains all you need to deploy Kibana (version 2 by default) in Nomad
 - `consul_service_name` (string) - The consul service name for the Kibana application
 - `consul_service_tags` (list of string) - The consul service name for the Kibana application
 - `config_volume_name` (string) - The name of the configuration dedicated volume you want Kibana to use
-- `data_volume_name` (string) - The name of the data dedicated volume you want Kibana to use
 - `config_volume_type` (string) - The type of the configuration dedicated volume you want Kibana to use
-- `data_volume_type` (string) - The type of the data dedicated volume you want Kibana to use
 - `kibana_keystore_name` (string) - The name of the file to persist Kibana secure settings
 - `docker_kibana_env_vars` (map of string) - Environment variables to pass to Docker container
 
