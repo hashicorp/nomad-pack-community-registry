@@ -22,6 +22,8 @@ This pack makes use of two files stored in the Task's local volume; `rabbitmq.co
 | `extra_conf` | no | `""` | Any extra configuration for the `rabbitmq.conf` file. See [Configuration](https://www.rabbitmq.com/configure.html) |
 | `port_amqp` | no | `0` | Setting to `0` causes a random port to be assigned.  `5671` is the default port RabbitMQ uses. |
 | `port_ui` | no | `0` | Setting to `0` causes a random port to be assigned |
+| `port_discovery` | no | `4369` | The port RabbitMQ uses for node discovery.  Cannot be dynamically assigned. |
+| `port_clustering` | no | `25672` | The port RabbitMQ uses for clustering.  Cannot be dynamically assigned. |
 | `pki_vault_enabled` | no | `true`  |
 | `pki_vault_domain` | yes | `""`  | e.g. `nomad.company.internal` |
 | `pki_vault_secret_path` | no |  `"pki/issue/rabbit"` |

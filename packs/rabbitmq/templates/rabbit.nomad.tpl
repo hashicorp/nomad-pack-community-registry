@@ -32,12 +32,12 @@ job [[ template "job_name" . ]] {
         [[- template "port" .rabbitmq.port_ui ]]
       }
       port "discovery" {
-        to = 4369
-        static = 4369
+        to     = [[ .rabbitmq.port_discovery ]]
+        static = [[ .rabbitmq.port_discovery ]]
       }
       port "clustering" {
-        to = 25672
-        static = 25672
+        to     = [[ .rabbitmq.port_clustering ]]
+        static = [[ .rabbitmq.port_clustering ]]
       }
     }
 
@@ -63,9 +63,11 @@ job [[ template "job_name" . ]] {
       }
 
       env {
-        CONSUL_HOST     = "${attr.unique.network.ip-address}"
-        CONSUL_SVC_PORT = "${NOMAD_HOST_PORT_amqp}"
-        CONSUL_SVC_TAGS = "amqp"
+        CONSUL_HOST        = "${attr.unique.network.ip-address}"
+        CONSUL_SVC_PORT    = "${NOMAD_HOST_PORT_amqp}"
+        CONSUL_SVC_TAGS    = "amqp"
+        ERL_EPMD_PORT      = "[[ .rabbitmq.port_discovery ]]"
+        RABBITMQ_DIST_PORT = "[[ .rabbitmq.port_clustering ]]"
       }
 
       template {

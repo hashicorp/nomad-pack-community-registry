@@ -75,6 +75,18 @@ variable "port_ui" {
   default     = 0
 }
 
+variable "port_discovery" {
+  description = "The port RabbitMQ uses for node discovery.  Cannot be dynamically assigned."
+  type        = number
+  default     = 4369
+}
+
+variable "port_clustering" {
+  description = "The port RabbitMQ uses for clustering.  Cannot be dynamically assigned."
+  type        = number
+  default     = 25672
+}
+
 
 // ------------------------------------------------------------------------- //
 variable "pki_vault_enabled" {
