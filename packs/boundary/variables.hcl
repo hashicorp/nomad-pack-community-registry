@@ -18,7 +18,22 @@ variable "region" {
 }
 
 variable "controller_count" {
-    description = "Number of Boundary Controller instances to deploy
+    description = "Number of Boundary Controller instances to deploy"
     type        = number
     default     = 3
+}
+
+variable "postgres_address" {
+  description = "Address of Postgres database"
+  type        = string
+}
+
+variable "postgres_username" {
+  description = "Username with which to authenticate to Postgres"
+  type        = string
+}
+
+variable "postgres_password" {
+  description = "Password with which to authenticate to Postgres"
+  type        = string
 }

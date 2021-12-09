@@ -32,7 +32,7 @@ job [[ template "job_name" . ]] {
         env         = true
         destination = "secrets/config.env"
         data        = <<EOF
-BOUNDARY_POSTGRES_URL=postgresql://{{ with secret "ops/postgres" }}{{ .Data.data.username }}:{{ .Data.data.password }}{{ end }}@{{ range service "postgres" }}{{ .Address }}:{{ .Port }}{{ end }}/postgres?sslmode=disable
+BOUNDARY_POSTGRES_URL=postgresql://[[ .boundary.postgres_username ]]:[[ .boundary.postgres_password ]]@[[ .boundary.postgres_address ]]/postgres?sslmode=disable
 EOF
       }
     }
