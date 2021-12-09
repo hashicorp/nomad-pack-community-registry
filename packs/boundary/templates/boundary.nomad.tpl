@@ -23,11 +23,16 @@ job [[ template "job_name" . ]] {
 
       config {
         image = "hashicorp/boundary"
+        ports = [
+          "controller",
+          "worker",
+          "comm"
+        ]
+        cap_add = [ "IPC_LOCK" ]
       }
 
-      ##TODO: Interpolate Postgres address
-      ##TODO: Clean up pulling creds from Vault
-      ##TODO: Use service mesh instead of service discovery for Postgres address
+      ##TODO: Optionally interpolate Postgres address via Consul service discovery/service mesh
+      ##TODO: Optionally pull Postgres creds from Vault via DB secrets engine
       template {
         env         = true
         destination = "secrets/config.env"
