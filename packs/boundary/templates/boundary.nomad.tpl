@@ -28,7 +28,8 @@ job [[ template "job_name" . ]] {
           "worker",
           "comm"
         ]
-        cap_add = [ "IPC_LOCK" ]
+        #cap_add = [ "IPC_LOCK" ]
+        privileged = [[ .boundary.docker_privileged]]
       }
 
       ##TODO: Optionally interpolate Postgres address via Consul service discovery/service mesh

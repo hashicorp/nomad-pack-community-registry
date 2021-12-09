@@ -37,3 +37,9 @@ variable "postgres_password" {
   description = "Password with which to authenticate to Postgres"
   type        = string
 }
+
+variable "docker_privileged" {
+  description = "Run Boundary as a privileged Docker container"
+  type        = bool
+  default     = false
+}
