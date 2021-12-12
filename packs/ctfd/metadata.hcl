@@ -1,6 +1,6 @@
 app {
   url    = "https://ctfd.io/"
-  author = "nmaggioni"
+  author = "CTFd"
 }
 
 pack {
