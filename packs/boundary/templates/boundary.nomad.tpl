@@ -23,14 +23,13 @@ job [[ template "job_name" . ]] {
 
       config {
         image   = "hashicorp/boundary"
-        volumes = [ [[- if ne .boundary.config_file "" ]]"local/boundary.hcl:/boundary/boundary.hcl"[[- end]] ]
+        volumes = [ "local/.boundary.config_volume ]
         ports = [
           "controller",
           "worker",
           "comm"
         ]
-        ##TODO: Test IPC_LOCK again
-        cap_add = [ [[- if .boundary.cap_add_ipc_lock ]]"IPC_LOCK"[[- end ]] ]
+        ##TODO: Test with cap_add IPC_LOCK
         privileged = [[ .boundary.docker_privileged ]]
       }
 
