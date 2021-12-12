@@ -41,13 +41,13 @@ variable "postgres_password" {
 variable "docker_privileged" {
   description = "Run Boundary as a privileged Docker container"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "docker_cap_add_ipc_lock" {
   description = "Run Boundary container with IPC_LOCK capability"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "config_file" {
