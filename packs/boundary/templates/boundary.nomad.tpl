@@ -23,7 +23,10 @@ job [[ template "job_name" . ]] {
 
       config {
         image   = "hashicorp/boundary"
-        volumes = [ "local/.boundary.config_volume ]
+
+[[- if ne .boundary.config_file "" ]]
+        volumes = [ "local/boundary.hcl:/boundary/boundary.hcl" ]
+[[- end ]]
         ports = [
           "controller",
           "worker",
