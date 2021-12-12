@@ -23,7 +23,7 @@ job [[ template "job_name" . ]] {
 
       config {
         image   = "hashicorp/boundary"
-        volumes = [ "local/boundary.hcl:/boundary/boundary.hcl" ]
+        volumes = [ [[- if ne .boundary.config_file "" ]]"local/boundary.hcl:/boundary/boundary.hcl"[[- end]] ]
         ports = [
           "controller",
           "worker",
@@ -45,6 +45,7 @@ BOUNDARY_POSTGRES_URL=postgresql://[[ .boundary.postgres_username ]]:[[ .boundar
 EOF
       }
 
+[[- if ne .boundary.config_file "" ]]
       # Boundary config file
       template {
         change_mode = "restart"
@@ -53,6 +54,7 @@ EOF
 [[ .boundary.config_file ]]
 EOH
       }
+[[- end ]]
     }
   }
 }
