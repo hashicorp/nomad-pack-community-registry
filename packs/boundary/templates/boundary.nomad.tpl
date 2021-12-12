@@ -30,7 +30,7 @@ job [[ template "job_name" . ]] {
           "comm"
         ]
         ##TODO: Test IPC_LOCK again
-        #cap_add = [ "IPC_LOCK" ]
+        cap_add = [ [[- if .boundary.cap_add_ipc_lock ]]"IPC_LOCK"[[- end ]] ]
         privileged = [[ .boundary.docker_privileged ]]
       }
 
