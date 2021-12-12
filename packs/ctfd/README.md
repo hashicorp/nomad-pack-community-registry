@@ -18,6 +18,8 @@ This pack requires the Docker driver to be enabled and R/W access to the followi
 | `mariadb_volume_name` | MariaDB data storage. |
 | `redis_volume_name` | Redis data and periodic backup storage. |
 
+It also relies on an existing Consul integration for health checking and service discovery.
+
 ## Variables
 
 | Name | Type | Default value | Description |

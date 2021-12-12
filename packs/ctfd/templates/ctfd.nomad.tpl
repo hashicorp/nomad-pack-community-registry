@@ -11,6 +11,11 @@ job [[ template "job_name" . ]] {
     value     = "true",
   }
 
+  constraint {
+    attribute = "${attr.consul.version}"
+    operator  = "is_set"
+  }
+
   group [[ template "job_name" . ]] {
     count = 1
 
