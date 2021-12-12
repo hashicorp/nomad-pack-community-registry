@@ -1,7 +1,7 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
   datacenters = [[ .boundary.datacenters | toPrettyJson ]]
-  group "boundary_controller" {
+  group "boundary" {
     count = [[ .boundary.controller_count ]]
     network {
       #Clients must have access to the Controller's port (default 9200)
@@ -18,9 +18,41 @@ job [[ template "job_name" . ]] {
       }
     }
 
+    task "boundary-database-init" {
+      lifecycle {
+        hook = "prestart"
+        sidecar = false
+      }
+      driver = "docker"
+      config {
+        image   = "hashicorp/boundary"
+        command = "database"
+        args    = [
+          "init",
+          "-config",
+          "/boundary/boundary.hcl"
+        ]
+[[- if ne .boundary.config_file "" ]]
+        volumes = [ "local/boundary.hcl:/boundary/boundary.hcl" ]
+[[- end ]]
+        cap_add    = [ [[-if .boundary.docker_cap_add_ipc_lock ]]"IPC_LOCK"[[- end ]] ] 
+        privileged = [[ .boundary.docker_privileged ]]
+      }
+
+      ##TODO: Optionally interpolate Postgres address via Consul service discovery/service mesh
+      ##TODO: Optionally pull Postgres creds from Vault via DB secrets engine
+      template {
+        change_mode = "restart"
+        destination = "secrets/config.env"
+        env         = true
+        data        = <<EOF
+BOUNDARY_POSTGRES_URL=postgresql://[[ .boundary.postgres_username ]]:[[ .boundary.postgres_password ]]@[[ .boundary.postgres_address ]]/postgres?sslmode=disable
+EOF
+      }
+    }
+
     task "boundary" {
       driver = "docker"
-
       config {
         image   = "hashicorp/boundary"
 [[- if ne .boundary.config_file "" ]]
@@ -31,7 +63,7 @@ job [[ template "job_name" . ]] {
           "worker",
           "comm"
         ]
-        ##TODO: Test with cap_add IPC_LOCK
+        cap_add    = [ [[-if .boundary.docker_cap_add_ipc_lock ]]"IPC_LOCK"[[- end ]] ] 
         privileged = [[ .boundary.docker_privileged ]]
       }
 

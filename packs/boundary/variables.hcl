@@ -44,6 +44,12 @@ variable "docker_privileged" {
   default     = true
 }
 
+variable "docker_cap_add_ipc_lock" {
+  description = "Run Boundary container with IPC_LOCK capability"
+  type        = bool
+  default     = false
+}
+
 variable "config_file" {
   description = "Boundary configuration file"
   type        = string
