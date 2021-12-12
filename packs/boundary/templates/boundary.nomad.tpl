@@ -49,6 +49,18 @@ job [[ template "job_name" . ]] {
 BOUNDARY_POSTGRES_URL=postgresql://[[ .boundary.postgres_username ]]:[[ .boundary.postgres_password ]]@[[ .boundary.postgres_address ]]/postgres?sslmode=disable
 EOF
       }
+
+[[- if ne .boundary.config_file "" ]]
+      # Boundary config file
+      template {
+        change_mode = "restart"
+        destination = "local/boundary.hcl"
+        data        = <<EOH
+[[ .boundary.config_file ]]
+EOH
+      }
+[[- end ]]
+
     }
 
     task "boundary" {
