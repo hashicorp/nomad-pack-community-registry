@@ -14,3 +14,5 @@ Boundary is an intelligent proxy that creates granular, identity-based access co
 ## Dependencies
 
 This pack requires an existing, unused instance of Postgres DB to be running, and a credential for this instance to be supplied to Boundary.
+
+The Boundary container itself, which will be scheduled by Nomad, must run on a Nomad client whose Docker driver has the IPC_LOCK capability allowed on the Nomad client. Alternatively, the Docker driver could instead be allowed to run privileged Docker containers.
