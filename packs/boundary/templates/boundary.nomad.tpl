@@ -2,7 +2,7 @@ job [[ template "job_name" . ]] {
   [[ template "region" . ]]
   datacenters = [[ .boundary.datacenters | toPrettyJson ]]
   group "boundary" {
-    count = [[ .boundary.controller_count ]]
+    count = 1
     network {
       #Clients must have access to the Controller's port (default 9200)
       port "controller" {
