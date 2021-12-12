@@ -23,7 +23,6 @@ job [[ template "job_name" . ]] {
 
       config {
         image   = "hashicorp/boundary"
-
 [[- if ne .boundary.config_file "" ]]
         volumes = [ "local/boundary.hcl:/boundary/boundary.hcl" ]
 [[- end ]]
@@ -39,7 +38,7 @@ job [[ template "job_name" . ]] {
       ##TODO: Optionally interpolate Postgres address via Consul service discovery/service mesh
       ##TODO: Optionally pull Postgres creds from Vault via DB secrets engine
       template {
-        change_mode = "restart
+        change_mode = "restart"
         destination = "secrets/config.env"
         env         = true
         data        = <<EOF
