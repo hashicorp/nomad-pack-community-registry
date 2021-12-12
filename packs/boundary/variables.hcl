@@ -17,10 +17,16 @@ variable "region" {
   default     = "global"
 }
 
-variable "controller_count" {
-    description = "Number of Boundary Controller instances to deploy"
-    type        = number
-    default     = 3
+variable "resources" {
+    description = "Amount of resources to be allocated to Boundary task"
+    type        = object({
+      cpu    = number
+      memory = number
+    })
+    default     = {
+      cpu       = 500
+      memory    = 1024
+    }
 }
 
 variable "postgres_address" {

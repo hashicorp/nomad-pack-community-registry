@@ -79,6 +79,11 @@ EOH
         privileged = [[ .boundary.docker_privileged ]]
       }
 
+      resources {
+        cpu    = [[ .boundary.resources.cpu ]]
+        memory = [[ .boundary.resources.memory ]]
+      }
+
       ##TODO: Optionally interpolate Postgres address via Consul service discovery/service mesh
       ##TODO: Optionally pull Postgres creds from Vault via DB secrets engine
       template {
