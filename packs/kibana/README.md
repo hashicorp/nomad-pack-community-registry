@@ -2,7 +2,6 @@
 
 This pack contains all you need to deploy Kibana (version 2 by default) in Nomad. It uses Docker driver.
 
-
 ## Variables
 
 - `job_name` (string) - The name to use as the job name which overrides using the pack name.
@@ -20,11 +19,21 @@ This pack contains all you need to deploy Kibana (version 2 by default) in Nomad
 - `config_volume_type` (string) - The type of the configuration dedicated volume you want Kibana to use
 - `kibana_keystore_name` (string) - The name of the file to persist Kibana secure settings
 - `docker_kibana_env_vars` (map of string) - Environment variables to pass to Docker container
+- `kibana_config_file_path` (string) - Kibana configuration file path
 
-## Automated Setup
+## Automated Setup and Persisted Configuration
 
-If you pass the right environment variables to the pack, you can automatically setup Kibana.
-An example of the `docker_kibana_env_vars` to use is in the `vars.nomad` file.
+You have two options:
+
+- __Environment variables way__:
+    If you pass the right environment variables to the pack, you can automatically setup Kibana.
+    An example of the `docker_kibana_env_vars` to use is in the `vars.nomad` file.
+
+- __Configration file through volume__:
+    You can also mounth a volume to persist the configuration file that you can pass through the variable `kibana_config_file_path`.
+    You have also to set the `config_volume_name` variable that allows you to mount the volume where you can save the configuration file. Also this in `vars.nomad`.
+
+Pay attention that, if you pass environment variables to setup Kibana AND you use the configuration file volume, the docker environment variables have the precedence. 
 
 ## Persist the Kibana keystore
 

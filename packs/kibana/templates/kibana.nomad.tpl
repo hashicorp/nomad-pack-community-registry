@@ -90,6 +90,41 @@ job [[ template "job_name" . ]] {
     }
     [[- end]]
 
+    [[- if .kibana.kibana_config_file_path ]]
+    task "config_file_persist" {
+        lifecycle {
+            hook = "prestart"
+            sidecar = false
+        }
+
+        volume_mount {
+          volume      = "[[ .kibana.config_volume_name ]]"
+          destination = "/usr/share/kibana/config"
+          read_only   = false
+        }
+
+        driver = "docker"
+        user = "root"
+        config {
+            image   = "busybox:stable"
+            command = "sh"
+            args    = ["-c", "cp local/kibana.yml /usr/share/kibana/config/kibana.yml"]
+        }
+
+        template {
+          data = <<EOH
+[[ fileContents .kibana.kibana_config_file_path ]]
+EOH
+          destination = "local/kibana.yml"
+        }
+
+        resources {
+            cpu    = 200
+            memory = 128
+        }
+    }
+    [[- end]]
+
     [[- if and .kibana.kibana_keystore_name .kibana.config_volume_name ]]
     task "kibana_keystore_persist" {
         lifecycle {
@@ -120,10 +155,33 @@ job [[ template "job_name" . ]] {
     task [[ template "job_name" . ]] {
       driver = "docker"
 
+      [[- if .kibana.config_volume_name ]]
+      volume_mount {
+        volume      = "[[ .kibana.config_volume_name ]]"
+        destination = "/usr/share/kibana/config"
+        read_only   = false
+      }
+      [[- end]]
+
       config {
         image = "[[ .kibana.image_name ]]:[[ .kibana.image_tag ]]"
         ports = ["http"]
+        [[- if and .kibana.config_volume_name .kibana.kibana_config_file_path]]
+        volumes = [
+          "local/kibana.yml:/usr/share/kibana/config/kibana.yml",
+        ]
+        [[- end]]
       }
+
+      [[- if ne (len .kibana.kibana_config_file_path) 0]]
+        template {
+          data = <<EOH
+[[ fileContents .kibana.kibana_config_file_path ]]
+EOH
+          destination = "local/kibana.yml"
+        }
+      [[- end]]
+
       [[- if ne (len .kibana.docker_kibana_env_vars) 0 ]]
       env {
         [[ range $key, $var := .kibana.docker_kibana_env_vars ]]

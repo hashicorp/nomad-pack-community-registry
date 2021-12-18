@@ -102,4 +102,8 @@ variable "docker_kibana_env_vars" {
   default     = {}
 }
 
-
+variable "kibana_config_file_path" {
+  type = string
+  description = "Kibana configuration file path"
+  default = ""
+}
