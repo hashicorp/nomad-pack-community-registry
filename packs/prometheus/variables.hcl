@@ -81,6 +81,16 @@ global:
   scrape_interval: 30s
   evaluation_interval: 3s
 
+rule_files:
+  - rules.yml
+
+alerting:
+ alertmanagers:
+    - consul_sd_configs:
+      - server: {{ env "attr.unique.network.ip-address" }}:8500
+        services:
+        - alertmanager
+
 scrape_configs:
   - job_name: prometheus
     static_configs:
@@ -107,6 +117,12 @@ scrape_configs:
       services:
         - "nomad-client"
 EOF
+}
+
+variable "prometheus_task_app_rules_yaml" {
+  description = "Yaml configuration for the alerts to setup in prometheus."
+  type        = string
+  default     = ""
 }
 
 variable "prometheus_task_resources" {
