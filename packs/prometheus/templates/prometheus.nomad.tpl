@@ -47,6 +47,18 @@ EOH
       }
 [[- end ]]
 
+[[- if ne .prometheus.prometheus_task_app_rules_yaml "" ]]
+      template {
+        data = <<EOH
+[[ .prometheus.prometheus_task_app_rules_yaml ]]
+EOH
+
+        change_mode   = "signal"
+        change_signal = "SIGHUP"
+        destination   = "local/config/rules.yml"
+      }
+[[- end ]]
+
       resources {
         cpu    = [[ .prometheus.prometheus_task_resources.cpu ]]
         memory = [[ .prometheus.prometheus_task_resources.memory ]]

@@ -17,6 +17,8 @@ ways.
 - `prometheus_task_app_prometheus_yaml` (string) - The Prometheus configuration to pass to the
 task. The default value includes scrape configuration for Nomad servers, Nomad client, and
 Prometheus.
+- `prometheus_task_app_rules_yaml` (string) - Configuration for the alerts to be setup in prometheus.
+An example config is included in the alers_vars.nomad file.
 - `prometheus_task_resources` (object) - The resource to assign to the Prometheus task.
 - `prometheus_task_services` (object) - Configuration options of the Prometheus services and checks.
 
