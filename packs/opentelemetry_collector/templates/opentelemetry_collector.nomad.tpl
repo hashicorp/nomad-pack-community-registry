@@ -43,6 +43,8 @@ job [[ template "full_job_name" . ]] {
         privileged = true
         [[- end ]]
 
+        ports = [[ keys $vars.network_config.ports | toPrettyJson ]]
+
         volumes = [
           "local/otel/config.yaml:/etc/otel/config.yaml",
           [[- if $vars.privileged_mode ]]
