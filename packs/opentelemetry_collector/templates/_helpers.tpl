@@ -41,8 +41,16 @@ region = [[ .opentelemetry_collector.region | quote]]
 // it is merged with .task_config.env which will take precedence in the merge
 // in the event of a conflict
 [[- define "env_vars" -]]
+[[- $defaultEnv := (dict
+  "HOST_PROC" "/hostfs/proc"
+  "HOST_SYS" "/hostfs/sys"
+  "HOST_ETC" "/hostfs/etc"
+  "HOST_VAR" "/hostfs/var"
+  "HOST_RUN" "/hostfs/run"
+  "HOST_DEV" "/hostfs/dev"
+) -]]
     env {
-      [[- range $key, $value := mergeOverwrite (dict "HOST_PROC" "/hostfs/proc" "HOST_SYS" "/hostfs/sys" "HOST_ETC" "/hostfs/etc" "HOST_VAR" "/hostfs/far" "HOST_RUN" "/hostfs/run" "HOST_DEV" "/hostfs/dev") .opentelemetry_collector.task_config.env -]]
+      [[- range $key, $value := mergeOverwrite $defaultEnv .opentelemetry_collector.task_config.env -]]
       [[- if $key ]]
         [[ $key ]] = [[ $value | quote ]]
       [[- end ]]
