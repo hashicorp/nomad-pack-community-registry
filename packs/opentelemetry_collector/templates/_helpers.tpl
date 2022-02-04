@@ -70,7 +70,7 @@ EOH
         change_mode = [[ $tmpl.change_mode | quote ]]
         [[- end ]]
         [[- if $tmpl.change_signal ]]
-        change_mode = [[ $tmpl.change_signal | quote ]]
+        change_signal = [[ $tmpl.change_signal | quote ]]
         [[- end ]]
         [[- if $tmpl.env ]]
         env = [[ $tmpl.env ]]
