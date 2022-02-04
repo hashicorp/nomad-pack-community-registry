@@ -207,7 +207,7 @@ variable "task_services" {
     {
       service_port_label = "otlphttp"
       service_name       = "opentelemetry-collector"
-      service_tags       = []
+      service_tags       = ["otlphttp"]
       check_enabled      = false
       check_type         = "http"
       check_path         = "/"
@@ -227,7 +227,7 @@ variable "task_services" {
     {
       service_port_label = "zipkin"
       service_name       = "opentelemetry-collector"
-      service_tags       = []
+      service_tags       = ["zipkin"]
       check_enabled      = false
       check_type         = "http"
       check_path         = "/"
@@ -247,7 +247,7 @@ variable "task_services" {
     {
       service_port_label = "jaeger-grpc"
       service_name       = "opentelemetry-collector"
-      service_tags       = []
+      service_tags       = ["jaeger-grpc"]
       check_enabled      = false
       check_type         = "tcp"
       check_path         = "/"
@@ -257,7 +257,7 @@ variable "task_services" {
     {
       service_port_label = "jaeger-thrift-http"
       service_name       = "opentelemetry-collector"
-      service_tags       = []
+      service_tags       = ["jaeger-thrift-http"]
       check_enabled      = false
       check_type         = "http"
       check_path         = "/"
@@ -267,7 +267,7 @@ variable "task_services" {
     {
       service_port_label = "zpages"
       service_name       = "opentelemetry-collector"
-      service_tags       = []
+      service_tags       = ["zpages"]
       check_enabled      = false
       check_type         = "http"
       check_path         = "/"
