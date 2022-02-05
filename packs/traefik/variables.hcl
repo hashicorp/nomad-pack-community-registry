@@ -37,6 +37,7 @@ variable "traefik_group_network" {
   type        = object({
     mode  = string
     ports = map(number)
+    dns = map(list(string))
   })
   default = {
     mode  = "bridge",
@@ -44,6 +45,7 @@ variable "traefik_group_network" {
       "http" = 8080,
       "api"  = 1936,
     },
+    dns = {}
   }
 }
 

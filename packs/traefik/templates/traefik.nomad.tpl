@@ -17,6 +17,13 @@ job [[ template "job_name" . ]] {
 
     network {
       mode = [[ .traefik.traefik_group_network.mode | quote ]]
+      [[- if .traefik.traefik_group_network.dns ]]
+      dns {
+      [[- range $label, $to := .traefik.traefik_group_network.dns ]]
+          [[ $label ]] = [[ $to | toPrettyJson ]]
+      [[- end ]]
+      }
+      [[- end ]]
       [[- range $label, $to := .traefik.traefik_group_network.ports ]]
       port [[ $label | quote ]] {
         static = [[ $to ]]
