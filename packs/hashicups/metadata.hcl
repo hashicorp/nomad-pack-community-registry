@@ -5,7 +5,7 @@ app {
 
 pack {
   name = "hashicups"
-  description = "This is Hashicorp's HashiCups Demo App deployed as a Nomad Pack"
-  url = "https://github.com/tunzor/nomad-pack-test"
+  description = "HashiCups Demo coffee application."
+  url = "https://github.com/hashicorp/nomad-pack-community-registry/hashicups"
   version = "0.0.1"
 }
