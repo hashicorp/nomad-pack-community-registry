@@ -50,11 +50,6 @@ variable "postgres_password" {
   default = "password"
 }
 
-variable "db_port" {
-  description = "Postgres DB Port"
-  default = 5432
-}
-
 variable "product_api_port" {
   description = "Product API Port"
   default = 9090

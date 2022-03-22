@@ -16,7 +16,6 @@
 |`postgres_db`|`products` (string)|The Postgres database name.|
 |`postgres_user`|`postgres` (string)|The Postgres database user.|
 |`postgres_password`|`password` (string)|The Postgres database user's password.|
-|`db_port`|`5432` (number)|The Postgres database port.|
 |`product_api_port`|`9090` (number)|The products API service port.|
 |`frontend_port`|`3000` (number)|The frontend service port.|
 |`payments_api_port`|`8080` (number)|The payments API service port.|
@@ -26,7 +25,7 @@
 ## Prerequisites
 
 - Nomad cluster (a [local dev cluster](https://learn.hashicorp.com/tutorials/nomad/get-started-run) will work) with Docker available on the node(s)
-- Ability to access Nomad client on port 80
+- Ability to access Nomad client on the port defined in the `nginx_port` variable
 
 ## Docker Desktop Notes
 If you are running Nomad on your local machine with Docker Desktop, you'll need to bind the Nomad client to a non-loopback network interface so that the containers can communicate with each other.

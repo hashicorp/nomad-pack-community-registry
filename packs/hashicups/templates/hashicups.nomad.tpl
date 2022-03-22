@@ -6,7 +6,7 @@ job "hashicups" {
   group "hashicups" {
     network {
       port "db" { 
-        static = [[ .hashicups.db_port ]]
+        static = 5432
       }
       port "product-api" {
         static = [[ .hashicups.product_api_port ]]
@@ -51,8 +51,8 @@ job "hashicups" {
         ports = ["product-api"]
       }
       env {
-        DB_CONNECTION = "host=${NOMAD_IP_db} port=[[ .hashicups.db_port ]] user=[[ .hashicups.postgres_user ]] password=[[ .hashicups.postgres_password ]] dbname=[[ .hashicups.postgres_db ]] sslmode=disable"
-        BIND_ADDRESS = "0.0.0.0:[[ .hashicups.product_api_port ]]"
+        DB_CONNECTION = "host=${NOMAD_IP_db} port=${NOMAD_PORT_db} user=[[ .hashicups.postgres_user ]] password=[[ .hashicups.postgres_password ]] dbname=[[ .hashicups.postgres_db ]] sslmode=disable"
+        BIND_ADDRESS = "0.0.0.0:${NOMAD_PORT_product-api}"
       }
     }
 
@@ -64,6 +64,17 @@ job "hashicups" {
       config {
         image   = "hashicorpdemoapp/payments:[[ .hashicups.payments_version ]]"
         ports = ["payments-api"]
+        mount {
+          type   = "bind"
+          source = "local/application.properties"
+          target = "/application.properties"
+        }
+      }
+      template {
+        data = <<EOF
+server.port={{ env "NOMAD_PORT_payments-api" }}
+        EOF
+        destination = "local/application.properties"
       }
     }
     
@@ -77,9 +88,9 @@ job "hashicups" {
         ports = ["public-api"]
       }
       env {
-        BIND_ADDRESS = ":[[ .hashicups.public_api_port ]]"
-        PRODUCT_API_URI = "http://${NOMAD_ADDR_product-api}"
-        PAYMENT_API_URI = "http://${NOMAD_ADDR_payments-api}"
+        BIND_ADDRESS = ":${NOMAD_PORT_public-api}"
+        PRODUCT_API_URI = "http://${NOMAD_IP_product-api}:${NOMAD_PORT_product-api}"
+        PAYMENT_API_URI = "http://${NOMAD_IP_payments-api}:${NOMAD_PORT_payments-api}"
       }
     }
     
@@ -90,6 +101,7 @@ job "hashicups" {
       }
       env {
         NEXT_PUBLIC_PUBLIC_API_URL= "/"
+        PORT = "${NOMAD_PORT_frontend}"
       }
       config {
         image   = "hashicorpdemoapp/frontend:[[ .hashicups.frontend_version ]]"
@@ -118,7 +130,7 @@ upstream frontend_upstream {
   server {{ env "NOMAD_IP_frontend" }}:[[ .hashicups.frontend_port ]];
 }
 server {
-  listen [[ .hashicups.nginx_port ]];
+  listen {{ env "NOMAD_PORT_nginx" }};
   server_name  {{ env "NOMAD_IP_nginx" }};
   server_tokens off;
   gzip on;
