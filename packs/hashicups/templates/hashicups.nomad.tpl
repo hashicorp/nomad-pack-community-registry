@@ -1,7 +1,7 @@
 job "hashicups" {
   type   = "service"
   region = "[[ .hashicups.region ]]"
-  datacenters = [ [[ range $idx, $dc := .hashicups.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
+  datacenters = [[ .hashicups.datacenters | toStringList ]]
 
   group "hashicups" {
     network {
