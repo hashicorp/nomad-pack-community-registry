@@ -44,7 +44,7 @@ job [[ template "job_name" . ]] {
     service {
       name = "grafana"
       port = "[[ .grafana.grafana_http_port ]]"
-      tags = [[ .grafana.grafana_consul_tags | toPrettyJson ]]
+      tags = [[ .grafana.grafana_consul_tags | toStringList ]]
 
       connect {
         sidecar_service {
