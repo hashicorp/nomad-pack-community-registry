@@ -19,7 +19,7 @@ region = [[ .tfc_agent.region | quote]]
 // format the list of datacenters
 
 [[- define "datacenters" -]]
-datacenters = [[ .tfc_agent.datacenters | toPrettyJson ]]
+datacenters = [[ .tfc_agent.datacenters | toStringList ]]
 [[- end -]]
 
 // only specify a namespace when given

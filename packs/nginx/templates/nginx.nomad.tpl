@@ -1,6 +1,6 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .nginx.datacenters | toPrettyJson ]]
+  datacenters = [[ .nginx.datacenters | toStringList ]]
 
   // must have linux for network mode
   constraint {

@@ -1,6 +1,6 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .faasd.datacenters | toPrettyJson ]]
+  datacenters = [[ .faasd.datacenters | toStringList ]]
   type = "service"
   [[- if .faasd.namespace ]]
   namespace   = [[ .faasd.namespace | quote ]]
@@ -53,7 +53,7 @@ job [[ template "job_name" . ]] {
     service {
       name = "[[ .faasd.auth_consul_service_name ]]"
       [[if ne (len .faasd.consul_service_tags) 0 ]]
-      tags = [[ .faasd.consul_service_tags | toPrettyJson ]]
+      tags = [[ .faasd.consul_service_tags | toStringList ]]
       [[ end ]]
       port = "auth_http"
 
@@ -70,7 +70,7 @@ job [[ template "job_name" . ]] {
     service {
       name = "[[ .faasd.nats_consul_service_name ]]"
       [[- if ne (len .faasd.consul_service_tags) 0 ]]
-      tags = [[ .faasd.consul_service_tags | toPrettyJson ]]
+      tags = [[ .faasd.consul_service_tags | toStringList ]]
       [[- end ]]
       port = "nats_tcp_client"
 
@@ -87,7 +87,7 @@ job [[ template "job_name" . ]] {
     service {
       name = "faasd-nats-monitoring"
       [[- if ne (len .faasd.nats_consul_service_name) 0 ]]
-      tags = [[ .faasd.consul_service_tags | toPrettyJson ]]
+      tags = [[ .faasd.consul_service_tags | toStringList ]]
       [[- end ]]
       port = "nats_http_mon"
 
@@ -105,7 +105,7 @@ job [[ template "job_name" . ]] {
     service {
       name = "[[ .faasd.gateway_consul_service_name ]]"
       [[- if ne (len .faasd.consul_service_tags) 0 ]]
-      tags = [[ .faasd.consul_service_tags | toPrettyJson ]]
+      tags = [[ .faasd.consul_service_tags | toStringList ]]
       [[- end ]]
       port = "gateway_http"
 
@@ -123,7 +123,7 @@ job [[ template "job_name" . ]] {
     service {
       name = "[[ .faasd.provider_consul_service_name ]]"
       [[if ne (len .faasd.consul_service_tags) 0 ]]
-      tags = [[ .faasd.consul_service_tags | toPrettyJson ]]
+      tags = [[ .faasd.consul_service_tags | toStringList ]]
       [[ end ]]
       port = "faasd_provider_tcp"
 

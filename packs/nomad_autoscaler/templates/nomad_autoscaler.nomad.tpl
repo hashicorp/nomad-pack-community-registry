@@ -1,7 +1,7 @@
 job [[ template "full_job_name" . ]] {
 
   region      = [[ .nomad_autoscaler.region | quote ]]
-  datacenters = [[ .nomad_autoscaler.datacenters | toPrettyJson ]]
+  datacenters = [[ .nomad_autoscaler.datacenters | toStringList ]]
   namespace   = [[ .nomad_autoscaler.namespace | quote ]]
 
   group "autoscaler" {
@@ -67,7 +67,7 @@ job [[ template "full_job_name" . ]] {
       service {
         name = [[ .nomad_autoscaler.autoscaler_agent_task_service.service_name | quote ]]
         port = [[ .nomad_autoscaler.autoscaler_agent_network.autoscaler_http_port_label | quote ]]
-        tags = [[ .nomad_autoscaler.autoscaler_agent_task_service.service_tags | toPrettyJson ]]
+        tags = [[ .nomad_autoscaler.autoscaler_agent_task_service.service_tags | toStringList ]]
 
         check {
           type     = [[ .nomad_autoscaler.autoscaler_agent_network.autoscaler_http_port_label | quote ]]

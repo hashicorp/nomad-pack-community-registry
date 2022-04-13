@@ -1,6 +1,6 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .influxdb.datacenters | toPrettyJson ]]
+  datacenters = [[ .influxdb.datacenters | toStringList ]]
   type = "service"
   [[- if .influxdb.namespace ]]
   namespace   = [[ .influxdb.namespace | quote ]]

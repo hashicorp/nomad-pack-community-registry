@@ -1,7 +1,7 @@
 job [[ .aws_efs_csi.job_name | quote]] {
 
   region      = [[ .aws_efs_csi.region | quote]]
-  datacenters = [[ .aws_efs_csi.datacenters | toPrettyJson ]]
+  datacenters = [[ .aws_efs_csi.datacenters | toStringList ]]
   type        = "system"
   [[ if .aws_efs_csi.constraints ]][[ range $idx, $constraint := .aws_efs_csi.constraints ]]
   constraint {

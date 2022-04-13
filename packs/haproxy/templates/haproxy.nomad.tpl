@@ -1,6 +1,6 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .haproxy.datacenters | toPrettyJson ]]
+  datacenters = [[ .haproxy.datacenters | toStringList ]]
 
   type        = "service"
 
