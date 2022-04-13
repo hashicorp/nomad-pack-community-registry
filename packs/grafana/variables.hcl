@@ -90,6 +90,7 @@ variable "grafana_task_artifacts" {
   type = list(object({
     source   = string
     destination = string
+    mode   = string
     options = map(string)
   }))
   default = [
