@@ -1,9 +1,8 @@
-[[- define "plugin_config_file" -]]
+[[- define "plugin_config_file" ]]
+      template {
+        destination = "${NOMAD_TASK_DIR}/driver-config-file.yaml"
 
-template {
-  destination = "${NOMAD_TASK_DIR}/driver-config-file.yaml"
-
-  data = <<EOH
+        data = <<EOH
 driver: nfs-client
 instance_id:
 nfs:
@@ -14,6 +13,5 @@ nfs:
   dirPermissionsUser: [[ .my.nfs_dir_permissions_user ]]
   dirPermissionsGroup: [[ .my.nfs_dir_permissions_group ]]
 EOH
-}
-
+      }
 [[- end -]]
