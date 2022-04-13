@@ -1,7 +1,7 @@
 job [[ template "full_job_name" . ]] {
 
   region      = [[ .prometheus.region | quote ]]
-  datacenters = [[ .prometheus.datacenters | toPrettyJson ]]
+  datacenters = [[ .prometheus.datacenters | toStringList ]]
   namespace   = [[ .prometheus.namespace | quote ]]
   [[ if .prometheus.constraints ]][[ range $idx, $constraint := .prometheus.constraints ]]
   constraint {
@@ -69,7 +69,7 @@ EOH
       service {
         name = [[ $service.service_name | quote ]]
         port = [[ $service.service_port_label | quote ]]
-        tags = [[ $service.service_tags | toPrettyJson ]]
+        tags = [[ $service.service_tags | toStringList ]]
 
         check {
           type     = "http"

@@ -1,6 +1,6 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .grafana.datacenters | toPrettyJson ]]
+  datacenters = [[ .grafana.datacenters | toStringList ]]
 
   // must have linux for network mode
   constraint {

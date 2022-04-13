@@ -1,7 +1,7 @@
 job [[ template "full_job_name" . ]] {
 
   region      = [[ .drone.region | quote ]]
-  datacenters = [[ .drone.datacenters | toPrettyJson ]]
+  datacenters = [[ .drone.datacenters | toStringList ]]
   namespace   = [[ .drone.namespace | quote ]]
 
   [[ if .drone.constraints ]][[ range $idx, $constraint := .drone.constraints ]]
@@ -75,7 +75,7 @@ EOH
       service {
         name = [[ $service.service_name | quote ]]
         port = [[ $service.service_port_label | quote ]]
-        tags = [[ $service.service_tags | toPrettyJson ]]
+        tags = [[ $service.service_tags | toStringList ]]
         check {
           name     = [[ $service.service_name | quote ]]
           port     = [[ $service.service_port_label | quote ]]

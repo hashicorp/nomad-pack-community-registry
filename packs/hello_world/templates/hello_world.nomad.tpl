@@ -1,6 +1,6 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .hello_world.datacenters | toPrettyJson ]]
+  datacenters = [[ .hello_world.datacenters | toStringList ]]
   type = "service"
 
   group "app" {
@@ -15,7 +15,7 @@ job [[ template "job_name" . ]] {
     [[ if .hello_world.register_consul_service ]]
     service {
       name = "[[ .hello_world.consul_service_name ]]"
-      tags = [[ .hello_world.consul_service_tags | toPrettyJson ]]
+      tags = [[ .hello_world.consul_service_tags | toStringList ]]
       port = "http"
 
       check {

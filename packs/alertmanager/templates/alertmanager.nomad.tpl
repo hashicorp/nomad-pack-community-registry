@@ -1,6 +1,6 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .alertmanager.datacenters | toPrettyJson ]]
+  datacenters = [[ .alertmanager.datacenters | toStringList ]]
 
   [[ if .alertmanager.constraints ]][[ range $idx, $constraint := .alertmanager.constraints ]]
   constraint {
@@ -29,7 +29,7 @@ job [[ template "job_name" . ]] {
     service {
       name = [[ $service.service_name | quote ]]
       port = [[ $service.service_port_label | quote ]]
-      tags = [[ $service.service_tags | toPrettyJson ]]
+      tags = [[ $service.service_tags | toStringList ]]
 
       [[ if $service.connect_enabled ]]
       connect {
@@ -50,7 +50,7 @@ job [[ template "job_name" . ]] {
     [[ if .alertmanager.register_consul_service ]]
     service {
       name = "[[ .alertmanager.consul_service_name ]]"
-      tags = [[ .alertmanager.consul_service_tags | toPrettyJson ]]
+      tags = [[ .alertmanager.consul_service_tags | toStringList ]]
       port = "[[ .alertmanager.http_port ]]"
       [[ if .alertmanager.register_consul_service ]]
       connect {

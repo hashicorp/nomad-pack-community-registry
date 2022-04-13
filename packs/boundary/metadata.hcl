@@ -1,6 +1,6 @@
 app {
   url    = "https://www.boundaryproject.io/"
-  author = "paladin-devops"
+  author = "HashiCorp"
 }
 
 pack {

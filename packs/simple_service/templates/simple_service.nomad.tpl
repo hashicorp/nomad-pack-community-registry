@@ -1,6 +1,6 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .simple_service.datacenters | toPrettyJson ]]
+  datacenters = [[ .simple_service.datacenters | toStringList ]]
   type = "service"
 
   group "app" {
@@ -18,7 +18,7 @@ job [[ template "job_name" . ]] {
     service {
       name = "[[ .simple_service.consul_service_name ]]"
       port = "[[ .simple_service.consul_service_port ]]"
-      tags = [[ .simple_service.consul_tags | toPrettyJson ]]
+      tags = [[ .simple_service.consul_tags | toStringList ]]
 
       connect {
         sidecar_service {

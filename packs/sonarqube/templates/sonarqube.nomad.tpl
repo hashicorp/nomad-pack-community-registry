@@ -1,6 +1,6 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .sonarqube.datacenters | toPrettyJson ]]
+  datacenters = [[ .sonarqube.datacenters | toStringList ]]
   type = "service"
   [[- if .sonarqube.namespace ]]
   namespace   = [[ .sonarqube.namespace | quote ]]
@@ -33,7 +33,7 @@ job [[ template "job_name" . ]] {
     service {
       name = "[[ .sonarqube.consul_service_name ]]"
       [[- if ne (len .sonarqube.consul_service_tags) 0 ]]
-      tags = [[ .sonarqube.consul_service_tags | toPrettyJson ]]
+      tags = [[ .sonarqube.consul_service_tags | toStringList ]]
       [[- end ]]
       port = "http"
       check {

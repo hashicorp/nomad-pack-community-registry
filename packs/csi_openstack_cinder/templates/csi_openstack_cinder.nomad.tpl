@@ -1,6 +1,6 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .csi_openstack_cinder.datacenters | toPrettyJson ]]
+  datacenters = [[ .csi_openstack_cinder.datacenters | toStringList ]]
   type = "system"
 
   group "nodes" {

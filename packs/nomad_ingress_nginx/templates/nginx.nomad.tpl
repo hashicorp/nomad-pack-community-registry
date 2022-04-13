@@ -2,7 +2,7 @@ job "[[template "job_name" .]]" {
   type = "[[.nomad_ingress_nginx.job_type]]"
 
   region      = "[[.nomad_ingress_nginx.region]]"
-  datacenters = [[.nomad_ingress_nginx.datacenters | toPrettyJson]]
+  datacenters = [[.nomad_ingress_nginx.datacenters | toStringList]]
   namespace   = "[[.nomad_ingress_nginx.namespace]]"
 
   constraint {

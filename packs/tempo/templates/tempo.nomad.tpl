@@ -1,6 +1,6 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .tempo.datacenters | toPrettyJson ]]
+  datacenters = [[ .tempo.datacenters | toStringList ]]
 
   [[ if .tempo.constraints ]][[ range $idx, $constraint := .tempo.constraints ]]
   constraint {
@@ -61,7 +61,7 @@ job [[ template "job_name" . ]] {
     [[ if .tempo.register_consul_service ]]
     service {
       name = "[[ .tempo.consul_service_name ]]"
-      tags = [[ .tempo.consul_service_tags | toPrettyJson ]]
+      tags = [[ .tempo.consul_service_tags | toStringList ]]
       port = "[[ .tempo.http_port ]]"
       [[ if .tempo.register_consul_service ]]
       connect {

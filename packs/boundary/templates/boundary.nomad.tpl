@@ -1,6 +1,6 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .boundary.datacenters | toPrettyJson ]]
+  datacenters = [[ .boundary.datacenters | toStringList ]]
   group "boundary" {
     count = 1
     network {

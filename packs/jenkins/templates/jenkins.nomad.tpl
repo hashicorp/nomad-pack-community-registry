@@ -1,6 +1,6 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .jenkins.datacenters | toPrettyJson ]]
+  datacenters = [[ .jenkins.datacenters | toStringList ]]
   type = "service"
   [[- if .jenkins.namespace ]]
   namespace   = [[ .jenkins.namespace | quote ]]
@@ -36,7 +36,7 @@ job [[ template "job_name" . ]] {
     service {
       name = "[[ .jenkins.consul_service_name ]]"
       [[- if ne (len .jenkins.consul_service_tags) 0 ]]
-      tags = [[ .jenkins.consul_service_tags | toPrettyJson ]]
+      tags = [[ .jenkins.consul_service_tags | toStringList ]]
       [[- end ]]
       port = "http"
 
