@@ -4,7 +4,7 @@
       value     = "linux"
     }
 
-[[- if .my.constraints -]][[ range $idx, $constraint := .my.constraints ]]
+[[ range $idx, $constraint := .my.constraints ]]
     constraint {
       attribute = [[ $constraint.attribute | quote ]]
   [[- if $constraint.value ]]
@@ -15,4 +15,3 @@
   [[- end ]]
     }
 [[- end ]][[- end ]]
-[[- end -]]
