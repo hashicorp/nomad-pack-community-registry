@@ -1,6 +1,6 @@
 # Chaotic Ngine
 
-This pack contains a single batch job that runs Chaotic.
+This pack contains a batch job that runs [Chaotic](https://github.com/ngine-io/chaotic).
 
 ## Dependencies
 
@@ -22,7 +22,7 @@ None
 ### `constraints` List of Objects
 
 [Nomad job specification constraints][job_constraint] allows restricting the set of eligible nodes
-on which the Fabio task will run.
+on which the Chaotic task will run.
 
 - `attribute` (string) - Specifies the name or reference of the attribute to examine for the
   constraint.
@@ -41,3 +41,5 @@ variable list of objects is shown below and uses a double dollar sign for escapi
   }
 ]
 ```
+
+[job_constraint]: (https://www.nomadproject.io/docs/job-specification/constraint)

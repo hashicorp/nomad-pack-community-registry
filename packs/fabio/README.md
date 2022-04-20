@@ -69,3 +69,5 @@ namespace. The default value `9999` and `9998` represent the HTTP router and Fab
 
 -`cpu` (number 500) - Specifies the CPU required to run this task in MHz.
 -`memory` (number 256) - Specifies the memory required in MB.
+
+[job_constraint]: (https://www.nomadproject.io/docs/job-specification/constraint)
