@@ -89,3 +89,5 @@ variable list of objects is shown below and uses a double dollar sign for escapi
 
 The default value for this variable configures a service and a check for the node exporter `http` port
 defined as default within the `node_exporter_group_network.ports` mapping.
+
+[job_constraint]: (https://www.nomadproject.io/docs/job-specification/constraint)

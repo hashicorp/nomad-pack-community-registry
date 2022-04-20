@@ -1,9 +1,9 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .chaotic_ngine.datacenters | toPrettyJson ]]
-  namespace = [[ .chaotic_ngine.namespace | quote ]]
+  datacenters = [[ .my.datacenters | toStringList ]]
+  namespace = [[ .my.namespace | quote ]]
 
-  [[ if .chaotic_ngine.constraints ]][[ range $idx, $constraint := .chaotic_ngine.constraints ]]
+  [[ if .my.constraints ]][[ range $idx, $constraint := .my.constraints ]]
   constraint {
     attribute = [[ $constraint.attribute | quote ]]
     value = [[ $constraint.value | quote ]]
@@ -14,10 +14,10 @@ job [[ template "job_name" . ]] {
   [[- end ]][[- end ]]
 
   type = "batch"
-  priority = [[ .chaotic_ngine.priority ]]
+  priority = [[ .my.priority ]]
 
   periodic {
-    cron = [[ .chaotic_ngine.cron | quote ]]
+    cron = [[ .my.cron | quote ]]
     prohibit_overlap = true
   }
 
@@ -27,35 +27,35 @@ job [[ template "job_name" . ]] {
       driver = "docker"
 
       env = {
-        TZ = [[ .chaotic_ngine.timezone | quote ]]
+        TZ = [[ .my.timezone | quote ]]
 
-        [[- if .chaotic_ngine.nomad_addr ]]
-        NOMAD_ADDR = [[ .chaotic_ngine.nomad_addr | quote ]]
+        [[- if .my.nomad_addr ]]
+        NOMAD_ADDR = [[ .my.nomad_addr | quote ]]
         [[- end ]]
 
-        [[- if .chaotic_ngine.config_template_url ]]
-        CHAOTIC_CONFIG = [[ .chaotic_ngine.config_template_url | quote ]]
+        [[- if .my.config_template_url ]]
+        CHAOTIC_CONFIG = [[ .my.config_template_url | quote ]]
         [[ else ]]
         CHAOTIC_CONFIG = "/app/config.yaml"
         [[- end ]]
       }
 
       config {
-        image = "registry.gitlab.com/ngine/docker-images/chaotic:[[ .chaotic_ngine.image_version ]]"
+        image = "registry.gitlab.com/ngine/docker-images/chaotic:[[ .my.image_version ]]"
         force_pull = true
 
-        [[- if .chaotic_ngine.config ]]
+        [[- if .my.config ]]
         volumes = [
           "local/config.yaml:/app/config.yaml:ro",
         ]
         [[- end ]]
       }
 
-      [[- if not .chaotic_ngine.config_template_url ]]
+      [[- if not .my.config_template_url ]]
       template {
         change_mode = "noop"
         destination = "local/config.yaml"
-        data = [[ .chaotic_ngine.config | quote ]]
+        data = [[ .my.config | quote ]]
       }
       [[- end ]]
     }

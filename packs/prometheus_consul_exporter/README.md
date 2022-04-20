@@ -82,3 +82,5 @@ the health of a service.
 
 The default value for this variable configures a service and a check for the Consul exporter `http`
 port defined as default within the `consul_exporter_group_network.ports` mapping.
+
+[job_constraint]: (https://www.nomadproject.io/docs/job-specification/constraint)

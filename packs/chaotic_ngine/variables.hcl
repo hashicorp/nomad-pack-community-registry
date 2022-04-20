@@ -50,6 +50,7 @@ variable "image_version" {
   default = "latest"
 }
 
+// see https://github.com/ngine-io/chaotic#nomad
 variable "config" {
   description = "Path to the config to configure the job statically. Mutually exclusive with config_template_url."
   type = string
@@ -90,6 +91,7 @@ variable "timezone" {
   default = "Etc/UTC"
 }
 
+// e.g. "http://172.17.0.1:4646"
 variable "nomad_addr" {
   description = "Address of the nomad API"
   type = string
