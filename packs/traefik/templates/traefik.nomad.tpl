@@ -32,6 +32,15 @@ job [[ template "job_name" . ]] {
       [[- end ]]
     }
 
+
+    [[- if .traefik.traefik_vault ]]
+
+    vault {
+      policies = [[ .traefik.traefik_vault | toStringList ]]
+      change_mode   = "restart"
+    }
+    [[- end ]]
+
     task "traefik" {
       driver = [[ .traefik.traefik_task.driver | quote ]]
 
@@ -51,6 +60,33 @@ job [[ template "job_name" . ]] {
         [[- end ]]
       }
 
+    [[- if .traefik.traefik_task_cacert ]]
+      template {
+        data = <<EOF
+[[ .traefik.traefik_task_cacert ]]
+EOF
+        destination = "/secrets/traefik_ca.crt"
+      }
+    [[- end ]]
+
+    [[- if .traefik.traefik_task_cert ]]
+      template {
+        data = <<EOF
+[[ .traefik.traefik_task_cert ]]
+EOF
+        destination = "/secrets/traefik_server.crt"
+      }
+    [[- end ]]
+
+    [[- if .traefik.traefik_task_cert_key ]]
+      template {
+        data = <<EOF
+[[ .traefik.traefik_task_cert_key ]]
+EOF
+        destination = "/secrets/traefik_server.key"
+      }
+    [[- end ]]
+
 [[- if ne .traefik.traefik_task_app_config "" ]]
       template {
         data = <<EOF
@@ -58,6 +94,17 @@ job [[ template "job_name" . ]] {
 EOF
 
         destination = "local/traefik.toml"
+      }
+[[- end ]]
+
+[[- if .traefik.traefik_task_dynamic_config ]]
+      template {
+        data = <<EOF
+[[ .traefik.traefik_task_dynamic_config ]]
+EOF
+
+        destination = "local/traefik_dynamimc.toml"
+        change_mode = "noop"
       }
 [[- end ]]
 
