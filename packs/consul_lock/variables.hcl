@@ -34,6 +34,12 @@ variable "locker_script_path" {
   default     = "./templates/script.sh"
 }
 
+variable "locker_key" {
+  description = "The path to the locker script"
+  type        = string
+  default     = "leader"
+}
+
 variable "application_image" {
   description = "The container image for the main task."
   type        = string

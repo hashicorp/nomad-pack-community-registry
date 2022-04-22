@@ -30,6 +30,9 @@ something other than shell scripts.
   image for the locking script. This image needs to include `curl`.
 * `locker_script_path` (string "./templates/script.sh") The path to
   the locker script.
+* `locker_key` (string "leader") The key in Consul to use. If you use
+  a key that's unique per client such as `${attr.unique.hostname}`,
+  you can have a leader-per node.
 * `application_image` (string "busybox:1") The container image for the
   main task. This image needs to include a shell at `/bin/sh`.
 * `application_args` (string "httpd -v -f -p 8001 -h /local") The

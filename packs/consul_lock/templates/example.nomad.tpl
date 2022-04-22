@@ -24,6 +24,7 @@ job "[[ .my.job_name ]]" {
 
       env {
         CONSUL_ADDR = "${attr.unique.network.ip-address}:8500"
+        LEADER_KEY = "[[ .my.locker_key ]]"
       }
 
       config {
