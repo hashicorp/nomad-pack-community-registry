@@ -81,14 +81,20 @@ variable "consul_tags" {
 
 variable "network" {
   description = "Job network specifications"
-  type        = list(object({
-    name = string
-    port = number
+  type        = object({
+    mode = string
+    ports = list(object({
+      name = string
+      port = number
   }))
-  default     = [{
-    name = "db"
-    port = 6379
-  }]
+  })
+  default     = {
+    mode = "bridge"
+    ports = [{
+      name = "db"
+      port = 6379
+    }]
+  }
 }
 
 variable "has_health_check" {
@@ -134,26 +140,4 @@ variable "resources" {
     cpu    = 500,
     memory = 500
   }
-}
-
-// Redis.conf Configuration Variables
-variable "conf_bind_addrs" {
-  description = "What addresses to bind Redis"
-  type        = list(string)
-  default     = [
-    "127.0.0.1",
-    "-::1",
-  ]
-}
-
-variable "conf_tcp_timeout" {
-  description = "Client idle timeout -- Default (0) to disable"
-  type        = number
-  default     = 0
-}
-
-variable "conf_logfile_path" {
-  description = "Path of log file"
-  type        = string
-  default     = ""
 }

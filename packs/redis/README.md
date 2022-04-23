@@ -17,12 +17,6 @@ Default (Vanilla) Installation:
 ## Available Variables
 `app_count` (number) - Number of instances to deploy
 
-`conf_bind_addrs` (list of string) - What addresses to bind Redis
-
-`conf_logfile_path` (string) - Path of log file
-
-`conf_tcp_timeout` (number) - Client idle timeout -- Default (0) to disable
-
 `consul_service_name` (string) - Name used by Consul, if registering the job in Consul
 
 `consul_service_port` (string) - Port used by Consul, if registering the job in Consul
