@@ -37,13 +37,16 @@ variable "traefik_group_network" {
   type        = object({
     mode  = string
     ports = map(number)
+    dns = map(list(string))
   })
   default = {
     mode  = "bridge",
     ports = {
       "http" = 8080,
+      "https" = 8443,
       "api"  = 1936,
     },
+    dns = {}
   }
 }
 
@@ -57,6 +60,12 @@ variable "traefik_task" {
     driver  = "docker",
     version = "2.5",
   }
+}
+
+variable "traefik_task_dynamic_config" {
+  description = "The TOML Traefik dynamic configuration to pass to the task."
+  type        = string
+  default     = null
 }
 
 variable "traefik_task_app_config" {
@@ -73,9 +82,10 @@ variable "traefik_task_app_config" {
   dashboard = true
   insecure = true
 
-[providers.consulCatalog]
-  prefix           = "traefik"
-  exposedByDefault = false
+[providers]
+  [providers.consulCatalog]
+    prefix           = "traefik"
+    exposedByDefault = false
 
 [providers.consulCatalog.endpoint]
   address = "{{ env "attr.unique.network.ip-address" }}:8500"
@@ -130,3 +140,27 @@ variable "traefik_task_services" {
     }
   ]
 }
+
+variable "traefik_vault" {
+  description = "List of Vault Policies"
+  type = list(string)
+  default = null
+  }
+
+variable "traefik_task_cacert" {
+  description = "CA for using external SSL"
+  type = string
+  default = null
+  }
+
+variable "traefik_task_cert" {
+  description = "Certificate for using external SSL"
+  type = string
+  default = null
+  }
+
+variable "traefik_task_cert_key" {
+  description = "Certificate private key for using external SSL"
+  type = string
+  default = null
+  }

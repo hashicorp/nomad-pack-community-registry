@@ -18,6 +18,11 @@ currently supports being run by the [Docker][docker_driver]. See the
 task.
 - `traefik_task_resources` (object) - The resource to assign to the Traefik task.
 - `traefik_task_services` (list(object)) - Configuration options of the Traefik services and checks.
+- `traefik_task_dynamic_config` (string) - The TOML Traefik dynamic configuration to pass to the task.
+- `traefik_task_cacert` (string) - CA for using external SSL
+- `traefik_task_cert` (string) - Certificate for using external SSL
+- `traefik_task_cert_key` (string) - Certificate private key for using external SSL
+- `traefik_vault` list(string) - List of Vault Policies.
 
 ### `constraints` List of Objects
 
