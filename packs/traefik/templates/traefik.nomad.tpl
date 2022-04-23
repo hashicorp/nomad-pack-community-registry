@@ -49,7 +49,7 @@ job [[ template "job_name" . ]] {
         image = "traefik:[[ .traefik.traefik_task.version ]]"
         [[- if .traefik.traefik_group_network.ports ]]
         [[- $ports := keys .traefik.traefik_group_network.ports ]]
-        ports = [[ $ports | toStringList ]]
+        ports = [[ $ports | toPrettyJson ]]
         [[- end ]]
         [[- end ]]
 

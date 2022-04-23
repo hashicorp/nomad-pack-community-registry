@@ -144,14 +144,14 @@ variable "traefik_task_services" {
 variable "traefik_vault" {
   description = "List of Vault Policies"
   type = list(string)
-  default = null
+  default = []
   }
 
 variable "traefik_task_cacert" {
   description = "CA for using external SSL"
   type = string
   default = null
-  }
+}
 
 variable "traefik_task_cert" {
   description = "Certificate for using external SSL"
