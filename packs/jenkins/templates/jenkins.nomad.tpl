@@ -101,9 +101,64 @@ job [[ template "job_name" . ]] {
 
       resources {
         cpu    = 200
-        memory = 128
+
+[[- if .jenkins.jenkins_task_cacert ]]
+
+    task "create_cacert" {
+      lifecycle {
+        hook    = "prestart"
+        sidecar = false
+      }
+
+      volume_mount {
+        volume      = "[[ .jenkins.volume_name ]]"
+        destination = "/var/jenkins_home"
+        read_only   = false
+      }
+
+      driver = "docker"
+
+      config {
+        image = "[[ .jenkins.image_name ]]:[[ .jenkins.image_tag ]]"
+        command = "sh"
+        args    = [
+          "-c",
+          <<EOF
+set -xe
+
+test -d $JENKINS_HOME/.cacerts || mkdir $JENKINS_HOME/.cacerts
+cp /opt/java/openjdk/lib/security/cacerts $JENKINS_HOME/.cacerts/cacerts
+
+JAVA_HOME=/opt/java/openjdk
+
+$JAVA_HOME/bin/keytool -keystore $JENKINS_HOME/.cacerts/cacerts \
+  -import -alias hashistack -file /secrets/jenkins_ca.crt \
+  -storepass changeit -noprompt
+EOF
+        ]
+      }
+
+      env {
+        [[ range $key, $var := .jenkins.docker_jenkins_env_vars ]]
+        [[if ne (len $var) 0 ]][[ $key | upper ]] = [[ $var | quote ]][[ end ]]
+        [[ end ]]
+      }
+
+      [[- if .jenkins.jenkins_task_cacert ]]
+        template {
+          data = <<EOF
+[[ .jenkins.jenkins_task_cacert ]]
+EOF
+          destination = "/secrets/jenkins_ca.crt"
+        }
+      [[- end ]]
+
+      resources {
+        cpu    = 200
+        memory = 64
       }
     }
+[[ end ]]
 
     [[- if .jenkins.plugins ]]
     task "install-plugins" {

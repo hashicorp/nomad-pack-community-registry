@@ -22,6 +22,7 @@ This pack contains all you need to deploy jenkins (version 2 by default) in Noma
 - `volume_type` (string) - The type of the volume you want Jenkins to use
 - `docker_jenkins_env_vars` (map of string) - Environment variables to pass to Docker container
 - `jenkins_vault` (list of string) - List of Vault Policies for Jenkins Task
+- `jenkins_task_cacert` (string) - String with CA for using external SSL
 
 ## Jenkins Environment Variables
 

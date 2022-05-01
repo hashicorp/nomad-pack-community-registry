@@ -112,3 +112,8 @@ variable "jenkins_vault" {
   default = null
   }
 
+variable "jenkins_task_cacert" {
+  description = "CA for using external SSL"
+  type = string
+  default = null
+  }
