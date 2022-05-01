@@ -1,6 +1,6 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .jenkins.datacenters | toStringList ]]
+  datacenters = [[ .jenkins.datacenters | toPrettyJson ]]
   type = "service"
   [[- if .jenkins.namespace ]]
   namespace   = [[ .jenkins.namespace | quote ]]
@@ -24,6 +24,8 @@ job [[ template "job_name" . ]] {
     count = 1
 
     network {
+      mode = "bridge"
+
       port "http" {
         to = 8080
       }
@@ -42,18 +44,22 @@ job [[ template "job_name" . ]] {
     [[- if .jenkins.register_consul_service ]]
     service {
       name = "[[ .jenkins.consul_service_name ]]"
-      [[- if ne (len .jenkins.consul_service_tags) 0 ]]
-      tags = [[ .jenkins.consul_service_tags | toStringList ]]
+      [[- if .jenkins.consul_service_tags ]]
+      tags = [[ .jenkins.consul_service_tags | toPrettyJson ]]
       [[- end ]]
-      port = "http"
+      port = "8080"
 
-      check {
-        name     = "alive"
-        type     = "http"
-        path     = "/login"
-        interval = "10s"
-        timeout  = "2s"
-      }
+      connect {
+        sidecar_service {}
+        }
+
+      # check {
+      #   name     = "alive"
+      #   type     = "http"
+      #   path     = "/login"
+      #   interval = "10s"
+      #   timeout  = "2s"
+      # }
     }
     [[- end ]]
 
@@ -98,7 +104,6 @@ job [[ template "job_name" . ]] {
         memory = 128
       }
     }
-    [[- end ]]
 
     [[- if .jenkins.plugins ]]
     task "install-plugins" {
@@ -131,6 +136,7 @@ EOF
         change_mode   = "noop"
       }
     }
+    [[- end ]]
     [[- end ]]
 
     task [[ template "job_name" . ]] {

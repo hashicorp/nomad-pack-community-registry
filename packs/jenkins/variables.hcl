@@ -87,7 +87,6 @@ variable "consul_service_name" {
 variable "consul_service_tags" {
   description = "The consul service name for the application."
   type        = list(string)
-  default     = []
 }
 
 variable "volume_name" {
