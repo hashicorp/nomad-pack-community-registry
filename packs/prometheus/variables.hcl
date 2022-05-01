@@ -43,13 +43,23 @@ variable "prometheus_group_network" {
   type        = object({
     mode  = string
     ports = map(number)
+    dns = map(list(string))
   })
   default = {
     mode  = "bridge",
     ports = {
       "http" = 9090,
     },
+    dns = {}
   }
+}
+
+variable "prometheus_volume" {
+  description = "The Volume for Prometheus persistent data"
+  type = object({
+    type    = string
+    source = string
+  })
 }
 
 variable "prometheus_task" {
