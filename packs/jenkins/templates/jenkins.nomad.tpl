@@ -101,6 +101,9 @@ job [[ template "job_name" . ]] {
 
       resources {
         cpu    = 200
+        memory = 32
+      }
+    }
 
 [[- if .jenkins.jenkins_task_cacert ]]
 
@@ -176,7 +179,12 @@ EOF
           "local/plugins.txt:/var/jenkins_home/plugins.txt",
         ]
       }
-    
+
+      resources {
+        cpu    = 200
+        memory = 256
+      }
+
       lifecycle {
         hook    = "prestart"
         sidecar = false
