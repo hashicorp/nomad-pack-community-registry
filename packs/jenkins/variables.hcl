@@ -107,4 +107,9 @@ variable "docker_jenkins_env_vars" {
   default     = {}
 }
 
+variable "jenkins_vault" {
+  description = "List of Vault Policies"
+  type = list(string)
+  default = null
+  }
 

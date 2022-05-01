@@ -32,6 +32,13 @@ job [[ template "job_name" . ]] {
       }
     }
 
+    [[- if .jenkins.jenkins_vault ]]
+    vault {
+      policies = [[ .jenkins.jenkins_vault | toPrettyJson ]]
+      change_mode   = "restart"
+    }
+    [[- end ]]
+
     [[- if .jenkins.register_consul_service ]]
     service {
       name = "[[ .jenkins.consul_service_name ]]"
