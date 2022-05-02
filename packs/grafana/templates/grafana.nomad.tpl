@@ -106,6 +106,13 @@ job [[ template "job_name" . ]] {
         [[- end ]]
       [[- end ]]
 
+      template {
+        data = <<EOF
+[[ .grafana.grafana_task_config_ini ]]
+EOF
+        destination = "/local/grafana/grafana.ini"
+      }
+
       [[- if .grafana.grafana_task_config_dashboards ]]
       template {
         data = <<EOF

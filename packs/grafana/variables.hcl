@@ -71,6 +71,12 @@ variable "grafana_volume" {
   })
 }
 
+variable "grafana_task_config_ini" {
+  description = "ini string for grafana.ini"
+  type = string
+  default = ""
+}
+
 variable "grafana_env_vars" {
   description = ""
   type = list(object({
@@ -81,7 +87,8 @@ variable "grafana_env_vars" {
     {key = "GF_LOG_LEVEL", value = "DEBUG"},
     {key = "GF_LOG_MODE", value = "console"},
     {key = "GF_SERVER_HTTP_PORT", value = "$${NOMAD_PORT_http}"},
-    {key = "GF_PATHS_PROVISIONING", value = "/local/grafana/provisioning"}
+    {key = "GF_PATHS_PROVISIONING", value = "/local/grafana/provisioning"},
+    {key = "GF_PATHS_CONFIG", value = "/local/grafana/grafana.ini"}
   ]
 }
 
