@@ -5,7 +5,7 @@ job_type = "service"
 
 task_config = {
   image   = "otel/opentelemetry-collector-contrib"
-  version = "0.38.0"
+  version = "0.50.0"
   env = {
     MY_API_KEY = "not-so-secret"
   }

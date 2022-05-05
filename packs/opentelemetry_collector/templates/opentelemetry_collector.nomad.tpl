@@ -17,7 +17,7 @@ job [[ template "full_job_name" . ]] {
   }
   [[- end ]][[- end ]]
 
-  group "opentelemetry_collector" {
+  group "otel-collector" {
     [[- if eq $vars.job_type "service" ]]
     count = [[ $vars.instance_count ]]
     [[- end ]]
@@ -32,11 +32,17 @@ job [[ template "full_job_name" . ]] {
 
     [[ template "vault_config" . ]]
 
-    task "opentelemetry_collector" {
+    task "otel-collector" {
       driver = "docker"
 
       config {
         image = "[[ $vars.task_config.image ]]:[[ $vars.task_config.version ]]"
+        force_pull = true
+        entrypoint = [
+          "/otelcol-contrib",
+          "--config=[[ $vars.config_yaml_location ]]",
+        ]
+
 
         [[- if $vars.privileged_mode ]]
         pid_mode   = "host"
@@ -45,12 +51,15 @@ job [[ template "full_job_name" . ]] {
 
         ports = [[ keys $vars.network_config.ports | toPrettyJson ]]
 
+        [[ if $vars.use_volumes ]]
         volumes = [
-          "local/otel/config.yaml:/etc/otel/config.yaml",
+          "[[ $vars.config_yaml_location ]]:/etc/otel/config.yaml",
           [[- if $vars.privileged_mode ]]
           "/:/hostfs:ro,rslave",
           [[- end ]]
         ]
+        [[- end ]]
+
       }
 
       [[ template "env_vars" . ]]
@@ -61,7 +70,7 @@ job [[ template "full_job_name" . ]] {
 EOH
 
         change_mode   = "restart"
-        destination   = "local/otel/config.yaml"
+        destination   = "[[ $vars.config_yaml_location ]]"
       }
 
       [[ template "additional_templates" . ]]
@@ -73,6 +82,7 @@ EOH
 
       [[- if $vars.task_services ]]
       [[- range $idx, $service := $vars.task_services ]]
+      [[- if or (not ($vars.traefik_config.enabled)) (and ($vars.traefik_config.enabled) (ne $service.service_port_label "otlphttp") (ne $service.service_port_label "otlp")) ]]
       service {
         name = [[ $service.service_name | quote ]]
         port = [[ $service.service_port_label | quote ]]
@@ -88,6 +98,9 @@ EOH
       }
       [[- end ]]
       [[- end ]]
+      [[- end ]]
+
+      [[ template "traefik_config" . ]]
     }
   }
 }
