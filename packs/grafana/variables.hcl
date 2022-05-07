@@ -63,6 +63,12 @@ variable "grafana_consul_tags" {
   default = []
 }
 
+variable "grafana_vault" {
+  description = "List of Vault Policies"
+  type = list(string)
+  default = []
+  }
+
 variable "grafana_volume" {
   description = "The resource to assign to the Grafana service task"
   type = object({

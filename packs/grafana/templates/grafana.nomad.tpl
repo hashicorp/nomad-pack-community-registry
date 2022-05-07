@@ -33,6 +33,14 @@ job [[ template "job_name" . ]] {
       }
     }
 
+    [[- if .grafana.grafana_vault ]]
+
+    vault {
+      policies = [[ .grafana.grafana_vault | toStringList ]]
+      change_mode   = "noop"
+    }
+    [[- end ]]
+
     [[- if .grafana.grafana_volume ]]
     volume "grafana" {
       type = [[ .grafana.grafana_volume.type | quote ]]
