@@ -24,7 +24,6 @@ job "traefik" {
       port "grpc" {
         static = 7233
       }
-
     }
 
     service {

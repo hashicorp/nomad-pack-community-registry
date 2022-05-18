@@ -99,10 +99,10 @@ variable "vault_config" {
 variable "traefik_config" {
   description = "Traefik configurations for the OpenTelemetry Collector"
   type = object({
-    enabled       = bool
+    enabled = bool
   })
   default = {
-    enabled = false
+    enabled   = false
     http_host = "otel-collector-http.myhost.com"
   }
 }
@@ -114,7 +114,7 @@ variable "network_config" {
     ports = map(number)
   })
   default = {
-    mode = "bridge"
+    mode = "host"
     ports = {
       "otlp"               = 4317
       "otlphttp"           = 4318

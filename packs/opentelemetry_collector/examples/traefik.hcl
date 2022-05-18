@@ -11,9 +11,9 @@ task_config = {
   image   = "otel/opentelemetry-collector-contrib"
   version = "0.50.0"
   env = {
-    HONEYCOMB_DATASET = "my-hny-dataset"
+    HONEYCOMB_DATASET    = "my-hny-dataset"
     DATADOG_SERVICE_NAME = "my-dd-service"
-    DATADOG_TAG_NAME = "env:local_dev_env"
+    DATADOG_TAG_NAME     = "env:local_dev_env"
   }
 }
 
@@ -21,13 +21,13 @@ use_volumes = false
 
 # Override vault config in vars file
 vault_config = {
-  enabled = true
-  policies  = ["otel"]
+  enabled  = true
+  policies = ["otel"]
 }
 
 # Traefik config
 traefik_config = {
-  enabled = true
+  enabled   = true
   http_host = "otel-collector-http.localhost"
 }
 
@@ -53,12 +53,12 @@ exporters:
 
   otlp/hc:
     endpoint: "api.honeycomb.io:443"
-    headers: 
+    headers:
       "x-honeycomb-team": "{{ with secret "kv/data/otel/o11y/honeycomb" }}{{ .Data.data.api_key }}{{ end }}"
       "x-honeycomb-dataset": "$HONEYCOMB_DATASET"
   otlp/ls:
     endpoint: ingest.lightstep.com:443
-    headers: 
+    headers:
       "lightstep-access-token": "{{ with secret "kv/data/otel/o11y/lightstep" }}{{ .Data.data.api_key }}{{ end }}"
 
   datadog:

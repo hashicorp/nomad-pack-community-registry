@@ -18,14 +18,18 @@ different ways.
 - `privileged_mode` (`bool` `"true"`) - Determines if the OpenTelemetry Collector should run with privleged access to
   the host. Useful when using the [hostmetrics][hostmetricsreceiver] receiver. See `examples/privileged.hcl` for a an
   example.
-- `use_volumes` - Determines if OTel Collector config YAML is mounted via perstent storage. Default is `true`. Otherwise, use container storage (see [`examples/traefik.hcl`](examples/traefik.hcl)).
+- `use_volumes` (`bool` `"true"`) - Determines if OTel Collector config YAML is mounted via perstent storage.
+  Otherwise, use container storage (see [`examples/traefik.hcl`](examples/traefik.hcl)).
 - `task_config` (`object`) - The OpenTelemetry Collector task config options.
 - `vault_config` (`object`) - The OpenTelemetry Collector job's Vault configuration. Set `enabled = true` to configure
   the job's [Vault integration][vault_integration].
-- `traefik_config` (`object`) - Traefik service configurations for the OpenTelemetry Collector. Includes support for HTTP and gRPC. See [`examples/traefik.hcl`](examples/traefik.hcl) for an example (NOTE: Also deploy with Traefik sample jobspec, [`examples/sample_traefik_spec.nomad`](examples/sample_traefik_spec.nomad)).
+- `traefik_config` (`object`) - Traefik service configurations for the OpenTelemetry Collector. Includes support for
+  HTTP and gRPC. See [`examples/traefik.hcl`](examples/traefik.hcl) for an example (NOTE: Also deploy with Traefik
+  sample jobspec, [`examples/sample_traefik_spec.nomad`](examples/sample_traefik_spec.nomad)).
 - `network_config` (`object`) - The OpenTelemetry Collector job's network configuration options.
 - `resources` (`object`) - The resources to assign to the OpenTelemetry Collector task.
-- `config_yaml_location` - The location of `otel-collector-config.yaml` in the OTel Collector container instance.
+- `config_yaml_location` (`string` `"local/otel/config.yaml"`) - The location of `otel-collector-config.yaml` in the
+  OTel Collector container instance.
 - `config_yaml` (`string`) - The Collector configuration to pass the task. The default value configures an example
   selection of receivers, processors, extensions, and exporters. You will likely need to customize this in order to
   have a properly configured target for your telemetry data.
@@ -105,14 +109,20 @@ These all map directly to the values for the [Vault integration][vault_integrati
 
 ### `traefik_config` Object
 
-- `enabled` (`bool` `false`) - Enable Traefik configs for the OTel Collector. Also requires a Traefik job to be running in Nomad. For a sample Traefik jobspec, see [`examples/sample_traefik_spec.nomad`](examples/sample_traefik_spec.nomad).
-- `http_host` (`string` `"otel-collector-http.myhost.com"`) - The HTTP hostname to which Traefik will route OTLP HTTP requests.
+- `enabled` (`bool` `false`) - Enable Traefik configs for the OTel Collector. Also requires a Traefik job to be running
+  in Nomad. For a sample Traefik jobspec, see [`examples/sample_traefik_spec.nomad`](examples/sample_traefik_spec.nomad).
+- `http_host` (`string` `"otel-collector-http.myhost.com"`) - The HTTP hostname to which Traefik will route OTLP HTTP
+  requests.
 
-> ** NOTES: 
-> 1. The default Traefik config does not have TLS enabled (both for HTTP and gRPC). For more on enabling TLS on Traefik with Nomad, check out [this post by David Alfonzo](https://storiesfromtheherd.com/traefik-in-nomad-using-consul-and-tls-5be0007794ee).
-> 2. Since we don't have TLS enabled, it means that the gRPC `HostSNI` value must be set to a wildcard value (see [this discussion](https://community.traefik.io/t/configuration-of-non-http-port-without-tls/5901/2) for more info).
-> 3. To test the Traefik configs, you can run a sample Go client/server program [here](https://github.com/avillela/go-otel-instrumentation), which contains both HTTP and gRPC examples.
-> 4. For detailed documentation on running the OTel Collector on Nomad with Traefik, check out [this guide](https://adri-v.medium.com/4eaf009b8382?source=friends_link&sk=a1a0612a156d20e86549bd925d419bc3).
+> **NOTES:**
+> 1. The default Traefik config does not have TLS enabled (both for HTTP and gRPC). For more on enabling TLS on Traefik
+> with Nomad, check out [this post by David Alfonzo](https://storiesfromtheherd.com/traefik-in-nomad-using-consul-and-tls-5be0007794ee).
+> 2. Since we don't have TLS enabled, it means that the gRPC `HostSNI` value must be set to a wildcard value (see [this
+> discussion](https://community.traefik.io/t/configuration-of-non-http-port-without-tls/5901/2) for more info).
+> 3. To test the Traefik configs, you can run a sample Go client/server program
+> [here](https://github.com/avillela/go-otel-instrumentation), which contains both HTTP and gRPC examples.
+> 4. For detailed documentation on running the OTel Collector on Nomad with Traefik, check out
+> [this guide](https://adri-v.medium.com/4eaf009b8382?source=friends_link&sk=a1a0612a156d20e86549bd925d419bc3).
 
 ### `additional_templates` Object
 
