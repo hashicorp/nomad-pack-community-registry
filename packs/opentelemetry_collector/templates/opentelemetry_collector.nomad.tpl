@@ -82,11 +82,10 @@ EOH
 
       [[- if $vars.task_services ]]
       [[- range $idx, $service := $vars.task_services ]]
-      [[- if or (not ($vars.traefik_config.enabled)) (and ($vars.traefik_config.enabled) (ne $service.service_port_label "otlphttp") (ne $service.service_port_label "otlp")) ]]
       service {
         name = [[ $service.service_name | quote ]]
         port = [[ $service.service_port_label | quote ]]
-        tags = [[ $service.service_tags | toStringList ]]
+        tags = [[ template "traefik_service_tags" (dict "traefik_config" $vars.traefik_config "service" $service) ]]
         [[- if $service.check_enabled ]]
         check {
           type     = "http"
@@ -98,9 +97,6 @@ EOH
       }
       [[- end ]]
       [[- end ]]
-      [[- end ]]
-
-      [[ template "traefik_config" . ]]
     }
   }
 }

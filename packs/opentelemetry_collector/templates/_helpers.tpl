@@ -37,28 +37,29 @@ region = [[ .opentelemetry_collector.region | quote]]
     [[ end ]]
 [[- end -]]
 
-[[- define "traefik_config" -]]
-  [[ if .opentelemetry_collector.traefik_config.enabled ]]
-      service {
-        tags = [
-          "traefik.tcp.routers.otel-collector-grpc.rule=HostSNI(`*`)",
-          "traefik.tcp.routers.otel-collector-grpc.entrypoints=grpc",
-          "traefik.enable=true",
-        ]        
-        port = "otlp"
-      }
-
-      service {
-        tags = [
-          "traefik.http.routers.otel-collector-http.rule=Host(`[[ .opentelemetry_collector.traefik_config.http_host ]]`)",
-          "traefik.http.routers.otel-collector-http.entrypoints=web",
-          "traefik.http.routers.otel-collector-http.tls=false",
-          "traefik.enable=true",
-        ]
-        port = "otlphttp"
-      }
-  
-  [[ end ]]
+[[- define "traefik_service_tags" -]]
+  [[- if (not .traefik_config.enabled) -]]
+    [[ .service.service_tags | toStringList ]]
+  [[- else -]]
+    [[- if (eq .service.service_port_label "otlp") -]]
+      [[ concat .service.service_tags (list
+          "traefik.tcp.routers.otel-collector-grpc.rule=HostSNI(`*`)"
+          "traefik.tcp.routers.otel-collector-grpc.entrypoints=grpc"
+          "traefik.enable=true"
+        ) | toStringList
+      ]]
+    [[- else if (eq .service.service_port_label "otlphttp") -]]
+      [[ concat .service.service_tags (list
+          (printf "traefik.http.routers.otel-collector-http.rule=Host(`%s`)" .traefik_config.http_host)
+          "traefik.http.routers.otel-collector-http.entrypoints=web"
+          "traefik.http.routers.otel-collector-http.tls=false"
+          "traefik.enable=true"
+        ) | toStringList
+      ]]
+    [[- else -]]
+      [[ .service.service_tags | toStringList ]]
+    [[- end -]]
+  [[- end -]]
 [[- end -]]
 
 // the default map configures the hostmetrics receiver to look at `/hostfs` mounts for system stats
