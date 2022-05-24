@@ -116,11 +116,14 @@ EOF
       service {
         name = [[ $service.service_name | quote ]]
         port = [[ $service.service_port_label | quote ]]
+        tags = [[ $service.service_tags | toStringList ]]
 
         [[- if $service.check_enabled ]]
         check {
           type     = [[ $service.check_type | quote ]]
+          [[- if $service.check_path ]]
           path     = [[ $service.check_path | quote ]]
+          [[- end ]]
           interval = [[ $service.check_interval | quote ]]
           timeout  = [[ $service.check_timeout | quote ]]
         }
