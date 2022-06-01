@@ -18,8 +18,6 @@ different ways.
 - `privileged_mode` (`bool` `"true"`) - Determines if the OpenTelemetry Collector should run with privleged access to
   the host. Useful when using the [hostmetrics][hostmetricsreceiver] receiver. See `examples/privileged.hcl` for a an
   example.
-- `use_volumes` (`bool` `"true"`) - Determines if OTel Collector config YAML is mounted via perstent storage.
-  Otherwise, use container storage (see [`examples/traefik.hcl`](examples/traefik.hcl)).
 - `task_config` (`object`) - The OpenTelemetry Collector task config options.
 - `vault_config` (`object`) - The OpenTelemetry Collector job's Vault configuration. Set `enabled = true` to configure
   the job's [Vault integration][vault_integration].

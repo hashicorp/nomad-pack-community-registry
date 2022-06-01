@@ -56,12 +56,6 @@ variable "privileged_mode" {
   default     = false
 }
 
-variable "use_volumes" {
-  description = "Determines if OTel Collector config is mounted via perstent storage"
-  type        = bool
-  default     = true
-}
-
 variable "task_config" {
   description = "The OpenTelemetry Collector task config options."
   type = object({

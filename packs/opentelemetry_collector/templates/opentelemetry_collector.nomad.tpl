@@ -50,14 +50,12 @@ job [[ template "full_job_name" . ]] {
 
         ports = [[ keys $vars.network_config.ports | toPrettyJson ]]
 
-        [[ if $vars.use_volumes ]]
         volumes = [
           "[[ $vars.config_yaml_location ]]:/etc/otel/config.yaml",
           [[- if $vars.privileged_mode ]]
           "/:/hostfs:ro,rslave",
           [[- end ]]
         ]
-        [[- end ]]
 
       }
 

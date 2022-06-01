@@ -17,7 +17,6 @@ task_config = {
   }
 }
 
-use_volumes = false
 
 # Override vault config in vars file
 vault_config = {
