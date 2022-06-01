@@ -154,6 +154,16 @@ Only `data` and `destination` are required.
 The default value for this variable configures listeners for the following receivers: OTLP, OTLP HTTP, Jaeger GRPC,
 Jaeger Thrift HTTP, and Zipkin. It also configures the Collector's Healthcheck and the zpages extension.
 
+## Running the OTel Collector + Traefik Example
+
+To run the OTel Collector + Traefik example, you'll need to run this pack and the Traefik packas follows, assuming that you are starting from the repo root:
+
+```bash
+nomad-pack render packs/traefik/ -f packs/traefik/examples/traefik.hcl
+
+nomad-pack render packs/opentelemetry_collector/ -f packs/opentelemetry_collector/examples/traefik.hcl
+```
+
 [collector]: https://opentelemetry.io/docs/collector
 [docker_driver]: https://www.nomadproject.io/docs/drivers/docker
 [hostmetricsreceiver]: https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/hostmetricsreceiver#host-metrics-receiver
