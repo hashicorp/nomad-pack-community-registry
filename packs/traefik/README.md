@@ -59,6 +59,7 @@ namespace. The default value `8080` and `1936` represent the HTTP router and Tra
 - `driver` (string "docker") - The Nomad task driver to use to run the Traefik task. Currently,
   only "docker" is supported.
 - `version` (string "2.30.2") - The Traefik version to run.
+- `network_mode` (string "host") - The network mode to be used for the container. See [Nomad docs](https://www.nomadproject.io/docs/drivers/docker).
 
 ### `traefik_task_resources` Object
 

@@ -45,6 +45,9 @@ job [[ template "job_name" . ]] {
       driver = [[ .traefik.traefik_task.driver | quote ]]
 
       config {
+        [[- if .traefik.traefik_task.network_mode ]]
+        network_mode = [[ .traefik.traefik_task.network_mode | quote ]]
+        [[- end ]]
         [[- if ( eq .traefik.traefik_task.driver "docker" ) ]]
         image = "traefik:[[ .traefik.traefik_task.version ]]"
         [[- if .traefik.traefik_group_network.ports ]]
@@ -117,10 +120,16 @@ EOF
         name = [[ $service.service_name | quote ]]
         port = [[ $service.service_port_label | quote ]]
 
+        [[- if $service.service_tags ]]
+        tags = [[ $service.service_tags | toPrettyJson ]]
+        [[- end ]]
+
         [[- if $service.check_enabled ]]
         check {
           type     = [[ $service.check_type | quote ]]
+          [[- if $service.check_path ]]
           path     = [[ $service.check_path | quote ]]
+          [[- end ]]
           interval = [[ $service.check_interval | quote ]]
           timeout  = [[ $service.check_timeout | quote ]]
         }

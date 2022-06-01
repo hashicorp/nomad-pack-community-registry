@@ -55,10 +55,12 @@ variable "traefik_task" {
   type        = object({
     driver  = string
     version = string
+    network_mode = string
   })
   default     = {
     driver  = "docker",
     version = "2.5",
+    network_mode = null
   }
 }
 
