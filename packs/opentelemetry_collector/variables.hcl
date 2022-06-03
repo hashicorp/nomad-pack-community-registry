@@ -90,6 +90,17 @@ variable "vault_config" {
   }
 }
 
+variable "traefik_config" {
+  description = "Traefik configurations for the OpenTelemetry Collector"
+  type = object({
+    enabled = bool
+  })
+  default = {
+    enabled   = false
+    http_host = "otel-collector-http.myhost.com"
+  }
+}
+
 variable "network_config" {
   description = "The OpenTelemetry Collector network configuration options."
   type = object({
@@ -121,6 +132,12 @@ variable "resources" {
     cpu    = 256
     memory = 512
   }
+}
+
+variable "config_yaml_location" {
+  description = "The location of otel-collector-config.yaml in the OpenTelemetry Collector container instance"
+  type        = string
+  default     = "local/otel/config.yaml"
 }
 
 variable "config_yaml" {

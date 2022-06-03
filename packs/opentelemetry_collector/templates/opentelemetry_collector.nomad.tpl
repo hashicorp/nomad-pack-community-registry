@@ -17,7 +17,7 @@ job [[ template "full_job_name" . ]] {
   }
   [[- end ]][[- end ]]
 
-  group "opentelemetry_collector" {
+  group "otel-collector" {
     [[- if eq $vars.job_type "service" ]]
     count = [[ $vars.instance_count ]]
     [[- end ]]
@@ -32,11 +32,16 @@ job [[ template "full_job_name" . ]] {
 
     [[ template "vault_config" . ]]
 
-    task "opentelemetry_collector" {
+    task "otel-collector" {
       driver = "docker"
 
       config {
         image = "[[ $vars.task_config.image ]]:[[ $vars.task_config.version ]]"
+        entrypoint = [
+          "/otelcol-contrib",
+          "--config=[[ $vars.config_yaml_location ]]",
+        ]
+
 
         [[- if $vars.privileged_mode ]]
         pid_mode   = "host"
@@ -46,11 +51,12 @@ job [[ template "full_job_name" . ]] {
         ports = [[ keys $vars.network_config.ports | toPrettyJson ]]
 
         volumes = [
-          "local/otel/config.yaml:/etc/otel/config.yaml",
+          "[[ $vars.config_yaml_location ]]:/etc/otel/config.yaml",
           [[- if $vars.privileged_mode ]]
           "/:/hostfs:ro,rslave",
           [[- end ]]
         ]
+
       }
 
       [[ template "env_vars" . ]]
@@ -61,7 +67,7 @@ job [[ template "full_job_name" . ]] {
 EOH
 
         change_mode   = "restart"
-        destination   = "local/otel/config.yaml"
+        destination   = "[[ $vars.config_yaml_location ]]"
       }
 
       [[ template "additional_templates" . ]]
@@ -72,11 +78,11 @@ EOH
       }
 
       [[- if $vars.task_services ]]
-      [[- range $idx, $service := $vars.task_services ]]
+      [[ range $idx, $service := $vars.task_services ]]
       service {
         name = [[ $service.service_name | quote ]]
         port = [[ $service.service_port_label | quote ]]
-        tags = [[ $service.service_tags | toStringList ]]
+        tags = [[ template "traefik_service_tags" (dict "traefik_config" $vars.traefik_config "service" $service) ]]
         [[- if $service.check_enabled ]]
         check {
           type     = "http"
@@ -86,7 +92,7 @@ EOH
         }
         [[- end ]]
       }
-      [[- end ]]
+      [[ end ]]
       [[- end ]]
     }
   }

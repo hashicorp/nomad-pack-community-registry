@@ -9,7 +9,7 @@ resources = {
 
 task_config = {
   image   = "myorg/opentelemetry-collector"
-  version = "0.38.0"
+  version = "0.50.0"
   env = {
     OTEL_METRICS_INTERVAL     = "10s"
     HONEYCOMB_DATASET         = "production-traces"
