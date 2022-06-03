@@ -10,12 +10,23 @@ traefik_group_network = {
   mode = "host"
 
   ports = {
-    http = 80
-    api  = 8080
+    http    = 80
+    api     = 8080
+    metrics = 8082
+    grpc    = 7233
   }
 }
 
 traefik_task_services = [
+  {
+    service_name       = "traefik-endpoint-grpc"
+    service_port_label = "grpc"
+    check_enabled      = true
+    check_type         = "tcp"
+    check_path         = ""
+    check_interval     = "10s"
+    check_timeout      = "5s"
+  },
   {
     service_name       = "traefik-dashboard"
     service_port_label = "http"
@@ -38,6 +49,10 @@ traefik_task_app_config = <<EOF
 [entryPoints]
     [entryPoints.web]
     address = ":80"
+    [entryPoints.metrics]
+    address = ":8082"
+    [entryPoints.grpc]
+    address = ":7233"
 
 [api]
     dashboard = true

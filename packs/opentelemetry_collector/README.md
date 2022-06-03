@@ -108,7 +108,8 @@ These all map directly to the values for the [Vault integration][vault_integrati
 ### `traefik_config` Object
 
 - `enabled` (`bool` `false`) - Enable Traefik configs for the OTel Collector. Also requires a Traefik job to be running
-  in Nomad. For a sample Traefik jobspec, see [`examples/sample_traefik_spec.nomad`](examples/sample_traefik_spec.nomad).
+  in Nomad. An example on how to run Traefik the pack is provided in the [`Running the OTel Collector + Traefik
+  Example`](#running-the-otel-collector--traefik-example) section below.
 - `http_host` (`string` `"otel-collector-http.myhost.com"`) - The HTTP hostname to which Traefik will route OTLP HTTP
   requests.
 
@@ -156,12 +157,12 @@ Jaeger Thrift HTTP, and Zipkin. It also configures the Collector's Healthcheck a
 
 ## Running the OTel Collector + Traefik Example
 
-To run the OTel Collector + Traefik example, you'll need to run this pack and the Traefik packas follows, assuming that you are starting from the repo root:
+To run the OTel Collector + Traefik example, you'll need to run this pack and the Traefik pack as follows, assuming that you are starting from the repo root:
 
 ```bash
-nomad-pack render packs/traefik/ -f packs/traefik/examples/traefik.hcl
+nomad-pack run traefik -f packs/opentelemetry_collector/examples/traefik_vars.hcl
 
-nomad-pack render packs/opentelemetry_collector/ -f packs/opentelemetry_collector/examples/traefik.hcl
+nomad-pack run opentelemetry_collector -f packs/opentelemetry_collector/examples/with_traefik.hcl
 ```
 
 [collector]: https://opentelemetry.io/docs/collector

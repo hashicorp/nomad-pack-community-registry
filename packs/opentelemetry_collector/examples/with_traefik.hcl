@@ -3,10 +3,10 @@
 # API keys/tokens for each Observability platform are retrieved from HashiCorp Vault.
 # NOTE: You need to have accounts in each of these platforms in order for this to work.
 
-# To run this example, you'll need to run this pack and the Traefik packas follows, assuming 
+# To run this example, you'll need to run this pack and the Traefik pack as follows, assuming
 # that you are starting from the repo root:
-# $ nomad-pack render packs/traefik/ -f packs/traefik/examples/traefik.hcl
-# $ nomad-pack render packs/opentelemetry_collector/ -f packs/opentelemetry_collector/examples/traefik.hcl
+# $ nomad-pack run traefik -f packs/opentelemetry_collector/examples/traefik_vars.hcl
+# $ nomad-pack run opentelemetry_collector -f packs/opentelemetry_collector/examples/with_traefik.hcl
 
 job_type = "service"
 
@@ -21,7 +21,6 @@ task_config = {
     DATADOG_TAG_NAME     = "env:local_dev_env"
   }
 }
-
 
 # Override vault config in vars file
 vault_config = {
