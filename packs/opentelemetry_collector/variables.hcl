@@ -108,7 +108,7 @@ variable "network_config" {
     ports = map(number)
   })
   default = {
-    mode = "host"
+    mode = "bridge"
     ports = {
       "otlp"               = 4317
       "otlphttp"           = 4318

@@ -22,6 +22,21 @@ task_config = {
   }
 }
 
+# Override default network_config to set network mode to host
+network_config = {
+  mode = "host"
+  ports = {
+    "otlp"               = 4317
+    "otlphttp"           = 4318
+    "metrics"            = 8888
+    "zipkin"             = 9411
+    "healthcheck"        = 13133
+    "jaeger-grpc"        = 14250
+    "jaeger-thrift-http" = 14268
+    "zpages"             = 55679
+  }
+}
+
 # Override vault config in vars file
 vault_config = {
   enabled  = true
