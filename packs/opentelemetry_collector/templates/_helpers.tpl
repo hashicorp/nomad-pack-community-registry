@@ -46,7 +46,7 @@ region = [[ .opentelemetry_collector.region | quote]]
           "traefik.tcp.routers.otel-collector-grpc.rule=HostSNI(`*`)"
           "traefik.tcp.routers.otel-collector-grpc.entrypoints=grpc"
           "traefik.enable=true"
-        ) | toStringList
+        ) | toPrettyJson
       ]]
     [[- else if (eq .service.service_port_label "otlphttp") -]]
       [[ concat .service.service_tags (list
@@ -54,7 +54,7 @@ region = [[ .opentelemetry_collector.region | quote]]
           "traefik.http.routers.otel-collector-http.entrypoints=web"
           "traefik.http.routers.otel-collector-http.tls=false"
           "traefik.enable=true"
-        ) | toStringList
+        ) | toPrettyJson
       ]]
     [[- else -]]
       [[ .service.service_tags | toStringList ]]

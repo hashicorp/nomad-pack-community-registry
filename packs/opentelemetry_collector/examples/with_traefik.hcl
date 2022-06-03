@@ -65,6 +65,9 @@ processors:
     spike_limit_mib: 512
     check_interval: 5s
 
+extensions:
+  health_check:
+
 exporters:
   logging:
     logLevel: debug
@@ -88,6 +91,7 @@ exporters:
       site: datadoghq.com
 
 service:
+  extensions: [health_check]
   pipelines:
     traces:
       receivers: [otlp]

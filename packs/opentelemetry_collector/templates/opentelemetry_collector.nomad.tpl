@@ -78,7 +78,7 @@ EOH
       }
 
       [[- if $vars.task_services ]]
-      [[- range $idx, $service := $vars.task_services ]]
+      [[ range $idx, $service := $vars.task_services ]]
       service {
         name = [[ $service.service_name | quote ]]
         port = [[ $service.service_port_label | quote ]]
@@ -92,7 +92,7 @@ EOH
         }
         [[- end ]]
       }
-      [[- end ]]
+      [[ end ]]
       [[- end ]]
     }
   }
