@@ -136,7 +136,7 @@ datasources:
   - name: Tempo
     type: tempo
     access: proxy
-    url: http://tempo.service.{{ env "NOMAD_DC" }}.consul:3400
+    url: http://tempo.service.{{ env "NOMAD_DC" }}.consul:3200
     uid: tempo
   - name: Loki
     type: loki
