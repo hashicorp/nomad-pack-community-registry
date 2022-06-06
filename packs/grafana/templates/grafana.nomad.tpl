@@ -16,8 +16,8 @@ job [[ template "job_name" . ]] {
 
     [[- if .grafana.dns ]]
     dns {
-      [[- if .grafana.dns.source ]]
-        servers = [[ .grafana.dns.source | toPrettyJson ]]
+      [[- if .grafana.dns.servers ]]
+        servers = [[ .grafana.dns.servers | toPrettyJson ]]
       [[- end ]]
       [[- if .grafana.dns.searches ]]
         searches = [[ .grafana.dns.searches | toPrettyJson ]]
