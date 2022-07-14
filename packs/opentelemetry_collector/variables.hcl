@@ -189,7 +189,7 @@ variable "additional_templates" {
   description = "Additional job templates: access Consul KV, or the Vault KV or secrets engine. 'data' and 'destination' are required."
   type = list(object({
     data          = string
-    desination    = string
+    destination   = string
     change_mode   = string
     change_signal = string
     env           = bool
