@@ -29,4 +29,8 @@ An example of the `docker_jenkins_env_vars` to use is in the `vars.nomad` file.
 
 ## Jenkins as Code
 
-An example as to how the `configuration-as-code` plugin can be used to create and configure jenkins is in the `vars_jasc.nomad` file.
+An example as to how use the `configuration-as-code` plugin can be used to create and configure jenkins is in the `vars_jasc.nomad` file.
+
+## Nomad Job Runners
+
+An example as to how the `nomad` plugin can be used to create and configure autoscaling jenkins workers in nomad itself is in the `vars_cloud.nomad` file.
