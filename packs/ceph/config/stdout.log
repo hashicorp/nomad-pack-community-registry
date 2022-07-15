@@ -1,0 +1,16 @@
+$ nomad alloc logs 905
+creating /etc/ceph/ceph.client.admin.keyring
+creating /etc/ceph/ceph.mon.keyring
+monmaptool: monmap file /etc/ceph/monmap-ceph
+monmaptool: set fsid to 0ff381d1-8108-4a7d-ad13-1fa446063f39
+monmaptool: writing epoch 0 to /etc/ceph/monmap-ceph (1 monitors)
+importing contents of /etc/ceph/ceph.client.admin.keyring into /etc/ceph/ceph.mon.keyring
+2022-04-13 19:57:52  /opt/ceph-container/bin/entrypoint.sh: I can see existing Ceph files, please remove them!
+2022-04-13 19:57:52  /opt/ceph-container/bin/entrypoint.sh: To run the demo container, remove the content of /var/lib/ceph/ and /etc/ceph/
+2022-04-13 19:57:52  /opt/ceph-container/bin/entrypoint.sh: Before doing this, make sure you are removing any sensitive data.
+2022-04-13 19:58:09  /opt/ceph-container/bin/entrypoint.sh: I can see existing Ceph files, please remove them!
+2022-04-13 19:58:09  /opt/ceph-container/bin/entrypoint.sh: To run the demo container, remove the content of /var/lib/ceph/ and /etc/ceph/
+2022-04-13 19:58:09  /opt/ceph-container/bin/entrypoint.sh: Before doing this, make sure you are removing any sensitive data.
+
+$ nomad alloc logs -stderr 905
+global_init: error reading config file.
