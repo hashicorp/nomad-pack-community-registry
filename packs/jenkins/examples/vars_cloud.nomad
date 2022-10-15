@@ -1,9 +1,6 @@
 docker_jenkins_env_vars = {
   "java_opts": "-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false",
 }
-volume_name = "jenkins-volume"
-register_consul_service = true
-plugins = ["configuration-as-code", "hashicorp-vault-plugin", "job-dsl", "nomad"]
 jasc_config = <<EOF
 jenkins:
   agentProtocols:
@@ -23,7 +20,7 @@ jenkins:
               "ID": "%WORKER_NAME%",
               "Type": "batch",
               "Datacenters": [
-                "lab"
+                "dc1"
               ],
               "TaskGroups": [
                 {
@@ -64,7 +61,7 @@ jenkins:
         labels: "nomad"
         numExecutors: 1
         prefix: "jenkins"
-        reusable: false
+        reusable: true
       tlsEnabled: false
       workerTimeout: 1
   numExecutors: 0
@@ -77,3 +74,6 @@ jobs:
         }
       }
 EOF
+plugins = ["configuration-as-code", "hashicorp-vault-plugin", "job-dsl", "nomad"]
+register_consul_service = true
+volume_name = "jenkins"

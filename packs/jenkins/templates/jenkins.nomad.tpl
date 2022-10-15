@@ -123,6 +123,11 @@ EOF
         destination   = "local/plugins.txt"
         change_mode   = "noop"
       }
+
+      resources {
+        cpu    = [[ .jenkins.task_resources.cpu ]]
+        memory = [[ .jenkins.task_resources.memory ]]
+      }
     }
     [[- end ]]
 
