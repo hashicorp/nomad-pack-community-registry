@@ -13,6 +13,7 @@ Setup:
 
 ## Requirements
 Clients that expect to run this job require:
+- Nomad >= 1.4.0 (because the pack use [Nomad Variables](https://developer.hashicorp.com/nomad/docs/concepts/variables))
 - [Docker volumes](https://www.nomadproject.io/docs/drivers/docker "Docker volumes") to be enabled within their Docker plugin stanza, due to the usage of Nomad's host volume:
 ```hcl
 plugin "docker" {
@@ -41,66 +42,71 @@ The 2 docker images can be replaced by using their variable names:
 - backstage_task_image
 
 Example:
-```
-nomad-pack run backstage --var backstage_task_image="ghcr.io/backstage/backstage:1.7.1"
+```bash
+$ nomad-pack run backstage --var backstage_task_image="ghcr.io/backstage/backstage:1.7.1"
 ```
 
 ## Pack Usage
 
 <!-- Include information about how to use your pack -->
 
-### Changing the Message
+### Prerequisite
 
-To change the message this server responds with, change the "message" variable
-when running the pack.
+Create an variable specification file:
+```hcl
+# spec.nv.hcl
+path = "nomad/jobs"
 
+items {
+  # Mandatory variables
+  postgres_user = "your_postgres_username"
+  postgres_password = "your_postgres_password"
+
+  #Optional variables
+  github_token = "your_github_token"
+}
 ```
-nomad-pack run backstage --var message="Hola Mundo!"
+
+The default docker image for Backstage is configured to use GitHub in order to locate entities (see [GitHub integration](https://backstage.io/docs/integrations/github/locations)), so you will need to define a variable to store your GitHub token. 
+
+If you use an other integration in your custom image, Azure DevOps for instance, you will need to define a variable for it (e.g. ```azure_token = "your_ado_token"```).
+
+To set your variables in your Nomad instance, execute the following command:
+
+```bash
+$ nomad var put @spec.nv.hcl
 ```
-
-This tells Nomad Pack to tweak the `MESSAGE` environment variable that the
-service reads from.
-
-### Consul Service and Load Balancer Integration
-
-Optionally, it can configure a Consul service.
-
-If the `register_consul_service` is unset or set to true, the Consul service
-will be registered.
-
-Several load balancers in the the [Nomad Pack Community Registry][pack-registry]
-are configured to connect to this service by default.
-
-The [NGINX][pack-nginx] and [HAProxy][pack-haproxy] packs are configured to
-balance the Consul service `backstage-service`, which is the default value
-for the `consul_service_name` variable.
-
-The [Fabio][pack-fabio] and [Traefik][pack-traefik] packs are configured to
-search for Consul services with the tags found in the default value of the
-`consul_service_tags` variable.
-
-
 
 ## Variables
 
 <!-- Include information on the variables from your pack -->
 
-- `message` (string) - The message your application will respond with
-- `count` (number) - The number of app instances to deploy
 - `job_name` (string) - The name to use as the job name which overrides using
   the pack name
 - `datacenters` (list of strings) - A list of datacenters in the region which
   are eligible for task placement
 - `region` (string) - The region where jobs will be deployed
-- `register_consul_service` (bool) - If you want to register a consul service
-  for the job
-- `consul_service_tags` (list of string) - The consul service name for the
-  backstage application
-- `consul_service_name` (string) - The consul service name for the backstage
-  application
+- `postgresql_group_nomad_service_name` (string) - The nomad service name for the PostgreSQL application
+- `postgresql_task_image` (string) - PostgreSQL's Docker image (must include the tag)
+- `postgresql_task_volume_path` (string) - The volume's absolute path in the host to be used by PostgreSQL
+- `postgresql_task_resources` (object, number number) - The resources to assign to the PostgreSQL service
+- `backstage_group_nomad_service_name` (string) - The nomad service name for the Backstage application
+- `backstage_task_image` (string) - Backstage's Docker image (must include the tag)
+- `backstage_task_nomad_vars` (map of string) - Backstage's nomad variables (see below for the details)
+- `backstage_task_resources` (object, number number) - The resources to assign to the Backstage service
 
-[pack-registry]: https://github.com/hashicorp/nomad-pack-community-registry
-[pack-nginx]: https://github.com/hashicorp/nomad-pack-community-registry/tree/main/packs/nginx/README.md
-[pack-haproxy]: https://github.com/hashicorp/nomad-pack-community-registry/tree/main/packs/haproxy/README.md
-[pack-fabio]: https://github.com/hashicorp/nomad-pack-community-registry/tree/main/packs/fabio/README.md
-[pack-traefik]: https://github.com/hashicorp/nomad-pack-community-registry/tree/main/packs/traefik/traefik/README.md
+### Custom Nomad Variables
+If you need to use other Nomad variables than `postgres_user` and `postgres_password` with this pack, you will need to pass them to `backstage_task_nomad_vars`.
+
+```hcl
+backstage_task_nomad_vars = [
+  {
+    key = "AZURE_TOKEN"
+    value = "azure_token"
+  },
+  {
+    key = "YOUR_SECRET_ENV_VAR"
+    value = "your_nomad_var_key"
+  }
+]
+```

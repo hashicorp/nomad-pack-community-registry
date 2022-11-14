@@ -1,8 +1,7 @@
 variable "job_name" {
   description = "The name to use as the job name which overrides using the pack name"
   type        = string
-  // If "", the pack name will be used
-  default = ""
+  default     = "backstage"
 }
 
 variable "region" {
@@ -18,51 +17,10 @@ variable "datacenters" {
 }
 
 // PostgreSQL variables
-variable "postgresql_group_network" {
-  description = ""
-  type = list(object({
-    name = string
-    port = number
-  }))
-
-  default = [{
-    name = "db"
-    port = 5432
-  }]
-}
-
-variable "postgresql_group_update" {
-  description = "The PostgreSQL update configuration options."
-  type        = object({
-    min_healthy_time  = string
-    healthy_deadline  = string
-    progress_deadline = string
-    auto_revert       = bool
-  })
-  default = {
-    min_healthy_time  = "10s",
-    healthy_deadline  = "5m",
-    progress_deadline = "10m",
-    auto_revert       = true,
-  }
-}
-
 variable "postgresql_group_nomad_service_name" {
-  description = "The nomad service name for the application."
+  description = "The nomad service name for the PostgreSQL application."
   type        = string
   default     = "postgresql"
-}
-
-variable "postgresql_group_nomad_service_port" {
-  description = "The nomad service port for the application."
-  type        = string
-  default     = "db"
-}
-
-variable "postgresql_group_restart_attempts" {
-  description = "The number of times the task should restart on updates"
-  type        = number
-  default     = 2
 }
 
 variable "postgresql_task_image" {
@@ -77,24 +35,6 @@ variable "postgresql_task_volume_path" {
   default     = "/var/lib/backstage/postgresql"
 }
 
-variable "postgresql_task_env_vars" {
-  description = "PostgreSQL's environment variables."
-  type = list(object({
-    key   = string
-    value = string
-  }))
-  default = [
-    {
-      key   = "POSTGRES_USER"
-      value = "backstage_user"
-    },
-    {
-      key   = "POSTGRES_PASSWORD"
-      value = "backstage_user_password"
-    }
-  ]
-}
-
 variable "postgresql_task_resources" {
   description = "The resources to assign to the PostgreSQL service."
   type = object({
@@ -107,90 +47,29 @@ variable "postgresql_task_resources" {
   }
 }
 
-variable "postgresql_data_folder_task_resources" {
-  description = "The resources to assign to the PostgreSQL prestart task."
-  type = object({
-    cpu    = number
-    memory = number
-  })
-  default = {
-    cpu    = 20,
-    memory = 20
-  }
-}
-
 // Backstage variables
-variable "backstage_group_network" {
-  description = ""
-  type = list(object({
-    name = string
-    port = number
-  }))
-
-  default = [{
-    name = "http"
-    port = 7007
-  }]
-}
-
-variable "backstage_group_update" {
-  description = "The Backstage update configuration options."
-  type        = object({
-    min_healthy_time  = string
-    healthy_deadline  = string
-    progress_deadline = string
-    auto_revert       = bool
-  })
-  default = {
-    min_healthy_time  = "10s",
-    healthy_deadline  = "5m",
-    progress_deadline = "10m",
-    auto_revert       = true,
-  }
-}
-
 variable "backstage_group_nomad_service_name" {
-  description = "The consul service name for the application."
+  description = "The nomad service name for the Backstage application."
   type        = string
   default     = "backstage"
 }
 
-variable "backstage_group_nomad_service_port" {
-  description = "The nomad service port for the application."
-  type        = string
-  default     = "http"
-}
-
-variable "backstage_group_restart_attempts" {
-  description = "The number of times the task should restart on updates"
-  type        = number
-  default     = 2
-}
-
 variable "backstage_task_image" {
-  description = "Backstage Docker image."
+  description = "Backstage's Docker image."
   type        = string
   default     = "ghcr.io/backstage/backstage:1.7.1"
 }
 
-variable "backstage_task_env_vars" {
-  description = "Backstage environment variables."
+variable "backstage_task_nomad_vars" {
+  description = "Backstage's nomad variables."
   type = list(object({
     key   = string
     value = string
   }))
     default = [
     {
-      key   = "POSTGRES_USER"
-      value = "backstage_user"
-    },
-    {
-      key   = "POSTGRES_PASSWORD"
-      value = "backstage_user_password"
-    },
-    {
       key   = "GITHUB_TOKEN"
-      value = "VG9rZW5Ub2tlblRva2VuVG9rZW5NYWxrb3ZpY2hUb2tlbg=="
+      value = "github_token"
     }
   ]
 }

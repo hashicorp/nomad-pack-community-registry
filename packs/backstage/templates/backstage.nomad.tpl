@@ -1,4 +1,4 @@
-job [[ template "job_name" . ]] {
+job [[ .backstage.job_name | quote ]] {
   [[ template "region" . ]]
   datacenters = [[ .backstage.datacenters  | toStringList ]]
   type = "service"
@@ -8,23 +8,21 @@ job [[ template "job_name" . ]] {
 
     network {
       mode = "host"
-      [[- range $port := .backstage.postgresql_group_network ]]
-      port [[ $port.name | quote ]] {
-        to = [[ $port.port ]]
-        static = [[ $port.port ]]
+      port "db" {
+        to = 5432
+        static = 5432
       }
-      [[- end ]]
     }
 
     service {
       name = [[ .backstage.postgresql_group_nomad_service_name | quote ]]
-      port = [[ .backstage.postgresql_group_nomad_service_port | quote ]]
+      port = "db"
       provider = "nomad"  
     }
 
     restart {
-      attempts = [[ .backstage.postgresql_group_restart_attempts ]]
-      interval = "30m"
+      attempts = 2
+      interval = "10m"
       delay = "15s"
       mode = "fail"
     }
@@ -40,7 +38,7 @@ job [[ template "job_name" . ]] {
 
       config {
         image = [[.backstage.postgresql_task_image | quote]]
-        ports = [[ .backstage.postgresql_group_nomad_service_port | list | toStringList ]]
+        ports = ["db"]
       }
 
       volume_mount {
@@ -49,14 +47,17 @@ job [[ template "job_name" . ]] {
         read_only   = false
       }
 
-      [[- $postgresql_task_env_vars_length := len .backstage.postgresql_task_env_vars ]]
-      [[- if not (eq $postgresql_task_env_vars_length 0) ]]
-      env {
-        [[- range $var := .backstage.postgresql_task_env_vars ]]
-        [[ $var.key ]] = [[ $var.value | quote ]]
-        [[- end ]]
+      template {
+        destination = "${NOMAD_SECRETS_DIR}/env.vars"
+        env         = true
+        change_mode = "restart"
+        data        = <<EOF
+{{- with nomadVar "nomad/jobs/[[ .backstage.job_name ]]" -}}
+POSTGRESQLCONNSTR_POSTGRES_USER = {{ .postgres_user }}
+POSTGRESQLCONNSTR_POSTGRES_PASSWORD = {{ .postgres_password }}
+{{- end -}}
+EOF
       }
-      [[- end ]]
 
       resources {
         cpu    = [[ .backstage.postgresql_task_resources.cpu ]]
@@ -70,23 +71,21 @@ job [[ template "job_name" . ]] {
 
     network {
       mode = "host"
-      [[- range $port := .backstage.backstage_group_network ]]
-      port [[ $port.name | quote ]] {
-        to = [[ $port.port ]]
-        static = [[ $port.port ]]
+      port "http" {
+        to = 7007
+        static = 7007
       }
-      [[- end ]]
     }
 
     service {
       name = [[ .backstage.backstage_group_nomad_service_name | quote ]]
-      port = [[ .backstage.backstage_group_nomad_service_port | quote ]]
+      port = "http"
       provider = "nomad"  
     }
 
     restart {
-      attempts = [[ .backstage.backstage_group_restart_attempts ]]
-      interval = "30m"
+      attempts = 2
+      interval = "10m"
       delay = "15s"
       mode = "fail"
     }
@@ -95,8 +94,8 @@ job [[ template "job_name" . ]] {
       driver = "docker"
 
       config {
-        image = [[.backstage.backstage_task_image | quote]]
-        ports = [[ .backstage.backstage_group_nomad_service_port | list | toStringList ]]
+        image = [[ .backstage.backstage_task_image | quote]]
+        ports = ["http"]
       }
 
       template {
@@ -110,14 +109,23 @@ EOH
         env         = true
       }
 
-      [[- $backstage_task_env_vars_length := len .backstage.backstage_task_env_vars ]]
-      [[- if not (eq $backstage_task_env_vars_length 0) ]]
-      env {
-        [[- range $var := .backstage.backstage_task_env_vars ]]
-        [[ $var.key ]] = [[ $var.value | quote ]]
-        [[- end ]]
+      template {
+        destination = "${NOMAD_SECRETS_DIR}/env.vars"
+        env         = true
+        change_mode = "restart"
+        data        = <<EOF
+{{- with nomadVar "nomad/jobs/[[ .backstage.job_name ]]" -}}
+POSTGRESQLCONNSTR_POSTGRES_USER = {{ .postgres_user }}
+POSTGRESQLCONNSTR_POSTGRES_PASSWORD = {{ .postgres_password }}
+[[- $backstage_task_env_vars_length := len .backstage.backstage_task_nomad_vars ]]
+  [[- if not (eq $backstage_task_env_vars_length 0) ]]
+    [[- range $var := .backstage.backstage_task_nomad_vars ]]
+[[ $var.key ]] = {{ .[[ $var.value ]] }}
+    [[- end ]]
+[[- end ]]
+{{- end -}}
+EOF
       }
-      [[- end ]]
 
       resources {
         cpu    = [[ .backstage.backstage_task_resources.cpu ]]
