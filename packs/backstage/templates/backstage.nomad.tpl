@@ -53,8 +53,8 @@ job [[ .backstage.job_name | quote ]] {
         change_mode = "restart"
         data        = <<EOF
 {{- with nomadVar "nomad/jobs/[[ .backstage.job_name ]]" -}}
-POSTGRESQLCONNSTR_POSTGRES_USER = {{ .postgres_user }}
-POSTGRESQLCONNSTR_POSTGRES_PASSWORD = {{ .postgres_password }}
+POSTGRES_USER = {{ .postgres_user }}
+POSTGRES_PASSWORD = {{ .postgres_password }}
 {{- end -}}
 EOF
       }
@@ -115,8 +115,8 @@ EOH
         change_mode = "restart"
         data        = <<EOF
 {{- with nomadVar "nomad/jobs/[[ .backstage.job_name ]]" -}}
-POSTGRESQLCONNSTR_POSTGRES_USER = {{ .postgres_user }}
-POSTGRESQLCONNSTR_POSTGRES_PASSWORD = {{ .postgres_password }}
+POSTGRES_USER = {{ .postgres_user }}
+POSTGRES_PASSWORD = {{ .postgres_password }}
 [[- $backstage_task_env_vars_length := len .backstage.backstage_task_nomad_vars ]]
   [[- if not (eq $backstage_task_env_vars_length 0) ]]
     [[- range $var := .backstage.backstage_task_nomad_vars ]]

@@ -38,7 +38,7 @@ client {
 ## Customizing the Docker images
 
 The 2 docker images can be replaced by using their variable names:
-- postgres_task_image
+- postgresql_task_image
 - backstage_task_image
 
 Example:
