@@ -55,7 +55,7 @@ $ nomad-pack run backstage --var backstage_task_image="ghcr.io/backstage/backsta
 Create an variable specification file:
 ```hcl
 # spec.nv.hcl
-path = "nomad/jobs"
+path = "nomad/jobs/backstage"
 
 items {
   # Mandatory variables
