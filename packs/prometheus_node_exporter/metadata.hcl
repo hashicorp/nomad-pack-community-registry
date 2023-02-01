@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 app {
   url    = "https://prometheus.io/docs/guides/node-exporter/"
   author = "Prometheus"

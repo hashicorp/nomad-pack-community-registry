@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 prometheus_task_app_rules_yaml = <<EOF
 ---
 groups:

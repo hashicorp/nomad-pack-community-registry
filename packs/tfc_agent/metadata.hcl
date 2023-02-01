@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 app {
   url    = "https://www.terraform.io/docs/cloud/agents/index.html"
   author = "HashiCorp"

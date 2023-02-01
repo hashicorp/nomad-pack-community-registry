@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 app {
   url    = "https://github.com/kubernetes-sigs/aws-efs-csi-driver"
   author = "Kubernetes SIGs"

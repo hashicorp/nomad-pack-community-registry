@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 # This example configures a basic OTel Collector with Traefik.
 # It receives traces over OTLP, and ships them to Lighstep, Honeycomb, and Datadog
 # API keys/tokens for each Observability platform are retrieved from HashiCorp Vault.

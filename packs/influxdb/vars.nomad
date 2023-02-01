@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 docker_influxdb_env_vars = {
   "docker_influxdb_init_mode" : "setup",
   "docker_influxdb_init_retention" : "1w",

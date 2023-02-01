@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 app {
   url    = "https://www.getoutline.com/"
   author = "General Outline, Inc. and contributors"

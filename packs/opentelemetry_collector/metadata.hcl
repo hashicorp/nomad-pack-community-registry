@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 app {
   url    = "https://github.com/open-telemetry/opentelemetry-collector"
   author = "OpenTelemetry"
