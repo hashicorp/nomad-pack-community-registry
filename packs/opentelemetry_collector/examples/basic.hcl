@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 # This example configures a basic OTel Collector to receive traces over OTLP or Jager, and ships them
 # to a OTLP endpoint
 

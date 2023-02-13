@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 // Nomad Job Variables
 variable "job_name" {
   description = "Name of the Nomad job -- Overrides the default pack name"

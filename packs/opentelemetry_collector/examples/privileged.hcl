@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 # This example configures the OTel Collector to run in privledged mode in order to gather host metrics
 # and ship's the traces and metrics to Honeycomb.io via OTLP
 privileged_mode = true

@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 docker_kibana_env_vars = {
   "server_name": "kibana.example.org",
   "server_host": "0.0.0.0",

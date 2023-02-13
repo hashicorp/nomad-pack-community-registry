@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 # Job variables.
 variable "datacenters" {
   description = "A list of datacenters in the region which are eligible for task placement."
