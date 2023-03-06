@@ -48,7 +48,7 @@ variable "version_tag" {
 }
 
 variable "admin_port" {
-  description = "The Nomad client port that routes HTTP traffic to Caddy."
+  description = "The HTTP port for Caddy administration API."
   type        = number
   default     = 2019
 }
