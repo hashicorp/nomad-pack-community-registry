@@ -1,18 +1,20 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 variable "job_name" {
-  description = "The name to use as the job name which overrides using the pack name"
+  description = "The name to use as the job name which overrides using the pack name."
   type        = string
-  // If "", the pack name will be used
   default = ""
 }
 
 variable "datacenters" {
-  description = "A list of datacenters in the region which are eligible for task placement"
+  description = "A list of datacenters in the region which are eligible for task placement."
   type        = list(string)
   default     = ["dc1"]
 }
 
 variable "region" {
-  description = "The region where the job should be placed"
+  description = "The region where the job should be placed."
   type        = string
   default     = "global"
 }
@@ -23,28 +25,55 @@ variable "namespace" {
   default     = "default"
 }
 
-variable "consul_service_name" {
-  description = "The consul service you wish to load balance"
-  type        = string
-  default     = "webapp"
+variable "constraints" {
+  description = "Constraints to apply to the entire job."
+  type        = list(object({
+    attribute = string
+    operator  = string
+    value     = string
+  }))
+  default = [
+    {
+      attribute = "$${attr.kernel.name}",
+      value     = "linux",
+      operator  = "",
+    },
+  ]
 }
 
 variable "version_tag" {
   description = "The docker image version. For options, see https://hub.docker.com/_/caddy"
   type        = string
-  default     = "2.4.5"
+  default     = "2.6.4"
+}
+
+variable "admin_port" {
+  description = "The Nomad client port that routes HTTP traffic to Caddy."
+  type        = number
+  default     = 2019
 }
 
 variable "http_port" {
   description = "The Nomad client port that routes HTTP traffic to Caddy."
   type        = number
-  default     = 8443
+  default     = 80
 }
 
 variable "https_port" {
   description = "The Nomad client port that routes HTTPS traffic to Caddy."
   type        = number
-  default     = 8080
+  default     = 443
+}
+
+variable "http_healthcheck_path" {
+  description = "The HTTP path served by Caddy to call for health checks."
+  type = string
+  default = "/"
+}
+
+variable "https_healthcheck_path" {
+  description = "The HTTPS path served by Caddy to call for health checks."
+  type = string
 }
 
 variable "resources" {

@@ -1,15 +1,19 @@
 job [[ template "job_name" . ]] {
-[[ template "region" . ]]
-datacenters = [ [[ range $idx, $dc := .caddy.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
-  namespace = [[ .caddy.namespace | quote ]]
+  [[ template "region" . ]]
+  datacenters = [[ .caddy.datacenters | toPrettyJson ]]
+  namespace   = [[ .caddy.namespace | quote ]]
 
   type = "system"
 
-  // must have linux for network mode
+  [[ if .caddy.constraints ]][[ range $idx, $constraint := .caddy.constraints ]]
   constraint {
-    attribute = "${attr.kernel.name}"
-    value     = "linux"
+    attribute = [[ $constraint.attribute | quote ]]
+    value     = [[ $constraint.value | quote ]]
+    [[- if ne $constraint.operator "" ]]
+    operator  = [[ $constraint.operator | quote ]]
+    [[- end ]]
   }
+  [[- end ]][[- end ]]
 
   group "caddy" {
     count = 1
@@ -25,6 +29,10 @@ datacenters = [ [[ range $idx, $dc := .caddy.datacenters ]][[if $idx]],[[end]][[
     }
 
     network {
+      port "admin" {
+        static = [[ .caddy.admin_port ]]
+        to     = 2019
+      }
       port "https" {
         static = [[ .caddy.https_port ]]
         to     = 443
@@ -38,11 +46,41 @@ datacenters = [ [[ range $idx, $dc := .caddy.datacenters ]][[if $idx]],[[end]][[
     service {
       name = "caddy-https"
       port = "https"
+      [[ if .caddy.https_healthcheck_path ]]
+      check {
+        type     = "http"
+        protocol = "https"
+        name     = "https_health"
+        path     = [[ .caddy.https_healthcheck_path | quote ]]
+        interval = "20s"
+        timeout  = "5s"
+
+        check_restart {
+          limit = 3
+          grace = "90s"
+          ignore_warnings = false
+        }
+      }
+      [[- end]]
     }
 
     service {
       name = "caddy-http"
       port = "http"
+
+      check {
+        type     = "http"
+        name     = "http_health"
+        path     = [[ .caddy.http_healthcheck_path | quote ]]
+        interval = "20s"
+        timeout  = "5s"
+
+        check_restart {
+          limit = 3
+          grace = "90s"
+          ignore_warnings = false
+        }
+      }
     }
 
     task "caddy" {
@@ -67,8 +105,8 @@ datacenters = [ [[ range $idx, $dc := .caddy.datacenters ]][[if $idx]],[[end]][[
       [[- if ne .caddy.caddyfile "" ]]
       template {
         data        = <<EOH
-[[ .caddy.caddyfile ]]
-EOH
+  [[ .caddy.caddyfile ]]
+  EOH
         destination = "configs/Caddyfile"
         # Caddy doesn't support reload via signals.
         # https://github.com/caddyserver/caddy/issues/3967
