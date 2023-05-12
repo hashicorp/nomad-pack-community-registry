@@ -1,0 +1,57 @@
+name: Notify Integration Release
+on:
+  push:
+    paths:
+      - "packs/**"
+    branches:
+      - main
+jobs:
+  determine_identifiers:
+    name: Determine Identifiers
+    runs-on: ubuntu-latest
+    outputs:
+      identifiers: ${{ steps.output_result.outputs.identifiers }}
+    steps:
+      - name: Checkout Nomad Pack Community Registry
+        uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
+      - id: determine_changed_files
+        name: Determine Changed Files
+        uses: jitterbit/get-changed-files@d06c756e3609dd3dd5d302dde8d1339af3f790f2 # v1
+      - id: output_result
+        run: |
+          matrixArray=$(
+            echo ${{ steps.determine_changed_files.outputs.all }} \
+              | ./.github/scripts/files-to-identifiers.sh \
+              | jq --raw-input --slurp  'split("\n") | map(select(. != ""))' \
+              | jq -c .
+          )
+          echo "identifiers=$matrixArray" >> "$GITHUB_OUTPUT"
+
+  notify_release:
+    runs-on: ubuntu-latest
+    needs: determine_identifiers
+    strategy:
+      matrix:
+        integration_identifier: ${{fromJson(needs.determine_identifiers.outputs.identifiers)}}
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v3
+      - id: calculate_version
+        name: Calculate Version
+        run: |
+          version="$(./.github/scripts/version-from-identifier.sh ${{ matrix.integration_identifier }})"
+          echo "Computed Version: $version"
+          echo "releaseVersion=$version" >> "$GITHUB_OUTPUT"
+      - name: Checkout integration-release-action
+        uses: actions/checkout@v3
+        with:
+          repository: hashicorp/integration-release-action
+          path: ./integration-release-action
+      - name: Notify Release
+        uses: ./integration-release-action
+        with:
+          integration_identifier: ${{ matrix.integration_identifier }}
+          release_version: ${{ steps.calculate_version.outputs.releaseVersion }}
+          release_sha: ${{ github.ref }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          integration_strategy: 'nomad-pack'
