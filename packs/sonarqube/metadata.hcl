@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "SonarQube"
   identifier = "nomad/hashicorp/sonarqube"
+  name       = "SonarQube"
 }

@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "HAProxy"
   identifier = "nomad/hashicorp/haproxy"
+  name       = "HAProxy"
 }

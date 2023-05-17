@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "Promtail"
   identifier = "nomad/hashicorp/promtail"
+  name       = "Promtail"
 }

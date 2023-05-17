@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "Redis"
   identifier = "nomad/hashicorp/redis"
+  name       = "Redis"
 }

@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "Vector"
   identifier = "nomad/hashicorp/vector"
+  name       = "Vector"
 }

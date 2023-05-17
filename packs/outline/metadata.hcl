@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "Outline"
   identifier = "nomad/hashicorp/outline"
+  name       = "Outline"
 }

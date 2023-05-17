@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "HashiCups"
   identifier = "nomad/hashicorp/hashicups"
+  name       = "HashiCups"
 }

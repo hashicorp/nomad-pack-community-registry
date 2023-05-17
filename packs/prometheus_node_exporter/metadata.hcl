@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "Prometheus Node Exporter"
   identifier = "nomad/hashicorp/prometheus-node-exporter"
+  name       = "Prometheus Node Exporter"
 }

@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "CSI OpenStack Cinder"
   identifier = "nomad/hashicorp/csi-openstack-cinder"
+  name       = "CSI OpenStack Cinder"
 }

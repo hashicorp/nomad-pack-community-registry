@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "OpenTelemetry Collector"
   identifier = "nomad/hashicorp/opentelemetry-collector"
+  name       = "OpenTelemetry Collector"
 }

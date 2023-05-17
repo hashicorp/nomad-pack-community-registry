@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "Wordpress"
   identifier = "nomad/hashicorp/wordpress"
+  name       = "Wordpress"
 }

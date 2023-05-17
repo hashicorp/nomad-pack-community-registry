@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "Prometheus"
   identifier = "nomad/hashicorp/prometheus-pack"
+  name       = "Prometheus"
 }

@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "Chaotic Ngine"
   identifier = "nomad/hashicorp/chaotic-ngine"
+  name       = "Chaotic Ngine"
 }

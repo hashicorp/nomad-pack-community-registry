@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "Nomad Autoscaler"
   identifier = "nomad/hashicorp/nomad-autoscaler"
+  name       = "Nomad Autoscaler"
 }

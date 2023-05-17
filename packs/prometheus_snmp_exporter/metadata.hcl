@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "Prometheus SNMP Exporter"
   identifier = "nomad/hashicorp/prometheus-snmp-exporter"
+  name       = "Prometheus SNMP Exporter"
 }

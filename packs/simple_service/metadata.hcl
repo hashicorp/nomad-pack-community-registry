@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "Simple Service"
   identifier = "nomad/hashicorp/simple-service"
+  name       = "Simple Service"
 }

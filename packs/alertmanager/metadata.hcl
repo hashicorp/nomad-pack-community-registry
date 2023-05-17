@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "Alertmanager"
   identifier = "nomad/hashicorp/alertmanager"
+  name       = "Alertmanager"
 }

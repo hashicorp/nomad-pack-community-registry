@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "Nomad Ingress Nginx"
   identifier = "nomad/hashicorp/nomad-ingress-nginx"
+  name       = "Nomad Ingress Nginx"
 }

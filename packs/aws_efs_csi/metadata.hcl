@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "AWS EFS CSI"
   identifier = "nomad/hashicorp/aws-efs-csi"
+  name       = "AWS EFS CSI"
 }

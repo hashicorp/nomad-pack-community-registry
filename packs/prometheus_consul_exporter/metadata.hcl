@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "Prometheus Consul Exporter"
   identifier = "nomad/hashicorp/prometheus-consul-exporter"
+  name       = "Prometheus Consul Exporter"
 }

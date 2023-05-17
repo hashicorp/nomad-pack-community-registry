@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "Grafana Tempo"
   identifier = "nomad/hashicorp/tempo"
+  name       = "Grafana Tempo"
 }

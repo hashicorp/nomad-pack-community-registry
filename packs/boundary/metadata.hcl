@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "Boundary"
   identifier = "nomad/hashicorp/boundary"
+  name       = "Boundary"
 }

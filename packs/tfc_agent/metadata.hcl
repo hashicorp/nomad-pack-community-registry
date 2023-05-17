@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "TFC Agent"
   identifier = "nomad/hashicorp/tfc-agent"
+  name       = "TFC Agent"
 }

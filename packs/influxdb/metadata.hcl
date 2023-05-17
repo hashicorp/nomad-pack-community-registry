@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "InfluxDB"
   identifier = "nomad/hashicorp/influxdb"
+  name       = "InfluxDB"
 }

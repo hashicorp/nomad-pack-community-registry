@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "Traefik"
   identifier = "nomad/hashicorp/traefik"
+  name       = "Traefik"
 }

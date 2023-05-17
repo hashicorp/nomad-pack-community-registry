@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "NextCloud"
   identifier = "nomad/hashicorp/nextcloud"
+  name       = "NextCloud"
 }

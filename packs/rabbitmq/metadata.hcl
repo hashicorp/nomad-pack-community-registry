@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "RabbitMQ"
   identifier = "nomad/hashicorp/rabbitmq"
+  name       = "RabbitMQ"
 }

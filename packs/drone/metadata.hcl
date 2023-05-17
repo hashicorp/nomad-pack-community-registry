@@ -14,6 +14,6 @@ pack {
 }
 
 integration {
-  name       = "Drone"
   identifier = "nomad/hashicorp/drone"
+  name       = "Drone"
 }
