@@ -12,3 +12,8 @@ pack {
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/tempo"
   version     = "0.0.1"
 }
+
+integration {
+  name       = "Grafana Tempo"
+  identifier = "nomad/hashicorp/tempo"
+}

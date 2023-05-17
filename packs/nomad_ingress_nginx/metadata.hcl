@@ -12,3 +12,8 @@ pack {
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/nomad_ingress_nginx"
   version     = "0.0.1"
 }
+
+integration {
+  name       = "Nomad Ingress Nginx"
+  identifier = "nomad/hashicorp/nomad-ingress-nginx"
+}

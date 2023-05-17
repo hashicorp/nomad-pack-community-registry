@@ -12,3 +12,8 @@ pack {
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/faasd"
   version     = "0.0.1"
 }
+
+integration {
+  name       = "Faasd"
+  identifier = "nomad/hashicorp/faasd"
+}

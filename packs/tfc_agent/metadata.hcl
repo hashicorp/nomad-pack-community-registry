@@ -12,3 +12,8 @@ pack {
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/tree/main/tfc_agent"
   version     = "0.1.0"
 }
+
+integration {
+  name       = "TFC Agent"
+  identifier = "nomad/hashicorp/tfc-agent"
+}

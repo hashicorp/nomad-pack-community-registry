@@ -12,3 +12,8 @@ pack {
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/sonarqube"
   version     = "0.0.1"
 }
+
+integration {
+  name       = "SonarQube"
+  identifier = "nomad/hashicorp/sonarqube"
+}
