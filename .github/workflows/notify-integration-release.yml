@@ -21,6 +21,7 @@ jobs:
         run: |
           matrixArray=$(
             echo ${{ steps.determine_changed_files.outputs.all }} \
+              | sed 's/ /\n/g' \
               | ./.github/scripts/files-to-identifiers.sh \
               | jq --raw-input --slurp  'split("\n") | map(select(. != ""))' \
               | jq -c .
