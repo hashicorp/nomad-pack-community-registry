@@ -12,3 +12,8 @@ pack {
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/tree/main/traefik"
   version     = "0.1.0"
 }
+
+integration {
+  name       = "Traefik"
+  identifier = "nomad/hashicorp/traefik"
+}

@@ -12,3 +12,8 @@ pack {
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/alertmanager"
   version     = "0.0.1"
 }
+
+integration {
+  name       = "Alertmanager"
+  identifier = "nomad/hashicorp/alertmanager"
+}

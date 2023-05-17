@@ -12,3 +12,8 @@ pack {
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/tree/main/prometheus_consul_exporter"
   version     = "0.0.1"
 }
+
+integration {
+  name       = "Prometheus Consul Exporter"
+  identifier = "nomad/hashicorp/prometheus-consul-exporter"
+}

@@ -12,3 +12,8 @@ pack {
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/tree/main/prometheus_snmp_exporter"
   version     = "0.0.1"
 }
+
+integration {
+  name       = "Prometheus SNMP Exporter"
+  identifier = "nomad/hashicorp/prometheus-snmp-exporter"
+}

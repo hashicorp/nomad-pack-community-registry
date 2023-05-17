@@ -12,3 +12,8 @@ pack {
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/loki"
   version     = "0.0.1"
 }
+
+integration {
+  name       = "Loki"
+  identifier = "nomad/hashicorp/loki"
+}

@@ -12,3 +12,8 @@ pack {
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/grafana"
   version     = "0.1.0"
 }
+
+integration {
+  name       = "Grafana"
+  identifier = "nomad/hashicorp/grafana"
+}
