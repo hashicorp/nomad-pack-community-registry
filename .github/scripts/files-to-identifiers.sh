@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 # #!/usr/bin/env bash
 #
 # This script coerces a list of input files that have been changed
