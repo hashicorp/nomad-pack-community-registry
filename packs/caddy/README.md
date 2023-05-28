@@ -21,25 +21,9 @@ This pack contains a single system job that runs [Caddy](https://caddyserver.com
 ### `constraints` List of Objects
 
 [Nomad job specification constraints][job_constraint] allows restricting the set of eligible nodes
-on which the Prometheus task will run.
+on which the Caddy task will run.
 
-- `attribute` (string) - Specifies the name or reference of the attribute to examine for the
-constraint.
-- `operator` (string) - Specifies the comparison operator. The ordering is compared lexically.
-- `value` (string) - Specifies the value to compare the attribute against using the specified
-operation.
-
-The default value constrains the job to run on client whose kernel name is `linux`. The HCL
-variable list of objects is shown below and uses a double dollar sign for escaping:
-```hcl
-[
-  {
-    attribute = "$${attr.kernel.name}",
-    value     = "linux",
-    operator  = "",
-  }
-]
-```
+Caddy does not require any constraints by default.
 
 ### `resources` Object
 

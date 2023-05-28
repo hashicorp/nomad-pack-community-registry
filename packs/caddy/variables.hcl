@@ -32,13 +32,6 @@ variable "constraints" {
     operator  = string
     value     = string
   }))
-  default = [
-    {
-      attribute = "$${attr.kernel.name}",
-      value     = "linux",
-      operator  = "",
-    },
-  ]
 }
 
 variable "version_tag" {
