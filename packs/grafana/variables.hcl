@@ -66,12 +66,24 @@ variable "grafana_consul_tags" {
   default = []
 }
 
+variable "grafana_vault" {
+  description = "List of Vault Policies"
+  type = list(string)
+  default = []
+  }
+
 variable "grafana_volume" {
   description = "The resource to assign to the Grafana service task"
   type = object({
     type    = string
     source = string
   })
+}
+
+variable "grafana_task_config_ini" {
+  description = "ini string for grafana.ini"
+  type = string
+  default = ""
 }
 
 variable "grafana_env_vars" {
@@ -84,7 +96,8 @@ variable "grafana_env_vars" {
     {key = "GF_LOG_LEVEL", value = "DEBUG"},
     {key = "GF_LOG_MODE", value = "console"},
     {key = "GF_SERVER_HTTP_PORT", value = "$${NOMAD_PORT_http}"},
-    {key = "GF_PATHS_PROVISIONING", value = "/local/grafana/provisioning"}
+    {key = "GF_PATHS_PROVISIONING", value = "/local/grafana/provisioning"},
+    {key = "GF_PATHS_CONFIG", value = "/local/grafana/grafana.ini"}
   ]
 }
 

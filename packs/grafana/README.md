@@ -21,7 +21,9 @@ This pack deploys a single instance of the Grafana docker image `grafana/grafana
 - `grafana_task_artifacts` (list(object)) - Nomad Artifacts for Grafana
 - `grafana_task_config_dashboards` (string) - Yaml configuration for automatic provision of dashboards
 - `grafana_task_config_datasources` (string) - Yaml configuration for automatic provision of datasources
+- `grafana_task_config_ini` (string) - ini string for grafana.ini
 - `grafana_task_config_plugins` (string) - yaml configuration for automatic provision of plugins
+- `grafana_vault` list(string) - List of Vault Policies.
 
 ## Dependencies
 
