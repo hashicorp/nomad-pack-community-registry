@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 # #!/usr/bin/env bash
 metadataFile="$(grep -R "\"$1\"" ./packs | cut -d ' ' -f1 | sed 's/:.*//g')"
 if [[ -f "$metadataFile" ]]; then
