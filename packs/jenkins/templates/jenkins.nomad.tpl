@@ -1,6 +1,6 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .jenkins.datacenters | toPrettyJson ]]
+  datacenters = [[ .jenkins.datacenters | toStringList ]]
   type = "service"
   [[- if .jenkins.namespace ]]
   namespace   = [[ .jenkins.namespace | quote ]]
@@ -24,8 +24,6 @@ job [[ template "job_name" . ]] {
     count = 1
 
     network {
-      mode = "bridge"
-
       port "http" {
         to = 8080
       }
@@ -34,32 +32,21 @@ job [[ template "job_name" . ]] {
       }
     }
 
-    [[- if .jenkins.jenkins_vault ]]
-    vault {
-      policies = [[ .jenkins.jenkins_vault | toPrettyJson ]]
-      change_mode   = "restart"
-    }
-    [[- end ]]
-
     [[- if .jenkins.register_consul_service ]]
     service {
       name = "[[ .jenkins.consul_service_name ]]"
-      [[- if .jenkins.consul_service_tags ]]
-      tags = [[ .jenkins.consul_service_tags | toPrettyJson ]]
+      [[- if ne (len .jenkins.consul_service_tags) 0 ]]
+      tags = [[ .jenkins.consul_service_tags | toStringList ]]
       [[- end ]]
-      port = "8080"
+      port = "http"
 
-      connect {
-        sidecar_service {}
-        }
-
-      # check {
-      #   name     = "alive"
-      #   type     = "http"
-      #   path     = "/login"
-      #   interval = "10s"
-      #   timeout  = "2s"
-      # }
+      check {
+        name     = "alive"
+        type     = "http"
+        path     = "/login"
+        interval = "10s"
+        timeout  = "2s"
+      }
     }
     [[- end ]]
 
@@ -101,67 +88,10 @@ job [[ template "job_name" . ]] {
 
       resources {
         cpu    = 200
-        memory = 32
+        memory = 128
       }
     }
-
-[[- if .jenkins.jenkins_task_cacert ]]
-
-    task "create_cacert" {
-      lifecycle {
-        hook    = "prestart"
-        sidecar = false
-      }
-
-      volume_mount {
-        volume      = "[[ .jenkins.volume_name ]]"
-        destination = "/var/jenkins_home"
-        read_only   = false
-      }
-
-      driver = "docker"
-
-      config {
-        image = "[[ .jenkins.image_name ]]:[[ .jenkins.image_tag ]]"
-        command = "sh"
-        args    = [
-          "-c",
-          <<EOF
-set -xe
-
-test -d $JENKINS_HOME/.cacerts || mkdir $JENKINS_HOME/.cacerts
-cp /opt/java/openjdk/lib/security/cacerts $JENKINS_HOME/.cacerts/cacerts
-
-JAVA_HOME=/opt/java/openjdk
-
-$JAVA_HOME/bin/keytool -keystore $JENKINS_HOME/.cacerts/cacerts \
-  -import -alias hashistack -file /secrets/jenkins_ca.crt \
-  -storepass changeit -noprompt
-EOF
-        ]
-      }
-
-      env {
-        [[ range $key, $var := .jenkins.docker_jenkins_env_vars ]]
-        [[if ne (len $var) 0 ]][[ $key | upper ]] = [[ $var | quote ]][[ end ]]
-        [[ end ]]
-      }
-
-      [[- if .jenkins.jenkins_task_cacert ]]
-        template {
-          data = <<EOF
-[[ .jenkins.jenkins_task_cacert ]]
-EOF
-          destination = "/secrets/jenkins_ca.crt"
-        }
-      [[- end ]]
-
-      resources {
-        cpu    = 200
-        memory = 64
-      }
-    }
-[[ end ]]
+    [[- end ]]
 
     [[- if .jenkins.plugins ]]
     task "install-plugins" {
@@ -179,12 +109,7 @@ EOF
           "local/plugins.txt:/var/jenkins_home/plugins.txt",
         ]
       }
-
-      resources {
-        cpu    = 200
-        memory = 256
-      }
-
+    
       lifecycle {
         hook    = "prestart"
         sidecar = false
@@ -199,7 +124,6 @@ EOF
         change_mode   = "noop"
       }
     }
-    [[- end ]]
     [[- end ]]
 
     task [[ template "job_name" . ]] {
