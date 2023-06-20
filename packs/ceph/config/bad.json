@@ -1,0 +1,288 @@
+{
+    "Job": {
+        "Affinities": null,
+        "AllAtOnce": false,
+        "Constraints": null,
+        "ConsulNamespace": "",
+        "ConsulToken": "",
+        "CreateIndex": 360,
+        "Datacenters": [
+            "dc1"
+        ],
+        "DispatchIdempotencyToken": "",
+        "Dispatched": false,
+        "ID": "ceph",
+        "JobModifyIndex": 360,
+        "Meta": {
+            "pack.deployment_name": "ceph",
+            "pack.job": "ceph",
+            "pack.name": "ceph",
+            "pack.path": "/Users/timgross/ws/nomad/src/hashicorp/nomad-pack-community-registry/packs/ceph",
+            "pack.registry": "<<local folder>>",
+            "pack.version": "<<none>>"
+        },
+        "Migrate": null,
+        "ModifyIndex": 361,
+        "Multiregion": null,
+        "Name": "ceph",
+        "Namespace": "default",
+        "NomadTokenID": "68b87548-8c4d-e1af-813e-53615828e331",
+        "ParameterizedJob": null,
+        "ParentID": "",
+        "Payload": null,
+        "Periodic": null,
+        "Priority": 50,
+        "Region": "global",
+        "Reschedule": null,
+        "Spreads": null,
+        "Stable": false,
+        "Status": "running",
+        "StatusDescription": "",
+        "Stop": false,
+        "SubmitTime": 1649882213178312545,
+        "TaskGroups": [
+            {
+                "Affinities": null,
+                "Constraints": [
+                    {
+                        "LTarget": "${attr.kernel.name}",
+                        "Operand": "=",
+                        "RTarget": "linux"
+                    },
+                    {
+                        "LTarget": "${attr.driver.docker.privileged.enabled}",
+                        "Operand": "=",
+                        "RTarget": "true"
+                    }
+                ],
+                "Consul": {
+                    "Namespace": ""
+                },
+                "Count": 1,
+                "EphemeralDisk": {
+                    "Migrate": false,
+                    "SizeMB": 300,
+                    "Sticky": false
+                },
+                "MaxClientDisconnect": null,
+                "Meta": null,
+                "Migrate": {
+                    "HealthCheck": "checks",
+                    "HealthyDeadline": 300000000000,
+                    "MaxParallel": 1,
+                    "MinHealthyTime": 10000000000
+                },
+                "Name": "ceph",
+                "Networks": [
+                    {
+                        "CIDR": "",
+                        "DNS": null,
+                        "Device": "",
+                        "DynamicPorts": null,
+                        "Hostname": "",
+                        "IP": "",
+                        "MBits": 0,
+                        "Mode": "host",
+                        "ReservedPorts": null
+                    }
+                ],
+                "ReschedulePolicy": {
+                    "Attempts": 0,
+                    "Delay": 30000000000,
+                    "DelayFunction": "exponential",
+                    "Interval": 0,
+                    "MaxDelay": 3600000000000,
+                    "Unlimited": true
+                },
+                "RestartPolicy": {
+                    "Attempts": 2,
+                    "Delay": 15000000000,
+                    "Interval": 1800000000000,
+                    "Mode": "fail"
+                },
+                "Scaling": null,
+                "Services": [
+                    {
+                        "AddressMode": "auto",
+                        "CanaryMeta": null,
+                        "CanaryTags": null,
+                        "CheckRestart": null,
+                        "Checks": null,
+                        "Connect": null,
+                        "EnableTagOverride": false,
+                        "Id": "",
+                        "Meta": null,
+                        "Name": "ceph-mon",
+                        "OnUpdate": "require_healthy",
+                        "PortLabel": "3300",
+                        "Provider": "consul",
+                        "Tags": null,
+                        "TaskName": ""
+                    },
+                    {
+                        "AddressMode": "auto",
+                        "CanaryMeta": null,
+                        "CanaryTags": null,
+                        "CheckRestart": null,
+                        "Checks": [
+                            {
+                                "AddressMode": "",
+                                "Args": null,
+                                "Body": "",
+                                "CheckRestart": null,
+                                "Command": "",
+                                "Expose": false,
+                                "FailuresBeforeCritical": 0,
+                                "GRPCService": "",
+                                "GRPCUseTLS": false,
+                                "Header": null,
+                                "Id": "",
+                                "InitialStatus": "warning",
+                                "Interval": 5000000000,
+                                "Method": "",
+                                "Name": "service: \"ceph-dashboard\" check",
+                                "OnUpdate": "require_healthy",
+                                "Path": "/",
+                                "PortLabel": "",
+                                "Protocol": "",
+                                "SuccessBeforePassing": 0,
+                                "TLSSkipVerify": false,
+                                "TaskName": "",
+                                "Timeout": 1000000000,
+                                "Type": "http"
+                            }
+                        ],
+                        "Connect": null,
+                        "EnableTagOverride": false,
+                        "Id": "",
+                        "Meta": null,
+                        "Name": "ceph-dashboard",
+                        "OnUpdate": "require_healthy",
+                        "PortLabel": "5000",
+                        "Provider": "consul",
+                        "Tags": null,
+                        "TaskName": ""
+                    }
+                ],
+                "ShutdownDelay": null,
+                "Spreads": null,
+                "StopAfterClientDisconnect": null,
+                "Tasks": [
+                    {
+                        "Affinities": null,
+                        "Artifacts": null,
+                        "Config": {
+                            "mount": [
+                                {
+                                    "source": "local/ceph",
+                                    "target": "/etc/ceph",
+                                    "type": "bind"
+                                }
+                            ],
+                            "network_mode": "host",
+                            "privileged": true,
+                            "args": [
+                                "demo"
+                            ],
+                            "image": "ceph/daemon:latest-octopus"
+                        },
+                        "Constraints": null,
+                        "DispatchPayload": null,
+                        "Driver": "docker",
+                        "Env": null,
+                        "KillSignal": "",
+                        "KillTimeout": 5000000000,
+                        "Kind": "",
+                        "Leader": false,
+                        "Lifecycle": null,
+                        "LogConfig": {
+                            "MaxFileSizeMB": 10,
+                            "MaxFiles": 10
+                        },
+                        "Meta": null,
+                        "Name": "ceph",
+                        "Resources": {
+                            "CPU": 256,
+                            "Cores": 0,
+                            "Devices": null,
+                            "DiskMB": 0,
+                            "IOPS": 0,
+                            "MemoryMB": 512,
+                            "MemoryMaxMB": 0,
+                            "Networks": null
+                        },
+                        "RestartPolicy": {
+                            "Attempts": 2,
+                            "Delay": 15000000000,
+                            "Interval": 1800000000000,
+                            "Mode": "fail"
+                        },
+                        "ScalingPolicies": null,
+                        "Services": null,
+                        "ShutdownDelay": 0,
+                        "Templates": [
+                            {
+                                "ChangeMode": "restart",
+                                "ChangeSignal": "",
+                                "DestPath": "${NOMAD_TASK_DIR}/env",
+                                "EmbeddedTmpl": "MON_IP={{ sockaddr \"with $ifAddrs := GetDefaultInterfaces | include \\\"type\\\" \\\"IPv4\\\" | limit 1 -}}{{- range $ifAddrs -}}{{ attr \\\"address\\\" . }}{{ end }}{{ end \" }}\nCEPH_PUBLIC_NETWORK=0.0.0.0/0\nCEPH_DEMO_UID=demo\nCEPH_DEMO_BUCKET=example\n",
+                                "Envvars": true,
+                                "LeftDelim": "{{",
+                                "Perms": "0644",
+                                "RightDelim": "}}",
+                                "SourcePath": "",
+                                "Splay": 5000000000,
+                                "VaultGrace": 0,
+                                "Wait": null
+                            },
+                            {
+                                "ChangeMode": "restart",
+                                "ChangeSignal": "",
+                                "DestPath": "${NOMAD_TASK_DIR}/ceph/ceph.conf",
+                                "EmbeddedTmpl": "    \n[global]\nfsid = 8df538f0-624d-43a3-a98f-9afb0effa719\nmon initial members = {{ env \"attr.unique.hostname\" }}\nmon host = v2:{{ sockaddr \"with $ifAddrs := GetDefaultInterfaces | include \\\"type\\\" \\\"IPv4\\\" | limit 1 -}}{{- range $ifAddrs -}}{{ attr \\\"address\\\" . }}{{ end }}{{ end \" }}:3300/0\n\nosd crush chooseleaf type = 0\nosd journal size = 100\npublic network = 0.0.0.0/0\ncluster network = 0.0.0.0/0\nosd pool default size = 1\nmon warn on pool no redundancy = false\nosd_memory_target =  939524096\nosd_memory_base = 251947008\nosd_memory_cache_min = 351706112\nosd objectstore = bluestore\n\n[osd.0]\nosd data = /var/lib/ceph/osd/ceph-0\n\n[client.rgw.linux]\nrgw dns name = {{ env \"attr.unique.hostname\" }}\nrgw enable usage log = true\nrgw usage log tick interval = 1\nrgw usage log flush threshold = 1\nrgw usage max shards = 32\nrgw usage max user shards = 1\nlog file = /var/log/ceph/client.rgw.linux.log\nrgw frontends = beast  endpoint=0.0.0.0:8080\n\n\n",
+                                "Envvars": false,
+                                "LeftDelim": "{{",
+                                "Perms": "0644",
+                                "RightDelim": "}}",
+                                "SourcePath": "",
+                                "Splay": 5000000000,
+                                "VaultGrace": 0,
+                                "Wait": null
+                            }
+                        ],
+                        "User": "",
+                        "Vault": null,
+                        "VolumeMounts": null
+                    }
+                ],
+                "Update": {
+                    "AutoPromote": false,
+                    "AutoRevert": false,
+                    "Canary": 0,
+                    "HealthCheck": "checks",
+                    "HealthyDeadline": 300000000000,
+                    "MaxParallel": 1,
+                    "MinHealthyTime": 10000000000,
+                    "ProgressDeadline": 600000000000,
+                    "Stagger": 30000000000
+                },
+                "Volumes": null
+            }
+        ],
+        "Type": "service",
+        "Update": {
+            "AutoPromote": false,
+            "AutoRevert": false,
+            "Canary": 0,
+            "HealthCheck": "",
+            "HealthyDeadline": 0,
+            "MaxParallel": 1,
+            "MinHealthyTime": 0,
+            "ProgressDeadline": 0,
+            "Stagger": 30000000000
+        },
+        "VaultNamespace": "",
+        "VaultToken": "",
+        "Version": 0
+    }
+}
