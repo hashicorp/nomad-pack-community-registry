@@ -90,7 +90,6 @@ variable "consul_service_name" {
 variable "consul_service_tags" {
   description = "The consul service name for the application."
   type        = list(string)
-  default     = []
 }
 
 variable "volume_name" {
@@ -110,4 +109,14 @@ variable "docker_jenkins_env_vars" {
   default     = {}
 }
 
+variable "jenkins_vault" {
+  description = "List of Vault Policies"
+  type = list(string)
+  default = null
+  }
 
+variable "jenkins_task_cacert" {
+  description = "CA for using external SSL"
+  type = string
+  default = null
+  }
