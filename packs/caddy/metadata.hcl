@@ -12,3 +12,8 @@ pack {
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/caddy"
   version     = "0.0.1"
 }
+
+integration {
+  identifier = "nomad/hashicorp/caddy"
+  name       = "Caddy"
+}

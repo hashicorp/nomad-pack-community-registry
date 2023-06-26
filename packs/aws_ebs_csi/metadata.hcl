@@ -9,3 +9,8 @@ pack {
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/aws_ebs_csi"
   version     = "0.1.0"
 }
+
+integration {
+  identifier = "nomad/hashicorp/aws-ebs-csi"
+  name       = "AWS EBS CSI"
+}

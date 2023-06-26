@@ -9,3 +9,8 @@ pack {
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/ctfd"
   version     = "0.0.1"
 }
+
+integration {
+  identifier = "nomad/hashicorp/ctfd"
+  name       = "CTFd"
+}
