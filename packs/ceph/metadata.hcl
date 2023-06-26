@@ -9,3 +9,8 @@ pack {
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/ceph"
   version     = "0.1.0"
 }
+
+integration {
+  identifier = "nomad/hashicorp/ceph"
+  name       = "Ceph"
+}

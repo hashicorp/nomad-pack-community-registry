@@ -9,3 +9,8 @@ pack {
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/ceph_rbd_csi"
   version     = "0.1.0"
 }
+
+integration {
+  identifier = "nomad/hashicorp/ceph-rbd-csi"
+  name       = "Ceph RBD CSI"
+}
