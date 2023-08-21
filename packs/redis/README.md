@@ -2,7 +2,7 @@
 
 This pack runs [Redis](https://redis.io) as a standalone instance using the Nomad [service](https://www.nomadproject.io/docs/schedulers#service) scheduler. The service runs as a Docker container using the [Docker](https://www.nomadproject.io/docs/drivers/docker) driver.
 
-This is a standalone instance of Redis. To deploy Redis in a cluster, use <insert link to redis-clustered pack -- TBD>
+Note: This is a standalone instance of Redis.
 
 Default (Vanilla) Installation:
 - [Protected Mode](https://redis.io/topics/security#protected-mode) is disabled by default.
