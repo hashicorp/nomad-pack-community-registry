@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 variable "job_name" {
   description = "The prefix to use as the job name for the plugins (ex. aws_ebs_controller for the controller)."
   type        = string

@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 app {
   url    = "https://github.com/ceph/ceph-container"
   author = "Tim Gross <tgross@hashicorp.com>"
