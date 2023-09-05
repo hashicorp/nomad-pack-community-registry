@@ -1,6 +1,7 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
   datacenters = [[ .jenkins.datacenters | toStringList ]]
+  node_pool = [[ .jenkins.node_pool | quote ]]
   type = "service"
   [[- if .jenkins.namespace ]]
   namespace   = [[ .jenkins.namespace | quote ]]

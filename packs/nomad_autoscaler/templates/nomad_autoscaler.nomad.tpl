@@ -2,6 +2,7 @@ job [[ template "full_job_name" . ]] {
 
   region      = [[ .nomad_autoscaler.region | quote ]]
   datacenters = [[ .nomad_autoscaler.datacenters | toStringList ]]
+  node_pool = [[ .nomad_autoscaler.node_pool | quote ]]
   namespace   = [[ .nomad_autoscaler.namespace | quote ]]
 
   group "autoscaler" {

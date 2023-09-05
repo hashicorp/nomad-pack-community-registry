@@ -1,6 +1,7 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
   datacenters = [[ .hello_world.datacenters | toStringList ]]
+  node_pool = [[ .hello_world.node_pool | quote ]]
   type = "service"
 
   group "app" {

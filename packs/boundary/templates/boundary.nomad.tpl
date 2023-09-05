@@ -1,6 +1,7 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
   datacenters = [[ .boundary.datacenters | toStringList ]]
+  node_pool = [[ .boundary.node_pool | quote ]]
   group "boundary" {
     count = 1
     network {

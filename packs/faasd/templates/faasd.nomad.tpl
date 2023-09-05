@@ -1,6 +1,7 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
   datacenters = [[ .faasd.datacenters | toStringList ]]
+  node_pool = [[ .faasd.node_pool | quote ]]
   type = "service"
   [[- if .faasd.namespace ]]
   namespace   = [[ .faasd.namespace | quote ]]

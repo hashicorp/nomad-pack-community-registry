@@ -1,6 +1,7 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
   datacenters = [[ .loki.datacenters | toStringList ]]
+  node_pool = [[ .loki.node_pool | quote ]]
 
   [[ if .loki.constraints ]][[ range $idx, $constraint := .loki.constraints ]]
   constraint {

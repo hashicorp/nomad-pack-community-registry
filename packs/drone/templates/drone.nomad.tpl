@@ -2,6 +2,7 @@ job [[ template "full_job_name" . ]] {
 
   region      = [[ .drone.region | quote ]]
   datacenters = [[ .drone.datacenters | toStringList ]]
+  node_pool = [[ .drone.node_pool | quote ]]
   namespace   = [[ .drone.namespace | quote ]]
 
   [[ if .drone.constraints ]][[ range $idx, $constraint := .drone.constraints ]]

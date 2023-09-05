@@ -2,6 +2,7 @@ job [[ template "job_name" . ]] {
 
   region      = [[ .fabio.region | quote]]
   datacenters = [[ .fabio.datacenters | toStringList ]]
+  node_pool = [[ .fabio.node_pool | quote ]]
   type        = "system"
   namespace   = [[ .fabio.namespace | quote]]
   [[ if .fabio.constraints ]][[ range $idx, $constraint := .fabio.constraints ]]
