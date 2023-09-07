@@ -2,6 +2,7 @@ job [[ template "job_name" . ]] {
 
   [[ template "region" . ]]
   datacenters = [[ .nextcloud.datacenters | toJson ]]
+  node_pool = [[ .nextcloud.node_pool | quote ]]
   namespace   = [[ .nextcloud.namespace | quote ]]
   type        = "service"
 
