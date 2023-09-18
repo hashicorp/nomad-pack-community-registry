@@ -13,10 +13,10 @@ jobs:
       identifiers: ${{ steps.output_result.outputs.identifiers }}
     steps:
       - name: Checkout Nomad Pack Community Registry
-        uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
       - id: determine_changed_files
         name: Determine Changed Files
-        uses: jitterbit/get-changed-files@d06c756e3609dd3dd5d302dde8d1339af3f790f2 # v1
+        uses: jitterbit/get-changed-files@d06c756e3609dd3dd5d302dde8d1339af3f790f2  # TSCCR: no entry for action: "jitterbit/get-changed-files"
       - id: output_result
         run: |
           matrixArray=$(
@@ -36,7 +36,7 @@ jobs:
         integration_identifier: ${{fromJson(needs.determine_identifiers.outputs.identifiers)}}
     steps:
       - name: Checkout this repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
       - id: calculate_version
         name: Calculate Version
         run: |
@@ -44,7 +44,7 @@ jobs:
           echo "Computed Version: $version"
           echo "releaseVersion=$version" >> "$GITHUB_OUTPUT"
       - name: Checkout integration-release-action
-        uses: actions/checkout@v3
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
         with:
           repository: hashicorp/integration-release-action
           path: ./integration-release-action
