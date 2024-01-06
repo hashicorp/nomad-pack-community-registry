@@ -1,7 +1,8 @@
-job "hashicups" {
-  type   = "service"
-  region = "[[ .hashicups.region ]]"
-  datacenters = [[ .hashicups.datacenters | toStringList ]]
+job [[ template "job_name" . ]] {
+  [[ template "region" . ]]
+  datacenters = [[ var "datacenters" . | toStringList ]]
+
+  type = "service"
 
   group "hashicups" {
     network {
@@ -9,19 +10,19 @@ job "hashicups" {
         static = 5432
       }
       port "product-api" {
-        static = [[ .hashicups.product_api_port ]]
+        static = [[ var "product_api_port" . ]]
       }
       port "frontend" {
-        static = [[ .hashicups.frontend_port ]]
+        static = [[ var "frontend_port" . ]]
       }
       port "payments-api" {
-        static = [[ .hashicups.payments_api_port ]]
+        static = [[ var "payments_api_port" . ]]
       }
       port "public-api" {
-        static = [[ .hashicups.public_api_port ]]
+        static = [[ var "public_api_port" . ]]
       }
       port "nginx" {
-        static = [[ .hashicups.nginx_port ]]
+        static = [[ var "nginx_port" . ]]
       }
     }
 
@@ -31,13 +32,13 @@ job "hashicups" {
         service = "database"
       }
       config {
-        image   = "hashicorpdemoapp/product-api-db:[[ .hashicups.product_api_db_version ]]"
+        image = "hashicorpdemoapp/product-api-db:[[ var "product_api_db_version" . ]]"
         ports = ["db"]
       }
       env {
-        POSTGRES_DB       = "[[ .hashicups.postgres_db ]]"
-        POSTGRES_USER     = "[[ .hashicups.postgres_user ]]"
-        POSTGRES_PASSWORD = "[[ .hashicups.postgres_password ]]"
+        POSTGRES_DB       = [[ var "postgres_db" . | quote ]]
+        POSTGRES_USER     = [[ var "postgres_user" . | quote ]]
+        POSTGRES_PASSWORD = [[ var "postgres_password" . | quote ]]
       }
     }
 
@@ -47,12 +48,12 @@ job "hashicups" {
         service = "product-api"
       }
       config {
-        image   = "hashicorpdemoapp/product-api:[[ .hashicups.product_api_version ]]"
+        image = "hashicorpdemoapp/product-api:[[ var "product_api_version" . ]]"
         ports = ["product-api"]
       }
       env {
-        DB_CONNECTION = "host=${NOMAD_IP_db} port=${NOMAD_PORT_db} user=[[ .hashicups.postgres_user ]] password=[[ .hashicups.postgres_password ]] dbname=[[ .hashicups.postgres_db ]] sslmode=disable"
-        BIND_ADDRESS = "0.0.0.0:${NOMAD_PORT_product-api}"
+        DB_CONNECTION = "host=${NOMAD_IP_db} port=${NOMAD_PORT_db} user=[[ var "postgres_user" . ]] password=[[ var "postgres_password" . ]] dbname=[[ var "postgres_db" . ]] sslmode=disable"
+        BIND_ADDRESS  = "0.0.0.0:${NOMAD_PORT_product-api}"
       }
     }
 
@@ -62,7 +63,7 @@ job "hashicups" {
         service = "payments-api"
       }
       config {
-        image   = "hashicorpdemoapp/payments:[[ .hashicups.payments_version ]]"
+        image = "hashicorpdemoapp/payments:[[ var "payments_version" . ]]"
         ports = ["payments-api"]
         mount {
           type   = "bind"
@@ -84,7 +85,7 @@ server.port={{ env "NOMAD_PORT_payments-api" }}
         service = "public-api"
       }
       config {
-        image   = "hashicorpdemoapp/public-api:[[ .hashicups.public_api_version ]]"
+        image = "hashicorpdemoapp/public-api:[[ var "public_api_version" . ]]"
         ports = ["public-api"]
       }
       env {
@@ -100,11 +101,11 @@ server.port={{ env "NOMAD_PORT_payments-api" }}
         service = "frontend"
       }
       env {
-        NEXT_PUBLIC_PUBLIC_API_URL= "/"
+        NEXT_PUBLIC_PUBLIC_API_URL = "/"
         PORT = "${NOMAD_PORT_frontend}"
       }
       config {
-        image   = "hashicorpdemoapp/frontend:[[ .hashicups.frontend_version ]]"
+        image = "hashicorpdemoapp/frontend:[[ var "frontend_version" . ]]"
         ports = ["frontend"]
       }
     }
@@ -127,7 +128,7 @@ server.port={{ env "NOMAD_PORT_payments-api" }}
         data =  <<EOF
 proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=STATIC:10m inactive=7d use_temp_path=off;
 upstream frontend_upstream {
-  server {{ env "NOMAD_IP_frontend" }}:[[ .hashicups.frontend_port ]];
+  server {{ env "NOMAD_IP_frontend" }}:[[ var "frontend_port" . ]];
 }
 server {
   listen {{ env "NOMAD_PORT_nginx" }};
@@ -160,7 +161,7 @@ server {
     proxy_pass http://frontend_upstream;
   }
   location /api {
-    proxy_pass http://{{ env "NOMAD_IP_frontend" }}:[[ .hashicups.public_api_port ]];
+    proxy_pass http://{{ env "NOMAD_IP_frontend" }}:[[ var "public_api_port" . ]];
   }
 }
         EOF

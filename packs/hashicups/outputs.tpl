@@ -1,6 +1,6 @@
-Congratulations on deploying [[ .nomad_pack.pack.name ]]! 
+Congratulations on deploying [[ meta "pack.name" . ]]! 
 
-Navigate to the HashiCups UI on port [[ .hashicups.nginx_port ]] of the Nomad client running the job.
+Navigate to the HashiCups UI on port [[ var "nginx_port" . ]] of the Nomad client running the job.
 
 You can find the allocation ID with:
 nomad job status hashicups | grep -A 3 -i allocations
