@@ -1,6 +1,7 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
   datacenters = [[ .sonarqube.datacenters | toStringList ]]
+  node_pool = [[ .sonarqube.node_pool | quote ]]
   type = "service"
   [[- if .sonarqube.namespace ]]
   namespace   = [[ .sonarqube.namespace | quote ]]

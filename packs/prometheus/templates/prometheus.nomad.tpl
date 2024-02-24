@@ -2,6 +2,7 @@ job [[ template "full_job_name" . ]] {
 
   region      = [[ .prometheus.region | quote ]]
   datacenters = [[ .prometheus.datacenters | toStringList ]]
+  node_pool = [[ .prometheus.node_pool | quote ]]
   namespace   = [[ .prometheus.namespace | quote ]]
   [[ if .prometheus.constraints ]][[ range $idx, $constraint := .prometheus.constraints ]]
   constraint {
