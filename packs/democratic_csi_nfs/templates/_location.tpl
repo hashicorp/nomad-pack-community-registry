@@ -1,5 +1,5 @@
 [[ define "location" ]]
-  namespace   = "[[ .my.plugin_namespace ]]"
-  region      = "[[ .my.region ]]"
+  [[ template "region" ]]
+  [[ template "namespace" ]]
   datacenters = [[ .my.datacenters | toJson ]]
 [[- end -]]

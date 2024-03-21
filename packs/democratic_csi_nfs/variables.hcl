@@ -7,13 +7,12 @@ variable "job_name" {
 variable "datacenters" {
   description = "A list of datacenters in the region which are eligible for task placement."
   type        = list(string)
-  default     = ["dc1"]
+  default     = ["*"]
 }
 
 variable "region" {
   description = "The region where the job should be placed."
   type        = string
-  default     = "global"
 }
 
 variable "plugin_id" {
@@ -25,7 +24,6 @@ variable "plugin_id" {
 variable "plugin_namespace" {
   description = "The namespace for the plugin job."
   type        = string
-  default     = "default"
 }
 
 variable "plugin_image" {

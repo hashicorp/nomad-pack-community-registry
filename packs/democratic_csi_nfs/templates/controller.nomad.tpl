@@ -35,7 +35,7 @@ job "[[ .my.job_name ]]_controller" {
         privileged = true
         mount {
           type     = "bind"
-          source   = "[[ .my.nfs_controller_mount_path ]]"
+          source   = "[[ if not .my.nfs_controller_mount_path ]][[fail "nfs_controller_mount_path must be defined"]][[else]][[.my.nfs_controller_mount_path]][[end]]"
           target   = "/storage"
           readonly = false
         }
