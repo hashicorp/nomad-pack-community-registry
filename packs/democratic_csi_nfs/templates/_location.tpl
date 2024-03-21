@@ -1,0 +1,5 @@
+[[ define "location" ]]
+  [[ template "region" ]]
+  [[ template "namespace" ]]
+  datacenters = [[ .my.datacenters | toJson ]]
+[[- end -]]
