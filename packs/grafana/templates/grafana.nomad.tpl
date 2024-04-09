@@ -1,6 +1,7 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
   datacenters = [[ .grafana.datacenters | toStringList ]]
+  node_pool = [[ .grafana.node_pool | quote ]]
 
   // must have linux for network mode
   constraint {

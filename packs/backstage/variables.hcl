@@ -19,6 +19,12 @@ variable "datacenters" {
   default     = ["dc1"]
 }
 
+variable "node_pool" {
+  description = "The node pool where the job should be placed."
+  type        = string
+  default     = "default"
+}
+
 // PostgreSQL variables
 variable "postgresql_group_nomad_service_name" {
   description = "The nomad service name for the PostgreSQL application."

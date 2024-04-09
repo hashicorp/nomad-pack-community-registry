@@ -1,6 +1,7 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
   datacenters = [[ .csi_openstack_cinder.datacenters | toStringList ]]
+  node_pool = [[ .csi_openstack_cinder.node_pool | quote ]]
   type = "system"
 
   group "nodes" {
