@@ -21,6 +21,7 @@ Prometheus.
 An example config is included in the alers_vars.nomad file.
 - `prometheus_task_resources` (object) - The resource to assign to the Prometheus task.
 - `prometheus_task_services` (object) - Configuration options of the Prometheus services and checks.
+- `prometheus_volume` (object) - Persistent Volume configuration for Prometheus
 
 ### `constraints` List of Objects
 
@@ -50,6 +51,7 @@ variable list of objects is shown below and uses a double dollar sign for escapi
 - `mode` (string "bridge") - Mode of the network.
 - `ports` (map<string|number> http:9090) - Specifies the port mapping for the Prometheus task. The
 map key indicates the port label, and the value is the Prometheus port inside the network namespace.
+- `dns` (map(list(string)) {}) - DNS configuration in network stanza
 
 ### `prometheus_task` Object
 
@@ -98,6 +100,22 @@ running against the Prometheus [management API][prometheus_management_api] healt
     check_timeout      = "1s",
   }
 ]
+```
+
+### `prometheus_volume` List of Objects
+
+- `type` (string) - Specifies the port to advertise for this service.
+- `source` (string) - Specifies the name this service will be advertised as in Consul.
+
+The default value for this variable configures no volume. A volume is mandatory for production setups.
+
+Example: (this is not the default value!)
+
+```hcl
+{
+  type = "host"
+  source = "prometheus"
+}
 ```
 
 [prometheus]: (https://prometheus.io/)
