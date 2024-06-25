@@ -33,8 +33,8 @@ job "tfe-agent-job" {
       config {
         image = [[ .tfe_fdo_nomad.tfe_agent_image | quote ]]
       }
-		env {
-    
+
+      env {
         TFC_ADDRESS           = "${NOMAD_META_TFC_ADDRESS}"
         TFC_AGENT_TOKEN       = "${NOMAD_META_TFC_AGENT_TOKEN}"
         TFC_AGENT_AUTO_UPDATE = "${NOMAD_META_TFC_AGENT_AUTO_UPDATE}"

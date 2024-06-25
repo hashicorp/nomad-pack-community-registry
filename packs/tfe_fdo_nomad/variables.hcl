@@ -171,6 +171,7 @@ variable "tfe_image" {
 variable "tfe_image_registry_username" {
   description = "The username to be used to fetch the terraform enterprise image from the registry."
   type        = string
+  default     = "terraform"
 }
 
 variable "tfe_image_server_address" {
