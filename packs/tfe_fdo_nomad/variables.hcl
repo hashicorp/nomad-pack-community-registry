@@ -165,7 +165,7 @@ variable "tfe_resource_memory" {
 variable "tfe_image" {
   description = "The terraform enterprise image that will be used to deploy TFE"
   type        = string
-  default     = "images.releases.hashicorp.com/hashicorp/terraform-enterprise:v202401-2"
+  default     = "hashicorp/terraform-enterprise:v202401-2"
 }
 
 variable "tfe_image_registry_username" {
@@ -225,4 +225,22 @@ variable "tfe_vault_disable_mlock" {
   description = "Disable mlock for internal Vault."
   type        = string
   default     = "false"
+}
+
+variable "tfe_service_discovery_provider" {
+  description = "Specifies the service registration provider to use for service registrations."
+  type        = string
+  default     = "nomad"
+}
+
+variable "health_check_timeout" {
+  description = "Specifies the timeout in case health check API of TFE container is not reachable from Nomad."
+  type        = string
+  default     = "2s"
+}
+
+variable "health_check_interval" {
+  description = "Specifies the interval at which Nomad will call the health check API for TFE container."
+  type        = string
+  default     = "5s"
 }

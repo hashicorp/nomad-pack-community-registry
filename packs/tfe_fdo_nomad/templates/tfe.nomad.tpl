@@ -44,14 +44,14 @@ job [[ .tfe_fdo_nomad.job_name | quote ]] {
     service {
       name     = [[ .tfe_fdo_nomad.tfe_service_name | quote ]]
       port     = "tfe"
-      provider = "nomad"
+      provider = [[ .tfe_fdo_nomad.tfe_service_discovery_provider | quote ]]
 
       check {
         type     = "http"
         port     = "http"
         path     = "/_health_check"
-        interval = "5s"
-        timeout  = "2s"
+        interval = [[ .tfe_fdo_nomad.health_check_interval | quote ]]
+        timeout  = [[ .tfe_fdo_nomad.health_check_timeout | quote ]]
       }
     }
 
