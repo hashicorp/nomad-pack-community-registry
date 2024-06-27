@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MPL-2.0
 
 app {
-  url    = "https://developer.hashicorp.com/terraform/enterprise"
+  url = "https://developer.hashicorp.com/terraform/enterprise"
 }
 pack {
   name        = "tfe_fdo_nomad"

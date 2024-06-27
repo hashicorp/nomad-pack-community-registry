@@ -8,10 +8,6 @@ job [[ .tfe_fdo_nomad.job_name | quote ]] {
 
   group "tfe-group" {
     count = [[ .tfe_fdo_nomad.tfe_group_count ]]
-    
-    spread {
-      attribute = "${node.unique.id}"
-    }
 
     restart {
       attempts = 3
@@ -21,7 +17,6 @@ job [[ .tfe_fdo_nomad.job_name | quote ]] {
     }
 
     update {
-      max_parallel      = 1
       min_healthy_time  = "30s"
       healthy_deadline  = "12m"
       progress_deadline = "15m"
@@ -62,7 +57,7 @@ job [[ .tfe_fdo_nomad.job_name | quote ]] {
          env = true
       }
 
-       template {
+      template {
         destination = "/secrets/key.pem"
         change_mode = "restart"
         splay       = "60s"
@@ -83,6 +78,7 @@ EOF
 {{- end -}}
 EOF
       }
+
       template {
         destination = "/secrets/bundle.pem"
         change_mode = "restart"
@@ -146,9 +142,7 @@ EOF
       config {
          image = [[ .tfe_fdo_nomad.tfe_image | quote ]]
          auth {
-            # User Input is mandatory.
             username = [[ .tfe_fdo_nomad.tfe_image_registry_username | quote ]]
-            # User Input is mandatory.
             password       = "${TFE_IMAGE_REGISTRY_PASSWORD}"
             server_address = [[ .tfe_fdo_nomad.tfe_image_server_address | quote ]]
          }
@@ -163,7 +157,6 @@ EOF
       env {
         
         TFE_RUN_PIPELINE_DRIVER = "nomad"
-        # User Input is mandatory. 
         TFE_RUN_PIPELINE_NOMAD_ADDRESS             = [[ .tfe_fdo_nomad.tfe_run_pipeline_nomad_address | quote ]]
         TFE_RUN_PIPELINE_NOMAD_TLS_CONFIG_INSECURE = [[ .tfe_fdo_nomad.tfe_run_pipeline_nomad_tls_config_insecure | quote ]]
         TFE_RUN_PIPELINE_NOMAD_TLS_CONFIG_CA_CERT = "[[ .tfe_fdo_nomad.tfe_tls_cert_mount_path ]]/nomad_ca_cert.pem"
@@ -174,7 +167,6 @@ EOF
         TFE_OPERATIONAL_MODE = "active-active"
 
         TFE_DATABASE_USER = [[ .tfe_fdo_nomad.tfe_database_user | quote ]]
-        # User Input is mandatory. 
         TFE_DATABASE_HOST       = [[ .tfe_fdo_nomad.tfe_database_host | quote ]]
         TFE_DATABASE_NAME       = [[ .tfe_fdo_nomad.tfe_database_name | quote ]]
         TFE_DATABASE_PARAMETERS = [[ .tfe_fdo_nomad.tfe_database_parameters | quote ]]
@@ -184,16 +176,13 @@ EOF
         TFE_OBJECT_STORAGE_S3_REGION               = [[ .tfe_fdo_nomad.tfe_object_storage_s3_region | quote ]]
         TFE_OBJECT_STORAGE_S3_USE_INSTANCE_PROFILE = [[ .tfe_fdo_nomad.tfe_object_storage_s3_use_instance_profile ]]
         TFE_OBJECT_STORAGE_S3_ENDPOINT             = [[ .tfe_fdo_nomad.tfe_object_storage_s3_endpoint | quote ]]
-        # User Input is mandatory. 
         TFE_OBJECT_STORAGE_S3_ACCESS_KEY_ID = [[ .tfe_fdo_nomad.tfe_object_storage_s3_access_key_id | quote ]]
 
-        # User Input is mandatory. 
         TFE_REDIS_HOST     = [[ .tfe_fdo_nomad.tfe_redis_host | quote ]]
         TFE_REDIS_USER     = [[ .tfe_fdo_nomad.tfe_redis_user | quote ]]
         TFE_REDIS_USE_TLS  = [[ .tfe_fdo_nomad.tfe_redis_use_tls | quote ]]
         TFE_REDIS_USE_AUTH = [[ .tfe_fdo_nomad.tfe_redis_use_auth | quote ]]
 
-        # User Input is mandatory. 
         TFE_HOSTNAME = [[ .tfe_fdo_nomad.tfe_hostname | quote ]]
         
         TFE_TLS_CERT_FILE      = "[[ .tfe_fdo_nomad.tfe_tls_cert_mount_path ]]/cert.pem"

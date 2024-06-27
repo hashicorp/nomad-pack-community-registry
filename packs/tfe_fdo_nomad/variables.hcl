@@ -43,7 +43,7 @@ variable "tfe_service_name" {
 variable "datacenters" {
   description = "A list of datacenters in the region which are eligible for task placement"
   type        = list(string)
-  default     = ["dc1"]
+  default     = ["*"]
 }
 
 variable "tfe_database_user" {
@@ -94,9 +94,8 @@ variable "tfe_object_storage_s3_use_instance_profile" {
 }
 
 variable "tfe_object_storage_s3_endpoint" {
-  description = "The ednpoint of the S3 compatible object storage to be used by TFE"
+  description = "The endpoint of the S3 compatible object storage to be used by TFE"
   type        = string
-  default     = ""
 }
 
 variable "tfe_object_storage_s3_access_key_id" {
