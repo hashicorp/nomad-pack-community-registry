@@ -8,29 +8,28 @@ This pack deploys Terraform Enterprise on Nomad. This includes running a Terrafo
 
 The pack expects certain prerequisites to be fulfilled before running. The list of prerequisites are: 
 
-Interacting with the Nomad server will require
+### Create Environment variables
 1. `NOMAD_ADDR` - The address of the Nomad server.
 1. `NOMAD_TOKEN` - The SecretID of an ACL token to use to authenticate API requests with.
 1. `NOMAD_CACERT` - Path to a PEM encoded CA cert file to use to verify the Nomad server SSL certificate.
 1. `NOMAD_CLIENT_CERT` - Path to a PEM encoded client certificate for TLS authentication to the Nomad server. Must also specify NOMAD_CLIENT_KEY.
 1. `NOMAD_CLIENT_KEY` - Path to an unencrypted PEM encoded private key matching the client certificate from NOMAD_CLIENT_CERT.
 
-After setting up the environment variables, the pack can be setup using the following steps:
-
-1. Create Namespace for TFE job and TFE agent job.
+### Create Namespace for TFE job and TFE agent job.
 
    1. Run `nomad namespace apply terraform-enterprise` to create the `terraform-enterprise` namespace. This is the default namespace that is used to bring up TFE Job.
    1. Run `nomad namespace apply tfe-agents` to create the `tfe-agents` namespace. This is the default namespace that is used to bring up TFE Agent Job.
 
 
-2. Create a Nomad ACL policy file `terraform_enterprise_policy.hcl` with the content below:
+### Create and apply Nomad ACL policy.
+Create a file `terraform_enterprise_policy.hcl` with the content below:
 ```hcl
   namespace "tfe-agents" {
   capabilities = ["submit-job","dispatch-job", "list-jobs", "read-job", "read-logs" ]
   }
   ```
 
-3. Apply the Nomad policy using:
+To apply the policy run following bash command:
   ```bash
   $ nomad acl policy apply \
    -namespace terraform-enterprise -job tfe-job \
@@ -38,7 +37,7 @@ After setting up the environment variables, the pack can be setup using the foll
    terraform-enterprise-policy ./terraform_enterprise_policy.hcl
   ``` 
 
-4. Create the necessary Nomad Variables for each job. 
+### Create the Nomad Variables. 
   
   These contain sensitive data that are required like certs, licenses and passwords.
   Create a variable specification file: 
@@ -96,25 +95,26 @@ After setting up the environment variables, the pack can be setup using the foll
   ```bash
   $ nomad var put @spec.nv.hcl
   ```
+**Note: At this point, this file can be deleted.**
 
 
 <!-- Include information about how to use your pack -->
 
-# Pack Information
+## Pack Information
 
-After completing prerequisites, the pack can be run using the following command:
+After completing prerequisites, the pack can be run using the following bash command:
 ```bash
 $nomad-pack run tfe_fdo_nomad -f var.hcl
 ```
 
 The `var.hcl` file should contain the necessary variables required for the pack to run. The variables are listed below.
 
-## Variables
+### Variables
 
 These variables may be set to change the behavior of the TFE. Note that some of these variables come with default configuration while the rest need to provided for the pack deployment to succeed.
 <!-- Include information on the variables from your pack -->
 
-## Configuration
+### Configuration
 
 | Name                                         | Required | Default                                      | Comments                                                                                                                                                                                              |
 |----------------------------------------------|----------|----------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
