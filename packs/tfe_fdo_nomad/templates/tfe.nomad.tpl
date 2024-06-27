@@ -96,7 +96,7 @@ EOF
         splay       = "60s"
         data        = <<EOF
 {{- with nomadVar "nomad/jobs/[[ .tfe_fdo_nomad.job_name ]]" -}}
-  {{ base64Decode .nomad_ca.Value }}
+  {{ base64Decode .nomad_ca_cert.Value }}
 {{- end -}}
 EOF
       }
