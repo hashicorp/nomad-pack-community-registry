@@ -89,8 +89,8 @@ variable "tfe_object_storage_s3_region" {
 
 variable "tfe_object_storage_s3_use_instance_profile" {
   description = "The instance profile setting for accessing the object storage bucket to be used by TFE"
-  type        = string
-  default     = "false"
+  type        = bool
+  default     = false
 }
 
 variable "tfe_object_storage_s3_endpoint" {
@@ -116,14 +116,14 @@ variable "tfe_redis_user" {
 
 variable "tfe_redis_use_tls" {
   description = "The tls settings for redis to be used by TFE"
-  type        = string
-  default     = "false"
+  type        = bool
+  default     = false
 }
 
 variable "tfe_redis_use_auth" {
   description = "The auth settings to be used by redis"
-  type        = string
-  default     = "false"
+  type        = bool
+  default     = false
 }
 
 variable "tfe_hostname" {
@@ -145,8 +145,8 @@ variable "tfe_iact_subnets" {
 
 variable "tfe_iact_time_limit" {
   description = "The IACT time limit value to be used by TFE"
-  type        = string
-  default     = "60"
+  type        = number
+  default     = 60
 }
 
 variable "tfe_resource_cpu" {
@@ -186,8 +186,8 @@ variable "tfe_run_pipeline_nomad_address" {
 
 variable "tfe_run_pipeline_nomad_tls_config_insecure" {
   description = "The tls config settings for communication between Nomad and TFE"
-  type        = string
-  default     = "false"
+  type        = bool
+  default     = false
 }
 
 variable "tfe_agent_namespace" {
@@ -222,8 +222,8 @@ variable "tfe_vault_cluster_address" {
 
 variable "tfe_vault_disable_mlock" {
   description = "Disable mlock for internal Vault."
-  type        = string
-  default     = "false"
+  type        = bool
+  default     = true
 }
 
 variable "tfe_service_discovery_provider" {

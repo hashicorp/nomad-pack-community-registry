@@ -162,7 +162,7 @@ EOF
         TFE_RUN_PIPELINE_NOMAD_TLS_CONFIG_CA_CERT = "[[ .tfe_fdo_nomad.tfe_tls_cert_mount_path ]]/nomad_ca_cert.pem"
         TFE_RUN_PIPELINE_NOMAD_TLS_CONFIG_CLIENT_CERT = "[[ .tfe_fdo_nomad.tfe_tls_cert_mount_path ]]/nomad_cert.pem"
         TFE_RUN_PIPELINE_NOMAD_TLS_CONFIG_CLIENT_KEY = "[[ .tfe_fdo_nomad.tfe_tls_cert_mount_path ]]/nomad_cert_key.pem"
-        TFE_DISK_CACHE_VOLUME_NAME                 = "${NOMAD_TASK_DIR}/terraform-enterprise-cache-1"
+        TFE_DISK_CACHE_VOLUME_NAME                 = "${NOMAD_TASK_DIR}/terraform-enterprise-cache"
 
         TFE_OPERATIONAL_MODE = "active-active"
 
@@ -174,7 +174,7 @@ EOF
         TFE_OBJECT_STORAGE_TYPE = [[ .tfe_fdo_nomad.tfe_object_storage_type | quote ]]
         TFE_OBJECT_STORAGE_S3_BUCKET               = [[ .tfe_fdo_nomad.tfe_object_storage_s3_bucket | quote ]]
         TFE_OBJECT_STORAGE_S3_REGION               = [[ .tfe_fdo_nomad.tfe_object_storage_s3_region | quote ]]
-        TFE_OBJECT_STORAGE_S3_USE_INSTANCE_PROFILE = [[ .tfe_fdo_nomad.tfe_object_storage_s3_use_instance_profile ]]
+        TFE_OBJECT_STORAGE_S3_USE_INSTANCE_PROFILE = [[ .tfe_fdo_nomad.tfe_object_storage_s3_use_instance_profile | quote ]]
         TFE_OBJECT_STORAGE_S3_ENDPOINT             = [[ .tfe_fdo_nomad.tfe_object_storage_s3_endpoint | quote ]]
         TFE_OBJECT_STORAGE_S3_ACCESS_KEY_ID = [[ .tfe_fdo_nomad.tfe_object_storage_s3_access_key_id | quote ]]
 
