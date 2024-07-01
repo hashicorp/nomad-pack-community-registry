@@ -131,12 +131,6 @@ variable "tfe_hostname" {
   type        = string
 }
 
-variable "tfe_tls_cert_mount_path" {
-  description = "The path where tls certificates will be mounted inside TFE"
-  type        = string
-  default     = "/etc/ssl/private/terraform-enterprise"
-}
-
 variable "tfe_iact_subnets" {
   description = "The IACT subnet values to be used by TFE"
   type        = string

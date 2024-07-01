@@ -58,7 +58,7 @@ job [[ .tfe_fdo_nomad.job_name | quote ]] {
       }
 
       template {
-        destination = "/secrets/key.pem"
+        destination = "${NOMAD_SECRETS_DIR}/key.pem"
         change_mode = "restart"
         splay       = "60s"
         data        = <<EOF
@@ -69,7 +69,7 @@ EOF
       }
 
       template {
-        destination = "/secrets/cert.pem"
+        destination = "${NOMAD_SECRETS_DIR}/cert.pem"
         change_mode = "restart"
         splay       = "60s"
         data        = <<EOF
@@ -80,7 +80,7 @@ EOF
       }
 
       template {
-        destination = "/secrets/bundle.pem"
+        destination = "${NOMAD_SECRETS_DIR}/bundle.pem"
         change_mode = "restart"
         splay       = "60s"
         data        = <<EOF
@@ -91,7 +91,7 @@ EOF
       }
 
       template {
-        destination = "/secrets/nomad_ca_cert.pem"
+        destination = "${NOMAD_SECRETS_DIR}/nomad_ca_cert.pem"
         change_mode = "restart"
         splay       = "60s"
         data        = <<EOF
@@ -102,7 +102,7 @@ EOF
       }
 
       template {
-        destination = "/secrets/nomad_cert.pem"
+        destination = "${NOMAD_SECRETS_DIR}/nomad_cert.pem"
         change_mode = "restart"
         splay       = "60s"
         data        = <<EOF
@@ -113,7 +113,7 @@ EOF
       }
 
       template {
-        destination = "/secrets/nomad_cert_key.pem"
+        destination = "${NOMAD_SECRETS_DIR}/nomad_cert_key.pem"
         change_mode = "restart"
         splay       = "60s"
         data        = <<EOF
@@ -124,7 +124,7 @@ EOF
       }
 
       template {
-        destination = "/secrets/secrets.env"
+        destination = "${NOMAD_SECRETS_DIR}/secrets.env"
         env         = true
         change_mode = "restart"
         data        = <<EOF
@@ -147,10 +147,6 @@ EOF
             server_address = [[ .tfe_fdo_nomad.tfe_image_server_address | quote ]]
          }
          ports = ["tfe", "http", "vault"]
-
-         volumes = [
-          "secrets:[[ .tfe_fdo_nomad.tfe_tls_cert_mount_path ]]",
-        ]
   
       }
 
@@ -159,9 +155,9 @@ EOF
         TFE_RUN_PIPELINE_DRIVER = "nomad"
         TFE_RUN_PIPELINE_NOMAD_ADDRESS             = [[ .tfe_fdo_nomad.tfe_run_pipeline_nomad_address | quote ]]
         TFE_RUN_PIPELINE_NOMAD_TLS_CONFIG_INSECURE = [[ .tfe_fdo_nomad.tfe_run_pipeline_nomad_tls_config_insecure | quote ]]
-        TFE_RUN_PIPELINE_NOMAD_TLS_CONFIG_CA_CERT = "[[ .tfe_fdo_nomad.tfe_tls_cert_mount_path ]]/nomad_ca_cert.pem"
-        TFE_RUN_PIPELINE_NOMAD_TLS_CONFIG_CLIENT_CERT = "[[ .tfe_fdo_nomad.tfe_tls_cert_mount_path ]]/nomad_cert.pem"
-        TFE_RUN_PIPELINE_NOMAD_TLS_CONFIG_CLIENT_KEY = "[[ .tfe_fdo_nomad.tfe_tls_cert_mount_path ]]/nomad_cert_key.pem"
+        TFE_RUN_PIPELINE_NOMAD_TLS_CONFIG_CA_CERT = "${NOMAD_SECRETS_DIR}/nomad_ca_cert.pem"
+        TFE_RUN_PIPELINE_NOMAD_TLS_CONFIG_CLIENT_CERT = "${NOMAD_SECRETS_DIR}/nomad_cert.pem"
+        TFE_RUN_PIPELINE_NOMAD_TLS_CONFIG_CLIENT_KEY = "${NOMAD_SECRETS_DIR}/nomad_cert_key.pem"
         TFE_DISK_CACHE_VOLUME_NAME                 = "${NOMAD_TASK_DIR}/terraform-enterprise-cache"
 
         TFE_OPERATIONAL_MODE = "active-active"
@@ -185,9 +181,9 @@ EOF
 
         TFE_HOSTNAME = [[ .tfe_fdo_nomad.tfe_hostname | quote ]]
         
-        TFE_TLS_CERT_FILE      = "[[ .tfe_fdo_nomad.tfe_tls_cert_mount_path ]]/cert.pem"
-        TFE_TLS_KEY_FILE       = "[[ .tfe_fdo_nomad.tfe_tls_cert_mount_path ]]/key.pem"
-        TFE_TLS_CA_BUNDLE_FILE = "[[ .tfe_fdo_nomad.tfe_tls_cert_mount_path ]]/bundle.pem"
+        TFE_TLS_CERT_FILE      = "${NOMAD_SECRETS_DIR}/cert.pem"
+        TFE_TLS_KEY_FILE       = "${NOMAD_SECRETS_DIR}/key.pem"
+        TFE_TLS_CA_BUNDLE_FILE = "${NOMAD_SECRETS_DIR}/bundle.pem"
 
         TFE_IACT_SUBNETS    = [[ .tfe_fdo_nomad.tfe_iact_subnets | quote ]]
         TFE_IACT_TIME_LIMIT = [[ .tfe_fdo_nomad.tfe_iact_time_limit | quote ]]
