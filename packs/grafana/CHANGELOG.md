@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.2 Updated to new template syntax
+
+## 0.1.1 Support for grafana.ini and vault
+
 ## 0.1.0 Redesign of Pack
 
 - Breaking Change: all Variables related to Grafana are prefixed with `grafana_`
