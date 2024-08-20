@@ -4,6 +4,12 @@ variable "job_name" {
   default     = "tfe-job"
 }
 
+variable "tfe_agent_job_id" {
+  description = "The ID of the TFE agent job which overrides using the pack name"
+  type        = string
+  default     = "tfe-agent-job"
+}
+
 variable "tfe_namespace" {
   description = "The namespace for the tfe job to run."
   type        = string
@@ -158,7 +164,7 @@ variable "tfe_resource_memory" {
 variable "tfe_image" {
   description = "The terraform enterprise image that will be used to deploy TFE"
   type        = string
-  default     = "hashicorp/terraform-enterprise:v202401-2"
+  default     = "hashicorp/terraform-enterprise:v202408-1"
 }
 
 variable "tfe_image_registry_username" {
@@ -171,17 +177,6 @@ variable "tfe_image_server_address" {
   description = "The server address to be used to fetch the terraform enterprise image from the registry."
   type        = string
   default     = "images.releases.hashicorp.com"
-}
-
-variable "tfe_run_pipeline_nomad_address" {
-  description = "The Nomad server address to be used by TFE to spin up agent jobs."
-  type        = string
-}
-
-variable "tfe_run_pipeline_nomad_tls_config_insecure" {
-  description = "The tls config settings for communication between Nomad and TFE"
-  type        = bool
-  default     = false
 }
 
 variable "tfe_agent_namespace" {

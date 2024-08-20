@@ -1,9 +1,4 @@
-<Note title="Nomad in beta">
-    Running Terraform Enterprise on Nomad is still in beta. Do not deploy beta features in
-    production environments.
-</Note>
-
-# Nomad pack for Terraform Enterprise FDO (Beta)
+# Nomad pack for Terraform Enterprise FDO
 
 This pack deploys Terraform Enterprise on Nomad. This includes running a Terraform Enterprise service job and Terraform Enterprise agent batch job.
 
@@ -75,15 +70,6 @@ To apply the policy run following bash command:
     # Object storage access key. Mapped to the TFE_OBJECT_STORAGE_S3_SECRET_ACCESS_KEY environment variable.
     s3_secret_key = ""
 
-    # The field should contain the base64 encoded value of the Nomad CA. Mapped to the TFE_RUN_PIPELINE_NOMAD_TLS_CONFIG_CA_CERT environment variable.
-    nomad_ca_cert = ""
-
-    # The field should contain the base64 encoded value of the Nomad cert. Mapped to the TFE_RUN_PIPELINE_NOMAD_TLS_CONFIG_CLIENT_CERT environment variable.
-    nomad_cert = ""
-
-    # The field should contain the base64 encoded value of the Nomad cert's key. Mapped to the TFE_RUN_PIPELINE_NOMAD_TLS_CONFIG_CLIENT_KEY environment variable.
-    nomad_cert_key = ""
-
     # TFE Redis password. Mapped to the TFE_REDIS_PASSWORD environment variable.
     redis_password = ""
 
@@ -121,7 +107,8 @@ These variables may be set to change the behavior of the TFE. Note that some of 
 
 | Name                                         | Required | Default                                      | Comments                                                                                                                                                                                                                                                                            |
 |----------------------------------------------|----------|----------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `job_name`                                   | no       | `"tfe-job"`                                  | Override the Nomad job name.                                                                                                                                                                                                                                                        |
+| `job_name`                                   | no       | `"tfe-job"`                                  | Override the TFE job name.                                                                                                                                                                                                                                                          |
+| `tfe_agent_job_id`                           | no       | `"tfe-agent-job"`                            | Override the TFE Agent job name.                                                                                                                                                                                                                                                    |
 | `datacenters`                                | no       | `["*"]`                                      | Nomad datacenters where the task in the jobs will be spread.                                                                                                                                                                                                                        |
 | `tfe_namespace`                              | no       | `"terraform-enterprise"`                     | Nomad namespace where TFE image will be run as a Nomad task.                                                                                                                                                                                                                        |
 | `tfe_port`                                   | no       | `8443`                                       | HTTPS port to expose for TFE task.                                                                                                                                                                                                                                                  |
@@ -133,7 +120,6 @@ These variables may be set to change the behavior of the TFE. Note that some of 
 | `tfe_database_name`                          | no       | `"tfe"`                                      | TFE database name.                                                                                                                                                                                                                                                                  |
 | `tfe_database_parameters`                    | no       | `"sslmode=require"`                          | TFE database server parameters for the connection URI.                                                                                                                                                                                                                              |
 | `tfe_object_storage_type`                    | no       | `"s3"`                                       | Type of object storage to use. Must be one of s3, azure, or google.                                                                                                                                                                                                                 |
-| `tfe_run_pipeline_nomad_address`             | yes      | `""`                                         | The server address of Nomad where TFE is being deployed.                                                                                                                                                                                                                            |
 | `tfe_object_storage_s3_bucket`               | no       | `"tfe"`                                      | The bucket name of the S3 compatible object storage being used.                                                                                                                                                                                                                     |
 | `tfe_object_storage_s3_region`               | no       | `"us-west-2"`                                | S3 region.                                                                                                                                                                                                                                                                          |
 | `tfe_object_storage_s3_use_instance_profile` | no       | `false`                                      | Whether to use the instance profile for authentication.                                                                                                                                                                                                                             |
@@ -152,7 +138,6 @@ These variables may be set to change the behavior of the TFE. Note that some of 
 | `tfe_image`                                  | no       | `"hashicorp/terraform-enterprise:v202401-2"` | TFE image and tag to download and run.                                                                                                                                                                                                                                              |
 | `tfe_image_registry_username`                | no       | `"terraform"`                                | The user name for the registry where the TFE image is hosted.                                                                                                                                                                                                                       |
 | `tfe_image_server_address`                   | no       | `"images.releases.hashicorp.com"`            | The server address of the registry where TFE image is hosted.                                                                                                                                                                                                                       |
-| `tfe_run_pipeline_nomad_tls_config_insecure` | no       | `false`                                      | mTLS between Nomad and TFE when set to false.                                                                                                                                                                                                                                       |
 | `tfe_agent_namespace`                        | no       | `"tfe-agents"`                               | Nomad namespace for TFE Agents to run.                                                                                                                                                                                                                                              |
 | `tfe_agent_image`                            | no       | `"hashicorp/tfc-agent:latest"`               | TFE Agent image and tag to download and run.                                                                                                                                                                                                                                        |
 | `tfe_vault_cluster_port`                     | no       | `8201`                                       | Vault cluster port which needs to exposed from the TFE container.                                                                                                                                                                                                                   |
