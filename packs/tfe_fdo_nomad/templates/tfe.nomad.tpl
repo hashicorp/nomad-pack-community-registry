@@ -91,39 +91,6 @@ EOF
       }
 
       template {
-        destination = "${NOMAD_SECRETS_DIR}/nomad_ca_cert.pem"
-        change_mode = "restart"
-        splay       = "60s"
-        data        = <<EOF
-{{- with nomadVar "nomad/jobs/[[ .tfe_fdo_nomad.job_name ]]" -}}
-  {{ base64Decode .nomad_ca_cert.Value }}
-{{- end -}}
-EOF
-      }
-
-      template {
-        destination = "${NOMAD_SECRETS_DIR}/nomad_cert.pem"
-        change_mode = "restart"
-        splay       = "60s"
-        data        = <<EOF
-{{- with nomadVar "nomad/jobs/[[ .tfe_fdo_nomad.job_name ]]" -}}
-  {{ base64Decode .nomad_cert.Value }}
-{{- end -}}
-EOF
-      }
-
-      template {
-        destination = "${NOMAD_SECRETS_DIR}/nomad_cert_key.pem"
-        change_mode = "restart"
-        splay       = "60s"
-        data        = <<EOF
-{{- with nomadVar "nomad/jobs/[[ .tfe_fdo_nomad.job_name ]]" -}}
-  {{ base64Decode .nomad_cert_key.Value }}
-{{- end -}}
-EOF
-      }
-
-      template {
         destination = "${NOMAD_SECRETS_DIR}/secrets.env"
         env         = true
         change_mode = "restart"
@@ -153,14 +120,11 @@ EOF
       env {
         
         TFE_RUN_PIPELINE_DRIVER = "nomad"
-        TFE_RUN_PIPELINE_NOMAD_ADDRESS             = [[ .tfe_fdo_nomad.tfe_run_pipeline_nomad_address | quote ]]
-        TFE_RUN_PIPELINE_NOMAD_TLS_CONFIG_INSECURE = [[ .tfe_fdo_nomad.tfe_run_pipeline_nomad_tls_config_insecure | quote ]]
-        TFE_RUN_PIPELINE_NOMAD_TLS_CONFIG_CA_CERT = "${NOMAD_SECRETS_DIR}/nomad_ca_cert.pem"
-        TFE_RUN_PIPELINE_NOMAD_TLS_CONFIG_CLIENT_CERT = "${NOMAD_SECRETS_DIR}/nomad_cert.pem"
-        TFE_RUN_PIPELINE_NOMAD_TLS_CONFIG_CLIENT_KEY = "${NOMAD_SECRETS_DIR}/nomad_cert_key.pem"
         TFE_DISK_CACHE_VOLUME_NAME                 = "${NOMAD_TASK_DIR}/terraform-enterprise-cache"
 
         TFE_OPERATIONAL_MODE = "active-active"
+
+        TFE_RUN_PIPELINE_NOMAD_AGENT_JOB_ID = [[ .tfe_fdo_nomad.tfe_agent_job_id | quote ]]
 
         TFE_DATABASE_USER = [[ .tfe_fdo_nomad.tfe_database_user | quote ]]
         TFE_DATABASE_HOST       = [[ .tfe_fdo_nomad.tfe_database_host | quote ]]

@@ -1,7 +1,7 @@
 # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
-job "tfe-agent-job" {
+job [[ .tfe_fdo_nomad.tfe_agent_job_id | quote ]] {
   type      = "batch"
   namespace = [[ .tfe_fdo_nomad.tfe_agent_namespace | quote ]]
   constraint {
