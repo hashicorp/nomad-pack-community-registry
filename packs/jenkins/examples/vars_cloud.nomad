@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 docker_jenkins_env_vars = {
   "java_opts": "-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false",
 }
