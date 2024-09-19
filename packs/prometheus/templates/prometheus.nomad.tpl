@@ -1,7 +1,7 @@
 job [[ template "full_job_name" . ]] {
 
   region      = [[ .prometheus.region | quote ]]
-  datacenters = [[ .prometheus.datacenters | toStringList ]]
+  datacenters = [[ .prometheus.datacenters | toPrettyJson ]]
   namespace   = [[ .prometheus.namespace | quote ]]
   [[ if .prometheus.constraints ]][[ range $idx, $constraint := .prometheus.constraints ]]
   constraint {
@@ -17,6 +17,13 @@ job [[ template "full_job_name" . ]] {
 
     network {
       mode = [[ .prometheus.prometheus_group_network.mode | quote ]]
+      [[- if .prometheus.prometheus_group_network.dns ]]
+      dns {
+      [[- range $label, $to := .prometheus.prometheus_group_network.dns ]]
+          [[ $label ]] = [[ $to | toPrettyJson ]]
+      [[- end ]]
+      }
+      [[- end ]]
       [[- range $label, $to := .prometheus.prometheus_group_network.ports ]]
       port [[ $label | quote ]] {
         to = [[ $to ]]
@@ -24,8 +31,24 @@ job [[ template "full_job_name" . ]] {
       [[- end ]]
     }
 
+    [[- if .prometheus.prometheus_volume ]]
+    volume "prometheus" {
+      type = [[ .prometheus.prometheus_volume.type | quote ]]
+      read_only = false
+      source = [[ .prometheus.prometheus_volume.source | quote ]]
+    }
+    [[- end ]]
+
     task "prometheus" {
       driver = "docker"
+
+    [[- if .prometheus.prometheus_volume ]]
+      volume_mount {
+        volume      = "prometheus"
+        destination = "/prometheus"
+        read_only   = false
+      }
+    [[- end ]]
 
       config {
         image = "prom/prometheus:v[[ .prometheus.prometheus_task.version ]]"
@@ -69,7 +92,7 @@ EOH
       service {
         name = [[ $service.service_name | quote ]]
         port = [[ $service.service_port_label | quote ]]
-        tags = [[ $service.service_tags | toStringList ]]
+        tags = [[ $service.service_tags | toPrettyJson ]]
 
         check {
           type     = "http"
