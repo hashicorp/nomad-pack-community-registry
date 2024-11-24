@@ -20,6 +20,12 @@ variable "datacenters" {
   default     = ["dc1"]
 }
 
+variable "node_pool" {
+  description = "The node pool where the job should be placed."
+  type        = string
+  default     = "default"
+}
+
 variable "image" {
   description = ""
   type        = string

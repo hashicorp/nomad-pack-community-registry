@@ -2,6 +2,7 @@ job [[ template "job_name" . ]] {
 
   region      = [[ .prometheus_consul_exporter.region | quote]]
   datacenters = [[ .prometheus_consul_exporter.datacenters | toStringList ]]
+  node_pool = [[ .prometheus_consul_exporter.node_pool | quote ]]
   namespace   = [[ .prometheus_consul_exporter.namespace | quote]]
   type        = "service"
   [[ if .prometheus_consul_exporter.constraints ]][[ range $idx, $constraint := .prometheus_consul_exporter.constraints ]]

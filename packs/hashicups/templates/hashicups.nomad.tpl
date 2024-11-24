@@ -2,6 +2,7 @@ job "hashicups" {
   type   = "service"
   region = "[[ .hashicups.region ]]"
   datacenters = [[ .hashicups.datacenters | toStringList ]]
+  node_pool = [[ .hashicups.node_pool | quote ]]
 
   group "hashicups" {
     network {
