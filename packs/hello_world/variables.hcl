@@ -35,7 +35,7 @@ variable "message" {
 variable "register_consul_service" {
   description = "If you want to register a consul service for the job"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "consul_service_name" {
