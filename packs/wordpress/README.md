@@ -5,7 +5,7 @@ being run by the [Docker](https://www.nomadproject.io/docs/drivers/docker) drive
 
 It has 3 tasks:
 - **WordPress:** [*(reference)*](https://wordpress.org/) the open-source CMS;
-- **MariaDB:** [*(reference)*](https://mariadb.org/) the database used by Wordpress;
+- **MariaDB:** [*(reference)*](https://mariadb.org/) the database used by WordPress;
 - **phpMyAdmin:** [*(reference)*](https://www.phpmyadmin.net/) to handle the administration of MariaDB over web.
 
 Setup:

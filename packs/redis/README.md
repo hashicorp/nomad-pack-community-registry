@@ -70,11 +70,13 @@ client {
 ```
 
 3. The `use_host_volume` variable is set to `true`
+
 ```
 --var use_host_volume=true
 ```
 
 4. (Optional) The name of the volume is set using the `redis_volume` variable. Default is `redis`
+
 ```
 --var redis_volume=<volume name>
 ```
@@ -83,6 +85,7 @@ Nomad will mount the host volume into the default `/data` directory within the c
 
 ---
 ## Example Usage
-```
+
+```shell
 nomad-pack run redis --var job_name="redis-standalone" --var use_host_volume=true --var image="redis:6.2.6"
 ```

@@ -7,7 +7,7 @@ pack.
 
 **NOTE:** This pack is not suitable for production, and if the
 allocation is rescheduled all data written to Ceph will be lost! If
-you are intererested in submitting an update to make this Ceph pack
+you are interested in submitting an update to make this Ceph pack
 production-ready, the Nomad engineering team would enthusiastically
 review it!
 
@@ -76,8 +76,7 @@ which takes a list of objects with the following fields:
 * `value` (string) - Specifies the value to compare the attribute
   against using the specified operation.
 
-Below is also an example of how to pass `constraints` to the CLI with
-with the `-var` argument.
+Below is also an example of how to pass `constraints` to the CLI with the `-var` argument.
 
 ```bash
 nomad-pack run -var 'constraints=[{"attribute":"$${meta.my_custom_value}","operator":">","value":"3"}]' packs/ceph

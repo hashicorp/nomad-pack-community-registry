@@ -11,7 +11,7 @@ being run by the [Docker driver][docker_driver].
 - `namespace` (string "default") - The namespace where the job should be placed.
 - `constraints` (list(object)) - Constraints to apply to the entire job.
 - `job_type` (string "service") - The type of the job.
-- `instance_count` (number 1) - In case the job is ran as a service, how many copies of the snmp_exporter group to run.
+- `instance_count` (number 1) - In case the job is run as a service, how many copies of the snmp_exporter group to run.
 - `snmp_exporter_group_network` (object) - The SNMP exporter network configuration options.
 - `snmp_exporter_task_config` (object) - The SNMP exporter task config options.
 - `snmp_exporter_task_resources` (object) - The resource to assign to the SNMP exporter task.

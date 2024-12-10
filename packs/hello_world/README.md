@@ -18,7 +18,7 @@ Optionally, it can configure a Consul service.
 
 If the `register_consul_service` is unset or set to true, the Consul service will be registered.
 
-Several load balancers in the [The Nomad Pack Community Registry](../README.md) are configured to connect to this service by default.
+Several load balancers in the [Nomad Pack Community Registry](../../README.md) are configured to connect to this service by default.
 
 The [nginx](../nginx/README.md) and [HAProxy](../haproxy/README.md) packs are configured to balance the Consul service "hello-world-service", which is th default value for the "consul_service_name" variable.
 
