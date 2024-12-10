@@ -1,10 +1,10 @@
 job [[ template "job_name" . ]] {
 
-  region      = [[ .fabio.region | quote]]
-  datacenters = [[ .fabio.datacenters | toStringList ]]
+  region      = [[ var "region" . | quote]]
+  datacenters = [[ var "datacenters" . | toStringList ]]
   type        = "system"
-  namespace   = [[ .fabio.namespace | quote]]
-  [[ if .fabio.constraints ]][[ range $idx, $constraint := .fabio.constraints ]]
+  namespace   = [[ var "namespace" . | quote]]
+  [[ if var "constraints" . ]][[ range $idx, $constraint := var "constraints" . ]]
   constraint {
     attribute = [[ $constraint.attribute | quote ]]
     value     = [[ $constraint.value | quote ]]
@@ -17,8 +17,8 @@ job [[ template "job_name" . ]] {
   group "fabio" {
 
     network {
-      mode = [[ .fabio.fabio_group_network.mode | quote ]]
-      [[- range $label, $to := .fabio.fabio_group_network.ports ]]
+      mode = [[ var "fabio_group_network.mode" . | quote ]]
+      [[- range $label, $to := var "fabio_group_network.ports" . ]]
       port [[ $label | quote ]] {
         static = [[ $to ]]
       }
@@ -28,23 +28,23 @@ job [[ template "job_name" . ]] {
     task "fabio" {
       driver = "docker"
       config {
-        image = "fabiolb/fabio:[[ .fabio.fabio_task_config.version ]]"
-        [[- if .fabio.fabio_group_network.ports ]]
-        [[- $ports := keys .fabio.fabio_group_network.ports ]]
-        ports = [[ $ports | toStringList ]]
+        image = "fabiolb/fabio:[[ var "fabio_task_config.version" . ]]"
+        [[- if var "fabio_group_network.ports" . ]]
+        [[- $ports := keys (var "fabio_group_network.ports" .) ]]
+        ports = [[ $ports | toStringList | replace " " "," ]]
         [[- end ]]
 
-        [[- if ne .fabio.fabio_task_app_properties "" ]]
+        [[- if ne (var "fabio_task_app_properties" .) "" ]]
         volumes = [
             "local/fabio.properties:/etc/fabio/fabio.properties",
         ]
         [[- end ]]
       }
 
-      [[- if ne .fabio.fabio_task_app_properties "" ]]
+      [[- if ne (var "fabio_task_app_properties" .) "" ]]
        template {
          data = <<EOF
-[[ .fabio.fabio_task_app_properties ]]
+[[ var "fabio_task_app_properties" . ]]
 EOF
 
          destination = "local/fabio.properties"
@@ -52,8 +52,8 @@ EOF
        [[- end ]]
 
       resources {
-        cpu    = [[ .fabio.fabio_task_resources.cpu ]]
-        memory = [[ .fabio.fabio_task_resources.memory ]]
+        cpu    = [[ var "fabio_task_resources.cpu" . ]]
+        memory = [[ var "fabio_task_resources.memory" . ]]
       }
     }
   }
