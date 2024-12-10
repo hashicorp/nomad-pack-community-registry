@@ -115,6 +115,7 @@ variable "alertmanager_task_services" {
 variable "alertmanager_yaml" {
   description = "The alertmanager configuration to pass to the task."
   type        = string
+
   // defaults as used in the upstream getting started tutorial.
   default     = <<EOF
 route:
