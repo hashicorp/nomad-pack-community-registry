@@ -29,7 +29,7 @@ region = [[ .csi_openstack_cinder.region | quote]]
 [[- end -]]
 
 [[- define "vault_config" -]]
-    [[ if .vault_config.enabled ]]
+    [[ if .csi_openstack_cinder.vault_config.enabled ]]
     vault {
       [[- if .csi_openstack_cinder.vault_config.enabled ]]
       policies      = [ [[- range $idx, $pol := .csi_openstack_cinder.vault_config.policies -]][[if $idx]], [[end]][[ $pol | quote ]][[- end -]] ]
