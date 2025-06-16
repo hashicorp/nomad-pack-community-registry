@@ -1,6 +1,6 @@
 # Nomad Ingress Nginx
 
-This pack deploys an Nginx reverse proxy that is automatically configured to
+This pack deploys a Nginx reverse proxy that is automatically configured to
 handle traffic ingress to allocations based on service meta values and tags.
 
 Jobs can register themselves in the ingress by annotating their services either

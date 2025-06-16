@@ -31,7 +31,7 @@ job [[ template "job_name" . ]] {
         image = "fabiolb/fabio:[[ var "fabio_task_config.version" . ]]"
         [[- if var "fabio_group_network.ports" . ]]
         [[- $ports := keys (var "fabio_group_network.ports" .) ]]
-        ports = [[ $ports | toStringList ]]
+        ports = [[ $ports | toPrettyJson ]]
         [[- end ]]
 
         [[- if ne (var "fabio_task_app_properties" .) "" ]]

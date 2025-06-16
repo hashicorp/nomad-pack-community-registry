@@ -56,9 +56,9 @@ job [[ template "job_name" . ]] {
       driver = "docker"
 
       config {
-        image = [[var "mariadb_task_image" . | quote]]
+        image = [[ var "mariadb_task_image" . | quote]]
       }
-      
+
       volume_mount {
         volume      = "mariadb"
         destination = "/var/lib/mysql"
@@ -143,7 +143,7 @@ job [[ template "job_name" . ]] {
       driver = "docker"
 
       config {
-        image = [[var "wordpress_task_image" . | quote]]
+        image = [[ var "wordpress_task_image" . | quote]]
       }
 
       [[- $wordpress_task_env_vars_length := len (var "wordpress_task_env_vars" .) ]]
@@ -231,7 +231,7 @@ job [[ template "job_name" . ]] {
       driver = "docker"
 
       config {
-        image = [[var "phpmyadmin_task_image" . | quote]]
+        image = [[ var "phpmyadmin_task_image" . | quote]]
       }
 
       [[- $phpmyadmin_task_env_vars_length := len (var "phpmyadmin_task_env_vars" .) ]]

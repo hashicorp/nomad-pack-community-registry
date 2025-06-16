@@ -11,7 +11,7 @@
 // only deploys to a region if specified
 
 [[- define "region" -]]
-[[- if not (eq (var "region" .) "") -]]
+[[- if ne (var "region" .) "" -]]
 region = [[ var "region" . | quote]]
 [[- end -]]
 [[- end -]]

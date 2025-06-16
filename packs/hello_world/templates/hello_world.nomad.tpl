@@ -31,8 +31,8 @@ job [[ template "job_name" . ]] {
     restart {
       attempts = 2
       interval = "30m"
-      delay = "15s"
-      mode = "fail"
+      delay    = "15s"
+      mode     = "fail"
     }
 
     task "server" {
@@ -40,11 +40,14 @@ job [[ template "job_name" . ]] {
 
       config {
         image = "mnomitch/hello_world_server"
-        ports = ["http"]
+
+        ports = [
+          "http"
+          ]
       }
 
       env {
-        MESSAGE = [[var "message" . | quote]]
+        MESSAGE = [[ var "message" . | quote]]
       }
     }
   }

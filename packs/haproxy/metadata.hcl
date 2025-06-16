@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MPL-2.0
 
 app {
-  url = "http://www.haproxy.org/"
+  url = "https://www.haproxy.org/"
   author = "Willy Tarreau"
 }
 

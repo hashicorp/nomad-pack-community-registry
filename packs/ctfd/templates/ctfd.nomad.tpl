@@ -7,8 +7,8 @@ job [[ template "job_name" . ]] {
   type = "service"
 
   constraint {
-    attribute = "${attr.driver.docker.volumes.enabled}",
-    value     = "true",
+    attribute = "${attr.driver.docker.volumes.enabled}"
+    value     = "true"
   }
 
   constraint {
@@ -37,7 +37,7 @@ job [[ template "job_name" . ]] {
     [[- if var "register_consul_service" . ]]
     service {
       name = "[[ var "consul_service_name" . ]]"
-      [[- if ne (len (var "consul_service_tags" .)) 0 ]]
+      [[- if ne (len var "consul_service_tags" .) 0 ]]
       tags = [[ var "consul_service_tags" . | toPrettyJson ]]
       [[- end ]]
       port = "http"

@@ -11,20 +11,23 @@ The pack expects certain prerequisites to be fulfilled before running. The list 
 Follow this page for [installation requirements](https://developer.hashicorp.com/terraform/enterprise/flexible-deployments/install/requirements).
 
 ### Create Environment variables
-1. `NOMAD_ADDR` - The address of the Nomad server.
-1. `NOMAD_TOKEN` - The SecretID of an ACL token to use to authenticate API requests with. You will need this to create Nomad namespaces, variables and ACLs.
-1. `NOMAD_CACERT` - Path to a PEM encoded CA cert file to use to verify the Nomad server SSL certificate.
-1. `NOMAD_CLIENT_CERT` - Path to a PEM encoded client certificate for TLS authentication to the Nomad server. Must also specify NOMAD_CLIENT_KEY.
-1. `NOMAD_CLIENT_KEY` - Path to an unencrypted PEM encoded private key matching the client certificate from NOMAD_CLIENT_CERT.
+1.
+2. `NOMAD_ADDR` - The address of the Nomad server.
+2. `NOMAD_TOKEN` - The SecretID of an ACL token to use to authenticate API requests with. You will need this to create Nomad namespaces, variables and ACLs.
+3. `NOMAD_CACERT` - Path to a PEM encoded CA cert file to use to verify the Nomad server SSL certificate.
+4. `NOMAD_CLIENT_CERT` - Path to a PEM encoded client certificate for TLS authentication to the Nomad server. Must also specify NOMAD_CLIENT_KEY.
+5. `NOMAD_CLIENT_KEY` - Path to an unencrypted PEM encoded private key matching the client certificate from NOMAD_CLIENT_CERT.
 
 ### Create Namespace for TFE job and TFE agent job.
 
-   1. Run `nomad namespace apply terraform-enterprise` to create the `terraform-enterprise` namespace. This is the default namespace that is used to bring up TFE Job.
-   1. Run `nomad namespace apply tfe-agents` to create the `tfe-agents` namespace. This is the default namespace that is used to bring up TFE Agent Job.
+1. Run `nomad namespace apply terraform-enterprise` to create the `terraform-enterprise` namespace. This is the default namespace that is used to bring up TFE Job.
+2. Run `nomad namespace apply tfe-agents` to create the `tfe-agents` namespace. This is the default namespace that is used to bring up TFE Agent Job.
 
 
 ### Create and apply Nomad ACL policy.
+
 Create a file `terraform_enterprise_policy.hcl` with the content below:
+
 ```hcl
   namespace "tfe-agents" {
   capabilities = ["submit-job","dispatch-job", "list-jobs", "read-job", "read-logs" ]
@@ -32,67 +35,70 @@ Create a file `terraform_enterprise_policy.hcl` with the content below:
   ```
 
 To apply the policy run following bash command:
-  ```bash
-  $ nomad acl policy apply \
-   -namespace terraform-enterprise -job tfe-job \
-   -group tfe-group -task tfe-task \
-   terraform-enterprise-policy ./terraform_enterprise_policy.hcl
-  ``` 
 
-### Create the Nomad Variables. 
-  
-  These contain sensitive data that are required like certs, licenses and passwords.
-  Create a variable specification file: 
+```bash
+$ nomad acl policy apply \
+ -namespace terraform-enterprise -job tfe-job \
+ -group tfe-group -task tfe-task \
+ terraform-enterprise-policy ./terraform_enterprise_policy.hcl
+```
 
-  ```hcl
-  # spec.nv.hcl
+### Create the Nomad Variables.
 
-  # Path where Nomad variables will be stored, the same path will be used inside TFE job file rendered by tfe.nomad.tpl for TFE job to access.
-  path      = "nomad/jobs/tfe-job"
-  namespace = "terraform-enterprise"
+These contain sensitive data that are required like certs, licenses and passwords.
+Create a variable specification file:
 
-  items {
-    # TFE DB password. Mapped to the TFE_DB_PASSWORD environment variable.
-    db_password = ""
+```hcl
+# spec.nv.hcl
 
-    # The field should contain the base64 encoded value of the cert. Mappped to the TFE_TLS_CERT_FILE environment variable.
-    cert = ""
+# Path where Nomad variables will be stored, the same path will be used inside TFE job file rendered by tfe.nomad.tpl for TFE job to access.
+path      = "nomad/jobs/tfe-job"
+namespace = "terraform-enterprise"
 
-    # The field should contain the base64 encoded value of the bundle. Mapped to the TFE_TLS_CA_BUNDLE_FILE environment variable.
-    bundle = ""
+items {
+  # TFE DB password. Mapped to the TFE_DB_PASSWORD environment variable.
+  db_password = ""
 
-    # The field should contain the base64 encoded value of the key. Mappped to the TFE_TLS_KEY_FILE environment variable.
-    key = ""
-  
-    # A valid TFE license. Mapped to the TFE_LICENSE environment variable.
-    tfe_license = ""
-    
-    # Object storage access key. Mapped to the TFE_OBJECT_STORAGE_S3_SECRET_ACCESS_KEY environment variable.
-    s3_secret_key = ""
+  # The field should contain the base64 encoded value of the cert. Mappped to the TFE_TLS_CERT_FILE environment variable.
+  cert = ""
 
-    # TFE Redis password. Mapped to the TFE_REDIS_PASSWORD environment variable.
-    redis_password = ""
+  # The field should contain the base64 encoded value of the bundle. Mapped to the TFE_TLS_CA_BUNDLE_FILE environment variable.
+  bundle = ""
 
-    # TFE Vault encryption key. Mapped to the TFE_ENCRYPTION_PASSWORD environment variable.
-    tfe_encryption_password = ""
+  # The field should contain the base64 encoded value of the key. Mappped to the TFE_TLS_KEY_FILE environment variable.
+  key = ""
 
-    # Password for the registry where the TFE image is hosted. Mapped to the TFE_IMAGE_REGISTRY_PASSWORD environment variable.
-    tfe_image_registry_password = ""
+  # A valid TFE license. Mapped to the TFE_LICENSE environment variable.
+  tfe_license = ""
 
-  }
-  ```
-  
-  Update the `path` variable if default value of `job_name` is overridden in the `var.hcl` file.
-  The variables can be created as below by passing the `spec.nv.hcl` file we create above:
+  # Object storage access key. Mapped to the TFE_OBJECT_STORAGE_S3_SECRET_ACCESS_KEY environment variable.
+  s3_secret_key = ""
 
-  ```bash
-  $ nomad var put @spec.nv.hcl
-  ```
+  # TFE Redis password. Mapped to the TFE_REDIS_PASSWORD environment variable.
+  redis_password = ""
+
+  # TFE Vault encryption key. Mapped to the TFE_ENCRYPTION_PASSWORD environment variable.
+  tfe_encryption_password = ""
+
+  # Password for the registry where the TFE image is hosted. Mapped to the TFE_IMAGE_REGISTRY_PASSWORD environment variable.
+  tfe_image_registry_password = ""
+
+}
+```
+
+Update the `path` variable if default value of `job_name` is overridden in the `var.hcl` file.
+The variables can be created as below by passing the `spec.nv.hcl` file we create above:
+
+```bash
+$ nomad var put @spec.nv.hcl
+```
+
 **Note: At this point, this file can be deleted.**
 
 ## Pack Information
 
 After completing prerequisites, the pack can be run using the following bash command:
+
 ```bash
 $ nomad-pack run tfe_fdo_nomad -f variables.hcl
 ```

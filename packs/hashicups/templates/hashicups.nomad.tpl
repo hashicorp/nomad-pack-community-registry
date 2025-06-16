@@ -5,7 +5,7 @@ job "hashicups" {
 
   group "hashicups" {
     network {
-      port "db" { 
+      port "db" {
         static = 5432
       }
       port "product-api" {
@@ -77,7 +77,7 @@ server.port={{ env "NOMAD_PORT_payments-api" }}
         destination = "local/application.properties"
       }
     }
-    
+
     task "public-api" {
       driver = "docker"
       meta {
@@ -93,7 +93,7 @@ server.port={{ env "NOMAD_PORT_payments-api" }}
         PAYMENT_API_URI = "http://${NOMAD_ADDR_payments-api}"
       }
     }
-    
+
     task "frontend" {
       driver = "docker"
       meta {

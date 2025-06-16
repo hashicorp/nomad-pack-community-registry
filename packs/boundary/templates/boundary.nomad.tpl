@@ -35,7 +35,7 @@ job [[ template "job_name" . ]] {
 [[- if ne (var "config_file" .) "" ]]
         volumes = [ "local/boundary.hcl:/boundary/boundary.hcl" ]
 [[- end ]]
-        cap_add    = [ [[- if var "docker_cap_add_ipc_lock" . ]]"IPC_LOCK"[[- end ]] ] 
+        cap_add    = [ [[- if var "docker_cap_add_ipc_lock" . ]]"IPC_LOCK"[[- end ]] ]
         privileged = [[ var "docker_privileged" . ]]
       }
 
@@ -75,7 +75,7 @@ EOH
           "worker",
           "comm"
         ]
-        cap_add    = [ [[- if var "docker_cap_add_ipc_lock" . ]]"IPC_LOCK"[[- end ]] ] 
+        cap_add    = [ [[- if var "docker_cap_add_ipc_lock" . ]]"IPC_LOCK"[[- end ]] ]
         privileged = [[ var "docker_privileged" . ]]
       }
 

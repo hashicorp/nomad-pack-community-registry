@@ -1,4 +1,4 @@
-Congratulations on deploying [[ meta "pack.name" . ]]! 
+Congrats! You deployed the [[ meta "pack.name" . ]] pack on Nomad.
 
 Navigate to the HashiCups UI on port [[ var "nginx_port" . ]] of the Nomad client running the job.
 

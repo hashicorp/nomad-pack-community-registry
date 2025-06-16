@@ -1,8 +1,8 @@
-You deployed a service to Nomad.
+Congrats! You deployed the [[ meta "pack.name" . ]] pack on Nomad.
 
 There are [[ var "count" . ]] instances of your job now running.
 
-The service is using the image: [[var "image" . | quote]]
+The service is using the image: [[ var "image" . | quote]]
 
 [[ if var "register_consul_service" . ]]
 You registered an associated Consul service named [[ var "consul_service_name" . ]].

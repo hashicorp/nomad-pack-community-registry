@@ -66,7 +66,7 @@ Optionally, this pack can configure a Consul service.
 
 If the `register_consul_service` is unset or set to true, the Consul service will be registered.
 
-Several load balancers in the [The Nomad Pack Community Registry](../README.md) are configured to connect to
+Several load balancers in the [Nomad Pack Community Registry](../../README.md) are configured to connect to
 this service with ease.
 
 The [NginX](../nginx/README.md) and [HAProxy](../haproxy/README.md) packs can be configured to balance over the
@@ -77,7 +77,7 @@ The [Fabio](../fabio/README.md) and [Traefik](../traefik/README.md) packs are co
 services with the specific tags.
 
 To tag this Consul service to work with Fabio, add `"urlprefix-<PATH>"`
-to the consul_tags. For instance, to route at the root path, you would add `"urlprefix-/"`. To route at the path `"/api/v1"`, you would add '"urlprefix-/api/v1".
+to the consul_tags. For instance, to route at the root path, you would add `"urlprefix-/"`. To route at the path `"/api/v1"`, you would add `"urlprefix-/api/v1"`.
 
 To tag this Consul service to work with Traefik, add "traefik.enable=true" to the consul_tags, also add "traefik.http.routers.http.rule=Path(\`<PATH>\`)". To route at the root path, you would add "traefik.http.routers.http.rule=Path(\`/\`)". To route at the path "/api/v1", you would add "traefik.http.routers.http.rule=Path(\`/api/v1\`)".
 
