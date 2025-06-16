@@ -5,7 +5,7 @@
   {{- $enabled := false -}}
   {{- $hostname := "" -}}
   {{- $path := "/" -}}
-  {{- $port := [[.nomad_ingress_nginx.http_port]] -}}
+  {{- $port := [[var "http_port" .]] -}}
   {{- $allow := "" -}}
   {{- $deny := "" -}}
   {{- if (index .ServiceMeta "nomad_ingress_enabled") -}}

@@ -1,32 +1,32 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .csi_openstack_cinder.datacenters | toStringList ]]
+  datacenters = [[ var "datacenters" . | toStringList ]]
   type = "system"
 
   group "nodes" {
 
     restart {
-      attempts = [[ .csi_openstack_cinder.job_restart_config.attempts ]]
-      delay    = [[ .csi_openstack_cinder.job_restart_config.delay | quote ]]
-      mode     = [[ .csi_openstack_cinder.job_restart_config.mode | quote ]]
-      interval = [[ .csi_openstack_cinder.job_restart_config.interval | quote ]]
+      attempts = [[ var "job_restart_config.attempts" . ]]
+      delay    = [[ var "job_restart_config.delay" . | quote ]]
+      mode     = [[ var "job_restart_config.mode" . | quote ]]
+      interval = [[ var "job_restart_config.interval" . | quote ]]
     }
     
-    [[ template "constraints" .csi_openstack_cinder.constraints ]]
+    [[ template "constraints" var "constraints" . ]]
 
-    [[- template "vault_config" .csi_openstack_cinder ]]
+    [[- template "vault_config" . ]]
 
     task "cinder-node" {
       driver = "docker"
       template {
         data        = <<EOT
-[[ $config := .csi_openstack_cinder.cloud_conf_file ]][[ fileContents $config ]]
+[[ $config := var "cloud_conf_file" . ]][[ fileContents $config ]]
         EOT
         destination = "secrets/cloud.conf"
         change_mode = "restart"
       }
       config {
-        image = "docker.io/k8scloudprovider/cinder-csi-plugin:[[ .csi_openstack_cinder.version_tag ]]"
+        image = "docker.io/k8scloudprovider/cinder-csi-plugin:[[ var "version_tag" . ]]"
 
         mount {
             type     = "bind"
@@ -39,7 +39,7 @@ job [[ template "job_name" . ]] {
           }
         args = [
           "/bin/cinder-csi-plugin",
-          "-v=[[ .csi_openstack_cinder.cinder_log_level ]]",
+          "-v=[[ var "cinder_log_level" . ]]",
           "--endpoint=unix:///csi/csi.sock",
           "--cloud-config=/etc/config/cloud.conf",
         ]
@@ -47,7 +47,7 @@ job [[ template "job_name" . ]] {
       }
 
       csi_plugin {
-        id        = "[[ .csi_openstack_cinder.csi_plugin_id ]]"
+        id        = "[[ var "csi_plugin_id" . ]]"
         type      = "node"
         mount_dir = "/csi"
       }
@@ -56,13 +56,13 @@ job [[ template "job_name" . ]] {
       driver = "docker"
       template {
         data        = <<EOT
-[[ $config := .csi_openstack_cinder.cloud_conf_file ]][[ fileContents $config ]]
+[[ $config := var "cloud_conf_file" . ]][[ fileContents $config ]]
         EOT
         destination = "secrets/cloud.conf"
         change_mode = "restart"
       }
       config {
-        image = "docker.io/k8scloudprovider/cinder-csi-plugin:[[ .csi_openstack_cinder.version_tag ]]"
+        image = "docker.io/k8scloudprovider/cinder-csi-plugin:[[ var "version_tag" . ]]"
         mount {
             type     = "bind"
             target   = "/etc/config/cloud.conf"
@@ -75,14 +75,14 @@ job [[ template "job_name" . ]] {
 
         args = [
           "/bin/cinder-csi-plugin",
-          "-v=[[ .csi_openstack_cinder.cinder_log_level ]]",
+          "-v=[[ var "cinder_log_level" . ]]",
           "--endpoint=unix:///csi/csi.sock",
           "--cloud-config=/etc/config/cloud.conf",
         ]
       }
 
       csi_plugin {
-        id        = "[[ .csi_openstack_cinder.csi_plugin_id ]]"
+        id        = "[[ var "csi_plugin_id" . ]]"
         type      = "controller"
         mount_dir = "/csi"
       }

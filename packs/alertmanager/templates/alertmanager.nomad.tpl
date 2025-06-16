@@ -1,8 +1,8 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .alertmanager.datacenters | toStringList ]]
+  datacenters = [[ var "datacenters" . | toStringList ]]
 
-  [[ if .alertmanager.constraints ]][[ range $idx, $constraint := .alertmanager.constraints ]]
+  [[ if var "constraints" . ]][[ range $idx, $constraint := var "constraints" . ]]
   constraint {
     attribute = [[ $constraint.attribute | quote ]]
     value     = [[ $constraint.value | quote ]]
@@ -13,19 +13,19 @@ job [[ template "job_name" . ]] {
   [[- end ]][[- end ]]
 
   group "alertmanager" {
-    count = [[ .alertmanager.count ]]
+    count = [[ var "count" . ]]
 
     network {
-      mode = [[ .alertmanager.alertmanager_group_network.mode | quote ]]
-      [[- range $label, $to := .alertmanager.alertmanager_group_network.ports ]]
+      mode = [[ var "alertmanager_group_network.mode" . | quote ]]
+      [[- range $label, $to := var "alertmanager_group_network.ports" . ]]
       port [[ $label | quote ]] {
         to = [[ $to ]]
       }
       [[- end ]]
     }
 
-    [[- if .alertmanager.alertmanager_task_services ]]
-    [[- range $idx, $service := .alertmanager.alertmanager_task_services ]]
+    [[- if var "alertmanager_task_services" . ]]
+    [[- range $idx, $service := var "alertmanager_task_services" . ]]
     service {
       name = [[ $service.service_name | quote ]]
       port = [[ $service.service_port_label | quote ]]
@@ -47,12 +47,12 @@ job [[ template "job_name" . ]] {
     [[- end ]]
     [[- end ]]
 
-    [[ if .alertmanager.register_consul_service ]]
+    [[ if var "register_consul_service" . ]]
     service {
-      name = "[[ .alertmanager.consul_service_name ]]"
-      tags = [[ .alertmanager.consul_service_tags | toStringList ]]
-      port = "[[ .alertmanager.http_port ]]"
-      [[ if .alertmanager.register_consul_service ]]
+      name = "[[ var "consul_service_name" . ]]"
+      tags = [[ var "consul_service_tags" . | toStringList ]]
+      port = "[[ var "http_port" . ]]"
+      [[ if var "register_consul_service" . ]]
       connect {
         sidecar_service {}
       }
@@ -64,9 +64,9 @@ job [[ template "job_name" . ]] {
       driver = "docker"
 
       config {
-        image = "prom/alertmanager:[[ .alertmanager.version_tag ]]"
-        args = [[ .alertmanager.container_args | toPrettyJson ]]
-        [[- if ne .alertmanager.alertmanager_yaml "" ]]
+        image = "prom/alertmanager:[[ var "version_tag" . ]]"
+        args = [[ var "container_args" . | toPrettyJson ]]
+        [[- if ne (var "alertmanager_yaml" .) "" ]]
         volumes = [
           "local/config:/etc/alertmanager/config",
         ]
@@ -74,14 +74,14 @@ job [[ template "job_name" . ]] {
       }
 
       resources {
-        cpu    = [[ .alertmanager.resources.cpu ]]
-        memory = [[ .alertmanager.resources.memory ]]
+        cpu    = [[ var "resources.cpu" . ]]
+        memory = [[ var "resources.memory" . ]]
       }
 
-      [[- if ne .alertmanager.alertmanager_yaml "" ]]
+      [[- if ne (var "alertmanager_yaml" .) "" ]]
       template {
         data = <<EOH
-[[ .alertmanager.alertmanager_yaml ]]
+[[ var "alertmanager_yaml" . ]]
 EOH
 
         change_mode   = "signal"

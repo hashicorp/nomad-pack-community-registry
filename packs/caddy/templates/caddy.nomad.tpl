@@ -1,11 +1,11 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .caddy.datacenters | toPrettyJson ]]
-  namespace   = [[ .caddy.namespace | quote ]]
+  datacenters = [[ var "datacenters" . | toPrettyJson ]]
+  namespace   = [[ var "namespace" . | quote ]]
 
   type = "system"
 
-  [[ if .caddy.constraints ]][[ range $idx, $constraint := .caddy.constraints ]]
+  [[ if var "constraints" . ]][[ range $idx, $constraint := var "constraints" . ]]
   constraint {
     attribute = [[ $constraint.attribute | quote ]]
     value     = [[ $constraint.value | quote ]]
@@ -30,15 +30,15 @@ job [[ template "job_name" . ]] {
 
     network {
       port "admin" {
-        static = [[ .caddy.admin_port ]]
+        static = [[ var "admin_port" . ]]
         to     = 2019
       }
       port "https" {
-        static = [[ .caddy.https_port ]]
+        static = [[ var "https_port" . ]]
         to     = 443
       }
       port "http" {
-        static = [[ .caddy.http_port ]]
+        static = [[ var "http_port" . ]]
         to     = 80
       }
     }
@@ -46,12 +46,12 @@ job [[ template "job_name" . ]] {
     service {
       name = "caddy-https"
       port = "https"
-      [[ if .caddy.https_healthcheck_path ]]
+      [[ if var "https_healthcheck_path" . ]]
       check {
         type     = "http"
         protocol = "https"
         name     = "https_health"
-        path     = [[ .caddy.https_healthcheck_path | quote ]]
+        path     = [[ var "https_healthcheck_path" . | quote ]]
         interval = "20s"
         timeout  = "5s"
 
@@ -71,7 +71,7 @@ job [[ template "job_name" . ]] {
       check {
         type     = "http"
         name     = "http_health"
-        path     = [[ .caddy.http_healthcheck_path | quote ]]
+        path     = [[ var "http_healthcheck_path" . | quote ]]
         interval = "20s"
         timeout  = "5s"
 
@@ -91,7 +91,7 @@ job [[ template "job_name" . ]] {
       }
 
       config {
-        image = "caddy:[[ .caddy.version_tag ]]"
+        image = "caddy:[[ var "version_tag" . ]]"
         ports = ["https", "http"]
 
         # Bind the config file to container.
@@ -102,10 +102,10 @@ job [[ template "job_name" . ]] {
         }
       }
 
-      [[- if ne .caddy.caddyfile "" ]]
+      [[- if ne (var "caddyfile" .) "" ]]
       template {
         data        = <<EOH
-  [[ .caddy.caddyfile ]]
+  [[ var "caddyfile" . ]]
   EOH
         destination = "configs/Caddyfile"
         # Caddy doesn't support reload via signals.
@@ -115,8 +115,8 @@ job [[ template "job_name" . ]] {
       [[- end ]]
 
       resources {
-        cpu    = [[ .caddy.resources.cpu ]]
-        memory = [[ .caddy.resources.memory ]]
+        cpu    = [[ var "resources.cpu" . ]]
+        memory = [[ var "resources.memory" . ]]
       }
     }
   }

@@ -1,9 +1,9 @@
 job "[[template "job_name" .]]" {
-  type = "[[.nomad_ingress_nginx.job_type]]"
+  type = "[[var "job_type" .]]"
 
-  region      = "[[.nomad_ingress_nginx.region]]"
-  datacenters = [[.nomad_ingress_nginx.datacenters | toStringList]]
-  namespace   = "[[.nomad_ingress_nginx.namespace]]"
+  region      = "[[var "region" .]]"
+  datacenters = [[var "datacenters" . | toStringList]]
+  namespace   = "[[var "namespace" .]]"
 
   constraint {
     attribute = "${attr.consul.version}"
@@ -11,20 +11,20 @@ job "[[template "job_name" .]]" {
   }
 
   group "nginx" {
-    count = [[.nomad_ingress_nginx.nginx_count]]
+    count = [[var "nginx_count" .]]
 
     network {
       port "http" {
-        static = [[.nomad_ingress_nginx.http_port]]
-        [[- if .nomad_ingress_nginx.http_port_host_network]]
-        host_network = [[.nomad_ingress_nginx.http_port_host_network]]
+        static = [[var "http_port" .]]
+        [[- if var "http_port_host_network" .]]
+        host_network = [[var "http_port_host_network" .]]
         [[- end]]
       }
 
-      [[range .nomad_ingress_nginx.nginx_extra_ports]]
+      [[range var "nginx_extra_ports" .]]
       port "[[.name]]" {
         static = [[.port]]
-        [[- if .host_network]]
+        [[- if var "host_network" .]]
         host_network = "[[.host_network]]"
         [[- end]]
       }
@@ -48,11 +48,11 @@ job "[[template "job_name" .]]" {
       driver = "docker"
 
       config {
-        image = "[[.nomad_ingress_nginx.nginx_image]]"
+        image = "[[var "nginx_image" .]]"
 
         ports = [
           "http",
-          [[- range .nomad_ingress_nginx.nginx_extra_ports]]
+          [[- range var "nginx_extra_ports" .]]
           "[[.name]]",
           [[- end]]
         ]
@@ -65,7 +65,7 @@ job "[[template "job_name" .]]" {
       template {
         data = <<EOF
 server {
-  listen [[.nomad_ingress_nginx.http_port]] default_server;
+  listen [[var "http_port" .]] default_server;
   server_name _;
   access_log off;
 
@@ -92,8 +92,8 @@ EOF
       }
 
       resources {
-        cpu    = [[.nomad_ingress_nginx.nginx_resources.cpu]]
-        memory = [[.nomad_ingress_nginx.nginx_resources.memory]]
+        cpu    = [[var "nginx_resources.cpu" .]]
+        memory = [[var "nginx_resources.memory" .]]
       }
     }
   }

@@ -1,22 +1,22 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .my.datacenters | toStringList ]]
+  datacenters = [[ var "datacenters" . | toStringList ]]
   type        = "service"
 
   group "redis" {
-    count = [[ .my.app_count ]]
+    count = [[ var "app_count" . ]]
 
-    [[- if .my.use_host_volume ]]
+    [[- if var "use_host_volume" . ]]
     volume "redis" {
       type      = "host"
-      source    = [[ .my.redis_volume | quote ]]
+      source    = [[ var "redis_volume" . | quote ]]
       read_only = false
     }
     [[- end ]]
 
     network {
-      mode = [[ .my.network.mode | quote ]]
-      [[- range $port := .my.network.ports ]]
+      mode = [[ var "network.mode" . | quote ]]
+      [[- range $port := var "network.ports" . ]]
       port [[ $port.name | quote ]] {
         to = [[ $port.port ]]
       }
@@ -24,36 +24,36 @@ job [[ template "job_name" . ]] {
     }
 
     update {
-      min_healthy_time  = [[ .my.update.min_healthy_time | quote ]]
-      healthy_deadline  = [[ .my.update.healthy_deadline | quote ]]
-      progress_deadline = [[ .my.update.progress_deadline | quote ]]
-      auto_revert       = [[ .my.update.auto_revert ]]
+      min_healthy_time  = [[ var "update.min_healthy_time" . | quote ]]
+      healthy_deadline  = [[ var "update.healthy_deadline" . | quote ]]
+      progress_deadline = [[ var "update.progress_deadline" . | quote ]]
+      auto_revert       = [[ var "update.auto_revert" . ]]
     }
 
-    [[- if .my.register_consul_service ]]
+    [[- if var "register_consul_service" . ]]
     service {
-      name = [[ .my.consul_service_name | quote ]]
-      port = [[ .my.consul_service_port | quote ]]
-      tags = [[ .my.consul_tags | toStringList ]]
+      name = [[ var "consul_service_name" . | quote ]]
+      port = [[ var "consul_service_port" . | quote ]]
+      tags = [[ var "consul_tags" . | toStringList ]]
 
       connect {
         sidecar_service {}
       }
 
-      [[- if .my.has_health_check ]]
+      [[- if var "has_health_check" . ]]
       check {
         name     = "redis"
         type     = "tcp"
-        port     = [[ .my.health_check.port ]]
-        interval = [[ .my.health_check.interval | quote ]]
-        timeout  = [[ .my.health_check.timeout | quote ]]
+        port     = [[ var "health_check.port" . ]]
+        interval = [[ var "health_check.interval" . | quote ]]
+        timeout  = [[ var "health_check.timeout" . | quote ]]
       }
       [[- end ]]
     }
     [[- end ]]
 
     restart {
-      attempts = [[ .my.restart_attempts ]]
+      attempts = [[ var "restart_attempts" . ]]
       interval = "30m"
       delay    = "15s"
       mode     = "fail"
@@ -61,7 +61,7 @@ job [[ template "job_name" . ]] {
 
     task "redis" {
       driver = "docker"
-      [[- if .my.use_host_volume ]]
+      [[- if var "use_host_volume" . ]]
       volume_mount {
         volume      = "redis"
         destination = "/data"
@@ -69,12 +69,12 @@ job [[ template "job_name" . ]] {
       }
       [[- end ]]
       config {
-        image = [[ .my.image | quote ]]
+        image = [[ var "image" . | quote ]]
       }
 
       resources {
-        cpu    = [[ .my.resources.cpu ]]
-        memory = [[ .my.resources.memory ]]
+        cpu    = [[ var "resources.cpu" . ]]
+        memory = [[ var "resources.memory" . ]]
       }
     }
   }

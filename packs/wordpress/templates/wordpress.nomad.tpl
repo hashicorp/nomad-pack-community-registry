@@ -1,6 +1,6 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [ [[ range $idx, $dc := .wordpress.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
+  datacenters = [ [[ range $idx, $dc := var "datacenters" . ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
   type = "service"
 
   group "mariadb" {
@@ -11,42 +11,42 @@ job [[ template "job_name" . ]] {
     }
 
     update {
-      min_healthy_time  = [[ .wordpress.mariadb_group_update.min_healthy_time | quote ]]
-      healthy_deadline  = [[ .wordpress.mariadb_group_update.healthy_deadline | quote ]]
-      progress_deadline = [[ .wordpress.mariadb_group_update.progress_deadline | quote ]]
-      auto_revert       = [[ .wordpress.mariadb_group_update.auto_revert ]]
+      min_healthy_time  = [[ var "mariadb_group_update.min_healthy_time" . | quote ]]
+      healthy_deadline  = [[ var "mariadb_group_update.healthy_deadline" . | quote ]]
+      progress_deadline = [[ var "mariadb_group_update.progress_deadline" . | quote ]]
+      auto_revert       = [[ var "mariadb_group_update.auto_revert" . ]]
     }
 
     volume "mariadb" {
       type = "host"
       read_only = false
-      source = [[ .wordpress.mariadb_group_volume | quote ]]
+      source = [[ var "mariadb_group_volume" . | quote ]]
     }
 
-    [[- if .wordpress.mariadb_group_register_consul_service ]]
+    [[- if var "mariadb_group_register_consul_service" . ]]
     service {
-      name = [[ .wordpress.mariadb_group_consul_service_name | quote ]]
-      port = [[ .wordpress.mariadb_group_consul_service_port | quote ]]
-      tags = [ [[ range $idx, $tag := .wordpress.mariadb_group_consul_tags ]][[if $idx]],[[end]][[ $tag | quote ]][[ end ]] ]
+      name = [[ var "mariadb_group_consul_service_name" . | quote ]]
+      port = [[ var "mariadb_group_consul_service_port" . | quote ]]
+      tags = [ [[ range $idx, $tag := var "mariadb_group_consul_tags" . ]][[if $idx]],[[end]][[ $tag | quote ]][[ end ]] ]
 
       connect {
         sidecar_service {}
       }
 
-      [[- if .wordpress.mariadb_group_has_health_check ]]
+      [[- if var "mariadb_group_has_health_check" . ]]
       check {
         name     = "mariadb"
         type     = "tcp"
-        port     = [[ .wordpress.mariadb_group_health_check.port ]]
-        interval = [[ .wordpress.mariadb_group_health_check.interval | quote ]]
-        timeout  = [[ .wordpress.mariadb_group_health_check.timeout | quote ]]
+        port     = [[ var "mariadb_group_health_check.port" . ]]
+        interval = [[ var "mariadb_group_health_check.interval" . | quote ]]
+        timeout  = [[ var "mariadb_group_health_check.timeout" . | quote ]]
       }
       [[- end ]]
     }
     [[- end ]]
 
     restart {
-      attempts = [[ .wordpress.mariadb_group_restart_attempts ]]
+      attempts = [[ var "mariadb_group_restart_attempts" . ]]
       interval = "30m"
       delay = "15s"
       mode = "fail"
@@ -56,7 +56,7 @@ job [[ template "job_name" . ]] {
       driver = "docker"
 
       config {
-        image = [[.wordpress.mariadb_task_image | quote]]
+        image = [[var "mariadb_task_image" . | quote]]
       }
       
       volume_mount {
@@ -65,18 +65,18 @@ job [[ template "job_name" . ]] {
         read_only   = false
       }
 
-      [[- $mariadb_task_env_vars_length := len .wordpress.mariadb_task_env_vars ]]
+      [[- $mariadb_task_env_vars_length := len (var "mariadb_task_env_vars" .) ]]
       [[- if not (eq $mariadb_task_env_vars_length 0) ]]
       env {
-        [[- range $var := .wordpress.mariadb_task_env_vars ]]
+        [[- range $var := var "mariadb_task_env_vars" . ]]
         [[ $var.key ]] = [[ $var.value | quote ]]
         [[- end ]]
       }
       [[- end ]]
 
       resources {
-        cpu    = [[ .wordpress.mariadb_task_resources.cpu ]]
-        memory = [[ .wordpress.mariadb_task_resources.memory ]]
+        cpu    = [[ var "mariadb_task_resources.cpu" . ]]
+        memory = [[ var "mariadb_task_resources.memory" . ]]
       }
     }
   }
@@ -86,7 +86,7 @@ job [[ template "job_name" . ]] {
 
     network {
       mode = "bridge"
-      [[- range $port := .wordpress.wordpress_group_network ]]
+      [[- range $port := var "wordpress_group_network" . ]]
       port [[ $port.name | quote ]] {
         to = [[ $port.port ]]
       }
@@ -94,22 +94,22 @@ job [[ template "job_name" . ]] {
     }
 
     update {
-      min_healthy_time  = [[ .wordpress.wordpress_group_update.min_healthy_time | quote ]]
-      healthy_deadline  = [[ .wordpress.wordpress_group_update.healthy_deadline | quote ]]
-      progress_deadline = [[ .wordpress.wordpress_group_update.progress_deadline | quote ]]
-      auto_revert       = [[ .wordpress.wordpress_group_update.auto_revert ]]
+      min_healthy_time  = [[ var "wordpress_group_update.min_healthy_time" . | quote ]]
+      healthy_deadline  = [[ var "wordpress_group_update.healthy_deadline" . | quote ]]
+      progress_deadline = [[ var "wordpress_group_update.progress_deadline" . | quote ]]
+      auto_revert       = [[ var "wordpress_group_update.auto_revert" . ]]
     }
 
-    [[- if .wordpress.wordpress_group_register_consul_service ]]
+    [[- if var "wordpress_group_register_consul_service" . ]]
     service {
-      name = [[ .wordpress.wordpress_group_consul_service_name | quote ]]
-      port = [[ .wordpress.wordpress_group_consul_service_port | quote ]]
-      tags = [ [[ range $idx, $tag := .wordpress.wordpress_group_consul_tags ]][[if $idx]],[[end]][[ $tag | quote ]][[ end ]] ]
+      name = [[ var "wordpress_group_consul_service_name" . | quote ]]
+      port = [[ var "wordpress_group_consul_service_port" . | quote ]]
+      tags = [ [[ range $idx, $tag := var "wordpress_group_consul_tags" . ]][[if $idx]],[[end]][[ $tag | quote ]][[ end ]] ]
 
       connect {
         sidecar_service {
           proxy {
-            [[- range $upstream := .wordpress.wordpress_group_upstreams ]]
+            [[- range $upstream := var "wordpress_group_upstreams" . ]]
             upstreams {
               destination_name = [[ $upstream.name | quote ]]
               local_bind_port  = [[ $upstream.port ]]
@@ -119,21 +119,21 @@ job [[ template "job_name" . ]] {
         }
       }
 
-      [[- if .wordpress.wordpress_group_has_health_check ]]
+      [[- if var "wordpress_group_has_health_check" . ]]
       check {
-        name     = [[ .wordpress.wordpress_group_health_check.name | quote ]]
+        name     = [[ var "wordpress_group_health_check.name" . | quote ]]
         type     = "http"
-        port     = [[ .wordpress.wordpress_group_health_check.port | quote ]]
-        path     = [[ .wordpress.wordpress_group_health_check.path | quote ]]
-        interval = [[ .wordpress.wordpress_group_health_check.interval | quote ]]
-        timeout  = [[ .wordpress.wordpress_group_health_check.timeout | quote ]]
+        port     = [[ var "wordpress_group_health_check.port" . | quote ]]
+        path     = [[ var "wordpress_group_health_check.path" . | quote ]]
+        interval = [[ var "wordpress_group_health_check.interval" . | quote ]]
+        timeout  = [[ var "wordpress_group_health_check.timeout" . | quote ]]
       }
       [[- end ]]
     }
     [[- end ]]
 
     restart {
-      attempts = [[ .wordpress.wordpress_group_restart_attempts ]]
+      attempts = [[ var "wordpress_group_restart_attempts" . ]]
       interval = "30m"
       delay = "15s"
       mode = "fail"
@@ -143,21 +143,21 @@ job [[ template "job_name" . ]] {
       driver = "docker"
 
       config {
-        image = [[.wordpress.wordpress_task_image | quote]]
+        image = [[var "wordpress_task_image" . | quote]]
       }
 
-      [[- $wordpress_task_env_vars_length := len .wordpress.wordpress_task_env_vars ]]
+      [[- $wordpress_task_env_vars_length := len (var "wordpress_task_env_vars" .) ]]
       [[- if not (eq $wordpress_task_env_vars_length 0) ]]
       env {
-        [[- range $var := .wordpress.wordpress_task_env_vars ]]
+        [[- range $var := var "wordpress_task_env_vars" . ]]
         [[ $var.key ]] = [[ $var.value | quote ]]
         [[- end ]]
       }
       [[- end ]]
 
       resources {
-        cpu    = [[ .wordpress.wordpress_task_resources.cpu ]]
-        memory = [[ .wordpress.wordpress_task_resources.memory ]]
+        cpu    = [[ var "wordpress_task_resources.cpu" . ]]
+        memory = [[ var "wordpress_task_resources.memory" . ]]
       }
     }
   }
@@ -174,7 +174,7 @@ job [[ template "job_name" . ]] {
 
     network {
       mode = "bridge"
-      [[- range $port := .wordpress.phpmyadmin_group_network ]]
+      [[- range $port := var "phpmyadmin_group_network" . ]]
       port [[ $port.name | quote ]] {
         to = [[ $port.port ]]
       }
@@ -182,22 +182,22 @@ job [[ template "job_name" . ]] {
     }
 
     update {
-      min_healthy_time  = [[ .wordpress.phpmyadmin_group_update.min_healthy_time | quote ]]
-      healthy_deadline  = [[ .wordpress.phpmyadmin_group_update.healthy_deadline | quote ]]
-      progress_deadline = [[ .wordpress.phpmyadmin_group_update.progress_deadline | quote ]]
-      auto_revert       = [[ .wordpress.phpmyadmin_group_update.auto_revert ]]
+      min_healthy_time  = [[ var "phpmyadmin_group_update.min_healthy_time" . | quote ]]
+      healthy_deadline  = [[ var "phpmyadmin_group_update.healthy_deadline" . | quote ]]
+      progress_deadline = [[ var "phpmyadmin_group_update.progress_deadline" . | quote ]]
+      auto_revert       = [[ var "phpmyadmin_group_update.auto_revert" . ]]
     }
 
-    [[- if .wordpress.phpmyadmin_group_register_consul_service ]]
+    [[- if var "phpmyadmin_group_register_consul_service" . ]]
     service {
-      name = [[ .wordpress.phpmyadmin_group_consul_service_name | quote ]]
-      port = [[ .wordpress.phpmyadmin_group_consul_service_port | quote ]]
-      tags = [ [[ range $idx, $tag := .wordpress.phpmyadmin_group_consul_tags ]][[if $idx]],[[end]][[ $tag | quote ]][[ end ]] ]
+      name = [[ var "phpmyadmin_group_consul_service_name" . | quote ]]
+      port = [[ var "phpmyadmin_group_consul_service_port" . | quote ]]
+      tags = [ [[ range $idx, $tag := var "phpmyadmin_group_consul_tags" . ]][[if $idx]],[[end]][[ $tag | quote ]][[ end ]] ]
 
       connect {
         sidecar_service {
           proxy {
-            [[- range $upstream := .wordpress.phpmyadmin_group_upstreams ]]
+            [[- range $upstream := var "phpmyadmin_group_upstreams" . ]]
             upstreams {
               destination_name = [[ $upstream.name | quote ]]
               local_bind_port  = [[ $upstream.port ]]
@@ -207,21 +207,21 @@ job [[ template "job_name" . ]] {
         }
       }
 
-      [[- if .wordpress.phpmyadmin_group_has_health_check ]]
+      [[- if var "phpmyadmin_group_has_health_check" . ]]
       check {
-        name     = [[ .wordpress.phpmyadmin_group_health_check.name | quote ]]
+        name     = [[ var "phpmyadmin_group_health_check.name" . | quote ]]
         type     = "http"
-        port     = [[ .wordpress.phpmyadmin_group_health_check.port | quote ]]
-        path     = [[ .wordpress.phpmyadmin_group_health_check.path | quote ]]
-        interval = [[ .wordpress.phpmyadmin_group_health_check.interval | quote ]]
-        timeout  = [[ .wordpress.phpmyadmin_group_health_check.timeout | quote ]]
+        port     = [[ var "phpmyadmin_group_health_check.port" . | quote ]]
+        path     = [[ var "phpmyadmin_group_health_check.path" . | quote ]]
+        interval = [[ var "phpmyadmin_group_health_check.interval" . | quote ]]
+        timeout  = [[ var "phpmyadmin_group_health_check.timeout" . | quote ]]
       }
       [[- end ]]
     }
     [[- end ]]
 
     restart {
-      attempts = [[ .wordpress.phpmyadmin_group_restart_attempts ]]
+      attempts = [[ var "phpmyadmin_group_restart_attempts" . ]]
       interval = "30m"
       delay = "15s"
       mode = "fail"
@@ -231,21 +231,21 @@ job [[ template "job_name" . ]] {
       driver = "docker"
 
       config {
-        image = [[.wordpress.phpmyadmin_task_image | quote]]
+        image = [[var "phpmyadmin_task_image" . | quote]]
       }
 
-      [[- $phpmyadmin_task_env_vars_length := len .wordpress.phpmyadmin_task_env_vars ]]
+      [[- $phpmyadmin_task_env_vars_length := len (var "phpmyadmin_task_env_vars" .) ]]
       [[- if not (eq $phpmyadmin_task_env_vars_length 0) ]]
       env {
-        [[- range $var := .wordpress.phpmyadmin_task_env_vars ]]
+        [[- range $var := var "phpmyadmin_task_env_vars" . ]]
         [[ $var.key ]] = [[ $var.value | quote ]]
         [[- end ]]
       }
       [[- end ]]
 
       resources {
-        cpu    = [[ .wordpress.phpmyadmin_task_resources.cpu ]]
-        memory = [[ .wordpress.phpmyadmin_task_resources.memory ]]
+        cpu    = [[ var "phpmyadmin_task_resources.cpu" . ]]
+        memory = [[ var "phpmyadmin_task_resources.memory" . ]]
       }
     }
   }

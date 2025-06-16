@@ -1,4 +1,4 @@
 Congrats on deploying CTFd.
 
 Check the official documentation to get started:
-https://docs.ctfd.io/tutorials/getting-started/
+https://docsvar "io" ./tutorials/getting-started/

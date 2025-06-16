@@ -1,11 +1,11 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .faasd.datacenters | toStringList ]]
+  datacenters = [[ var "datacenters" . | toStringList ]]
   type = "service"
-  [[- if .faasd.namespace ]]
-  namespace   = [[ .faasd.namespace | quote ]]
+  [[- if var "namespace" . ]]
+  namespace   = [[ var "namespace" . | quote ]]
   [[- end]]
-  [[- if .faasd.constraints ]][[ range $idx, $constraint := .faasd.constraints ]]
+  [[- if var "constraints" . ]][[ range $idx, $constraint := var "constraints" . ]]
   constraint {
     [[- if ne $constraint.attribute "" ]]
     attribute = [[ $constraint.attribute | quote ]]
@@ -42,18 +42,18 @@ job [[ template "job_name" . ]] {
         to = 8082
       }
 
-      [[- if ne (len .faasd.dns_servers) 0]]
+      [[- if ne (len (var "dns_servers" .)) 0]]
       dns {
-        servers = [[ .faasd.dns_servers | toPrettyJson ]]
+        servers = [[ var "dns_servers" . | toPrettyJson ]]
       }
       [[- end]]
     }
 
-    [[- if .faasd.register_auth_consul_service ]]
+    [[- if var "register_auth_consul_service" . ]]
     service {
-      name = "[[ .faasd.auth_consul_service_name ]]"
-      [[if ne (len .faasd.consul_service_tags) 0 ]]
-      tags = [[ .faasd.consul_service_tags | toStringList ]]
+      name = "[[ var "auth_consul_service_name" . ]]"
+      [[if ne (len (var "consul_service_tags" .)) 0 ]]
+      tags = [[ var "consul_service_tags" . | toStringList ]]
       [[ end ]]
       port = "auth_http"
 
@@ -66,11 +66,11 @@ job [[ template "job_name" . ]] {
     }
     [[- end ]]
 
-    [[- if .faasd.register_nats_consul_service ]]
+    [[- if var "register_nats_consul_service" . ]]
     service {
-      name = "[[ .faasd.nats_consul_service_name ]]"
-      [[- if ne (len .faasd.consul_service_tags) 0 ]]
-      tags = [[ .faasd.consul_service_tags | toStringList ]]
+      name = "[[ var "nats_consul_service_name" . ]]"
+      [[- if ne (len (var "consul_service_tags" .)) 0 ]]
+      tags = [[ var "consul_service_tags" . | toStringList ]]
       [[- end ]]
       port = "nats_tcp_client"
 
@@ -83,11 +83,11 @@ job [[ template "job_name" . ]] {
     }
     [[- end ]]
 
-    [[- if .faasd.register_nats_consul_service ]]
+    [[- if var "register_nats_consul_service" . ]]
     service {
       name = "faasd-nats-monitoring"
-      [[- if ne (len .faasd.nats_consul_service_name) 0 ]]
-      tags = [[ .faasd.consul_service_tags | toStringList ]]
+      [[- if ne (len (var "nats_consul_service_name" .)) 0 ]]
+      tags = [[ var "consul_service_tags" . | toStringList ]]
       [[- end ]]
       port = "nats_http_mon"
 
@@ -101,11 +101,11 @@ job [[ template "job_name" . ]] {
     }
     [[- end]]
 
-    [[- if .faasd.register_gateway_consul_service ]]
+    [[- if var "register_gateway_consul_service" . ]]
     service {
-      name = "[[ .faasd.gateway_consul_service_name ]]"
-      [[- if ne (len .faasd.consul_service_tags) 0 ]]
-      tags = [[ .faasd.consul_service_tags | toStringList ]]
+      name = "[[ var "gateway_consul_service_name" . ]]"
+      [[- if ne (len (var "consul_service_tags" .)) 0 ]]
+      tags = [[ var "consul_service_tags" . | toStringList ]]
       [[- end ]]
       port = "gateway_http"
 
@@ -119,11 +119,11 @@ job [[ template "job_name" . ]] {
     }
     [[- end ]]
 
-    [[- if .faasd.register_provider_consul_service ]]
+    [[- if var "register_provider_consul_service" . ]]
     service {
-      name = "[[ .faasd.provider_consul_service_name ]]"
-      [[if ne (len .faasd.consul_service_tags) 0 ]]
-      tags = [[ .faasd.consul_service_tags | toStringList ]]
+      name = "[[ var "provider_consul_service_name" . ]]"
+      [[if ne (len (var "consul_service_tags" .)) 0 ]]
+      tags = [[ var "consul_service_tags" . | toStringList ]]
       [[ end ]]
       port = "faasd_provider_tcp"
 
@@ -151,7 +151,7 @@ job [[ template "job_name" . ]] {
       driver = "raw_exec"
       config {
         command = "sh"
-        args    = ["-c", "wget -q https://github.com/openfaas/faasd/releases/download/[[.faasd.faasd_version]]/faasd && mkdir -p /var/lib/faasd && touch /var/lib/faasd/hosts /var/lib/faasd/resolv.conf && mv faasd /usr/local/bin/faasd && chmod +x /usr/local/bin/faasd"]
+        args    = ["-c", "wget -q https://github.com/openfaas/faasd/releases/download/[[var "faasd_version" .]]/faasd && mkdir -p /var/lib/faasd && touch /var/lib/faasd/hosts /var/lib/faasd/resolv.conf && mv faasd /usr/local/bin/faasd && chmod +x /usr/local/bin/faasd"]
       }
       env {
         service_timeout = "60s"
@@ -165,15 +165,15 @@ job [[ template "job_name" . ]] {
         args    = ["provider"]
       }
       resources {
-        cpu    = [[ .faasd.faasd_provider_task_resources.cpu ]]
-        memory = [[ .faasd.faasd_provider_task_resources.memory ]]
+        cpu    = [[ var "faasd_provider_task_resources.cpu" . ]]
+        memory = [[ var "faasd_provider_task_resources.memory" . ]]
       }
     }
 
     task "nats" {
       driver = "docker"
       config {
-        image      = "[[.faasd.nats_image_name]]:[[.faasd.nats_image_tag]]"
+        image      = "[[var "nats_image_name" .]]:[[var "nats_image_tag" .]]"
         ports      = ["nats_tcp_client", "nats_http_mon"]
         entrypoint = ["/nats-streaming-server"]
         args = [
@@ -186,8 +186,8 @@ job [[ template "job_name" . ]] {
         ]
       }
       resources {
-        cpu    = [[ .faasd.nats_task_resources.cpu ]]
-        memory = [[ .faasd.nats_task_resources.memory ]]
+        cpu    = [[ var "nats_task_resources.cpu" . ]]
+        memory = [[ var "nats_task_resources.memory" . ]]
       }
     }
 
@@ -195,17 +195,17 @@ job [[ template "job_name" . ]] {
       driver = "docker"
 
       config {
-        image = "[[.faasd.auth_plugin_image_name]]:[[.faasd.auth_plugin_image_tag]]"
+        image = "[[var "auth_plugin_image_name" .]]:[[var "auth_plugin_image_tag" .]]"
         ports = ["auth_http"]
       }
 
       template {
-        data        = "[[.faasd.basic_auth_password]]"
+        data        = "[[var "basic_auth_password" .]]"
         destination = "secrets/basic-auth-password"
       }
 
       template {
-        data        = "[[.faasd.basic_auth_user]]"
+        data        = "[[var "basic_auth_user" .]]"
         destination = "secrets/basic-auth-user"
       }
 
@@ -217,51 +217,51 @@ job [[ template "job_name" . ]] {
       }
 
       resources {
-        cpu    = [[ .faasd.basic_auth_task_resources.cpu ]]
-        memory = [[ .faasd.basic_auth_task_resources.memory ]]
+        cpu    = [[ var "basic_auth_task_resources.cpu" . ]]
+        memory = [[ var "basic_auth_task_resources.memory" . ]]
       }
     }
 
     task "gateway" {
       driver = "docker"
       config {
-        image = "[[.faasd.gateway_image_name]]:[[.faasd.gateway_image_tag]]"
+        image = "[[var "gateway_image_name" .]]:[[var "gateway_image_tag" .]]"
         ports = ["gateway_http", "gateway_mon"]
       }
       template {
-        data        = "[[.faasd.basic_auth_password]]"
+        data        = "[[var "basic_auth_password" .]]"
         destination = "secrets/basic-auth-password"
       }
       template {
-        data        = "[[.faasd.basic_auth_user]]"
+        data        = "[[var "basic_auth_user" .]]"
         destination = "secrets/basic-auth-user"
       }
       env {
         basic_auth             = "true"
-        functions_provider_url = [[if .faasd.register_provider_consul_service ]]"http://[[.faasd.provider_consul_service_name]].service.consul:${NOMAD_HOST_PORT_faasd_provider_tcp}/"[[else]]"http://${NOMAD_ADDR_faasd_provider_tcp}/"[[end]]
+        functions_provider_url = [[if var "register_provider_consul_service" . ]]"http://[[var "provider_consul_service_name" .]].service.consul:${NOMAD_HOST_PORT_faasd_provider_tcp}/"[[else]]"http://${NOMAD_ADDR_faasd_provider_tcp}/"[[end]]
         direct_functions       = "false"
         read_timeout           = "60s"
         write_timeout          = "60s"
         upstream_timeout       = "60s"
         faas_prometheus_host   = "${NOMAD_HOST_IP_gateway_http}"
-        faas_nats_address      = [[if .faasd.register_auth_consul_service]]"[[.faasd.nats_consul_service_name]].service.consul"[[else]]"${NOMAD_HOST_IP_nats_tcp_client}"[[end]]
+        faas_nats_address      = [[if var "register_auth_consul_service" .]]"[[var "nats_consul_service_name" .]].service.consul"[[else]]"${NOMAD_HOST_IP_nats_tcp_client}"[[end]]
         faas_nats_port         = "${NOMAD_HOST_PORT_nats_tcp_client}"
-        auth_proxy_url         = [[if .faasd.register_basic_auth_consul_service ]]"http://[[.faasd.basic_auth_consul_service_name]].service.consul:$${NOMAD_HOST_PORT_auth_http}/validate"[[else]]"http://${NOMAD_ADDR_auth_http}/validate"[[end]]
+        auth_proxy_url         = [[if var "register_basic_auth_consul_service" . ]]"http://[[var "basic_auth_consul_service_name" .]].service.consul:$${NOMAD_HOST_PORT_auth_http}/validate"[[else]]"http://${NOMAD_ADDR_auth_http}/validate"[[end]]
         auth_proxy_pass_body   = "false"
         secret_mount_path      = "/secrets"
         scale_from_zero        = "true"
         function_namespace     = "openfaas-fn"
       }
       resources {
-        cpu    = [[ .faasd.gateway_task_resources.cpu ]]
-        memory = [[ .faasd.gateway_task_resources.memory ]]
+        cpu    = [[ var "gateway_task_resources.cpu" . ]]
+        memory = [[ var "gateway_task_resources.memory" . ]]
       }
     }
 
     task "queue_worker" {
       driver = "docker"
       config {
-        image = "[[.faasd.queue_worker_image_name]]:[[.faasd.queue_worker_image_tag]]"
+        image = "[[var "queue_worker_image_name" .]]:[[var "queue_worker_image_tag" .]]"
       }
       template {
         data        = "password"
@@ -273,10 +273,10 @@ job [[ template "job_name" . ]] {
         destination = "secrets/basic-auth-user"
       }
       env {
-        faas_nats_address    = [[if .faasd.register_auth_consul_service]]"[[.faasd.nats_consul_service_name]].service.consul"[[else]]"${NOMAD_HOST_IP_nats_tcp_client}"[[end]]
-        faas_nats_port       = [[if .faasd.register_auth_consul_service]]"${NOMAD_HOST_PORT_nats_tcp_client}"[[else]]"${NOMAD_HOST_PORT_nats_tcp_client}"[[end]]
+        faas_nats_address    = [[if var "register_auth_consul_service" .]]"[[var "nats_consul_service_name" .]].service.consul"[[else]]"${NOMAD_HOST_IP_nats_tcp_client}"[[end]]
+        faas_nats_port       = [[if var "register_auth_consul_service" .]]"${NOMAD_HOST_PORT_nats_tcp_client}"[[else]]"${NOMAD_HOST_PORT_nats_tcp_client}"[[end]]
         gateway_invoke       = "true"
-        faas_gateway_address = [[if .faasd.register_gateway_consul_service]]"[[.faasd.gateway_consul_service_name]].service.consul:${NOMAD_HOST_PORT_gateway_http}"[[else]]"${NOMAD_HOST_ADDR_gateway_http}"[[end]]
+        faas_gateway_address = [[if var "register_gateway_consul_service" .]]"[[var "gateway_consul_service_name" .]].service.consul:${NOMAD_HOST_PORT_gateway_http}"[[else]]"${NOMAD_HOST_ADDR_gateway_http}"[[end]]
         ack_wait             = "60s"
         max_inflight         = "1"
         write_debug          = "true"
@@ -284,8 +284,8 @@ job [[ template "job_name" . ]] {
         secret_mount_path    = "/secrets"
       }
       resources {
-        cpu    = [[ .faasd.queue_worker_task_resources.cpu ]]
-        memory = [[ .faasd.queue_worker_task_resources.memory ]]
+        cpu    = [[ var "queue_worker_task_resources.cpu" . ]]
+        memory = [[ var "queue_worker_task_resources.memory" . ]]
       }
     }
   }

@@ -1,8 +1,8 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .ctfd.datacenters | toPrettyJson ]]
-  [[- if .ctfd.namespace ]]
-  namespace   = [[ .ctfd.namespace | quote ]]
+  datacenters = [[ var "datacenters" . | toPrettyJson ]]
+  [[- if var "namespace" . ]]
+  namespace   = [[ var "namespace" . | quote ]]
   [[- end ]]
   type = "service"
 
@@ -21,8 +21,8 @@ job [[ template "job_name" . ]] {
 
     network {
       port "ctfd" {
-        [[- if .ctfd.ctfd_port ]]
-        static = [[- .ctfd.ctfd_port ]]
+        [[- if var "ctfd_port" . ]]
+        static = [[- var "ctfd_port" . ]]
         [[- end ]]
         to = 8000
       }
@@ -34,11 +34,11 @@ job [[ template "job_name" . ]] {
       }
     }
 
-    [[- if .ctfd.register_consul_service ]]
+    [[- if var "register_consul_service" . ]]
     service {
-      name = "[[ .ctfd.consul_service_name ]]"
-      [[- if ne (len .ctfd.consul_service_tags) 0 ]]
-      tags = [[ .ctfd.consul_service_tags | toPrettyJson ]]
+      name = "[[ var "consul_service_name" . ]]"
+      [[- if ne (len (var "consul_service_tags" .)) 0 ]]
+      tags = [[ var "consul_service_tags" . | toPrettyJson ]]
       [[- end ]]
       port = "http"
 
@@ -56,10 +56,10 @@ job [[ template "job_name" . ]] {
       driver = "docker"
 
       service {
-        name = "[[ .ctfd.job_name ]]-ctfd"
+        name = "[[ var "job_name" . ]]-ctfd"
         port = "ctfd"
 
-        tags = [[ .ctfd.consul_service_tags | toPrettyJson ]]
+        tags = [[ var "consul_service_tags" . | toPrettyJson ]]
 
         check {
           type = "http"
@@ -84,30 +84,30 @@ job [[ template "job_name" . ]] {
 
       env {
         UPLOAD_FOLDER = "/var/uploads"
-        DATABASE_URL = "mysql+pymysql://ctfd:[[ .ctfd.mariadb_ctfd_password ]]@[[ .ctfd.job_name ]]-db.service.consul:${NOMAD_HOST_PORT_mariadb}/ctfd"
-        REDIS_URL = "redis://[[ .ctfd.job_name ]]-cache.service.consul:${NOMAD_HOST_PORT_redis}"
+        DATABASE_URL = "mysql+pymysql://ctfd:[[ var "mariadb_ctfd_password" . ]]@[[ var "job_name" . ]]-db.service.consul:${NOMAD_HOST_PORT_mariadb}/ctfd"
+        REDIS_URL = "redis://[[ var "job_name" . ]]-cache.service.consul:${NOMAD_HOST_PORT_redis}"
         WORKERS = "1"
         LOG_FOLDER = "${NOMAD_ALLOC_DIR}/logs/ctfd"
         ACCESS_LOG = "${NOMAD_ALLOC_DIR}/logs/gunicorn.access"
         ERROR_LOG = "${NOMAD_ALLOC_DIR}/logs/gunicorn.error"
-        [[- if .ctfd.ctfd_expect_reverse_proxy ]]
+        [[- if var "ctfd_expect_reverse_proxy" . ]]
         REVERSE_PROXY = "true"
         [[- end]]
         FLASK_ENV = "production"
       }
 
       config {
-        image = "[[ .ctfd.ctfd_image_name ]]:[[ .ctfd.ctfd_image_tag ]]"
+        image = "[[ var "ctfd_image_name" . ]]:[[ var "ctfd_image_tag" . ]]"
         ports = ["ctfd"]
       }
 
       resources {
-        cpu = [[ .ctfd.ctfd_resources.cpu ]]
-        memory = [[ .ctfd.ctfd_resources.memory ]]
+        cpu = [[ var "ctfd_resources.cpu" . ]]
+        memory = [[ var "ctfd_resources.memory" . ]]
       }
 
       volume_mount {
-        volume = "[[ .ctfd.uploads_volume_name ]]"
+        volume = "[[ var "uploads_volume_name" . ]]"
         destination = "/var/uploads"
       }
     }
@@ -121,10 +121,10 @@ job [[ template "job_name" . ]] {
       }
 
       service {
-        name = "[[ .ctfd.job_name ]]-db"
+        name = "[[ var "job_name" . ]]-db"
         port = "mariadb"
 
-        tags = [[ .ctfd.consul_service_tags | toPrettyJson ]]
+        tags = [[ var "consul_service_tags" . | toPrettyJson ]]
 
         check {
           type = "tcp"
@@ -140,14 +140,14 @@ job [[ template "job_name" . ]] {
       }
 
       env {
-        MYSQL_ROOT_PASSWORD = "[[ .ctfd.mariadb_root_password ]]"
+        MYSQL_ROOT_PASSWORD = "[[ var "mariadb_root_password" . ]]"
         MYSQL_USER = "ctfd"
-        MYSQL_PASSWORD = "[[ .ctfd.mariadb_ctfd_password ]]"
+        MYSQL_PASSWORD = "[[ var "mariadb_ctfd_password" . ]]"
         MYSQL_DATABASE = "ctfd"
       }
 
       config {
-        image = "[[ .ctfd.mariadb_image_name ]]:[[ .ctfd.mariadb_image_tag ]]"
+        image = "[[ var "mariadb_image_name" . ]]:[[ var "mariadb_image_tag" . ]]"
         command = "mysqld"
         args = [
           "--character-set-server=utf8mb4",
@@ -159,12 +159,12 @@ job [[ template "job_name" . ]] {
       }
 
       resources {
-        cpu = [[ .ctfd.mariadb_resources.cpu ]]
-        memory = [[ .ctfd.mariadb_resources.memory ]]
+        cpu = [[ var "mariadb_resources.cpu" . ]]
+        memory = [[ var "mariadb_resources.memory" . ]]
       }
 
       volume_mount {
-        volume = "[[ .ctfd.mariadb_volume_name ]]"
+        volume = "[[ var "mariadb_volume_name" . ]]"
         destination = "/var/lib/mysql"
       }
     }
@@ -178,10 +178,10 @@ job [[ template "job_name" . ]] {
       }
 
       service {
-        name = "[[ .ctfd.job_name ]]-cache"
+        name = "[[ var "job_name" . ]]-cache"
         port = "redis"
 
-        tags = [[ .ctfd.consul_service_tags | toPrettyJson ]]
+        tags = [[ var "consul_service_tags" . | toPrettyJson ]]
 
         check {
           type = "tcp"
@@ -197,37 +197,37 @@ job [[ template "job_name" . ]] {
       }
 
       config {
-        image = "[[ .ctfd.redis_image_name ]]:[[ .ctfd.redis_image_tag ]]"
+        image = "[[ var "redis_image_name" . ]]:[[ var "redis_image_tag" . ]]"
         ports = ["redis"]
       }
 
       resources {
-        cpu = [[ .ctfd.redis_resources.cpu ]]
-        memory = [[ .ctfd.redis_resources.memory ]]
+        cpu = [[ var "redis_resources.cpu" . ]]
+        memory = [[ var "redis_resources.memory" . ]]
       }
 
       volume_mount {
-        volume = "[[ .ctfd.redis_volume_name ]]"
+        volume = "[[ var "redis_volume_name" . ]]"
         destination = "/data"
       }
     }
 
-    volume "[[ .ctfd.uploads_volume_name ]]" {
-      type      = "[[ .ctfd.uploads_volume_type ]]"
+    volume "[[ var "uploads_volume_name" . ]]" {
+      type      = "[[ var "uploads_volume_type" . ]]"
       read_only = false
-      source    = "[[ .ctfd.uploads_volume_name ]]"
+      source    = "[[ var "uploads_volume_name" . ]]"
     }
 
-    volume "[[ .ctfd.mariadb_volume_name ]]" {
-      type      = "[[ .ctfd.mariadb_volume_type ]]"
+    volume "[[ var "mariadb_volume_name" . ]]" {
+      type      = "[[ var "mariadb_volume_type" . ]]"
       read_only = false
-      source    = "[[ .ctfd.mariadb_volume_name ]]"
+      source    = "[[ var "mariadb_volume_name" . ]]"
     }
 
-    volume "[[ .ctfd.redis_volume_name ]]" {
-      type      = "[[ .ctfd.redis_volume_type ]]"
+    volume "[[ var "redis_volume_name" . ]]" {
+      type      = "[[ var "redis_volume_type" . ]]"
       read_only = false
-      source    = "[[ .ctfd.redis_volume_name ]]"
+      source    = "[[ var "redis_volume_name" . ]]"
     }
   }
 }
