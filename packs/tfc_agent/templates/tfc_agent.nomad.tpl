@@ -43,5 +43,9 @@ job [[ template "job_name" . ]] {
       # plan or apply operation to finish, thus the generous window.
       kill_timeout = "2h"
     }
+    update {
+      # progress_deadline must be >= kill_timeout
+      progress_deadline = "2h"
+    }
   }
 }
