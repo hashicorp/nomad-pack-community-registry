@@ -1,8 +1,8 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .tempo.datacenters | toStringList ]]
+  datacenters = [[ var "datacenters" . | toStringList ]]
 
-  [[ if .tempo.constraints ]][[ range $idx, $constraint := .tempo.constraints ]]
+  [[ if var "constraints" . ]][[ range $idx, $constraint := var "constraints" . ]]
   constraint {
     attribute = [[ $constraint.attribute | quote ]]
     value     = [[ $constraint.value | quote ]]
@@ -19,10 +19,10 @@ job [[ template "job_name" . ]] {
       mode = "bridge"
 
       port "grpc" {
-        to = [[ .tempo.grpc_port ]]
+        to = [[ var "grpc_port" . ]]
       }
       port "http" {
-        to = [[ .tempo.http_port ]]
+        to = [[ var "http_port" . ]]
       }
       port "jaeger_thrift_compact" {
         to = 6831
@@ -58,12 +58,12 @@ job [[ template "job_name" . ]] {
       }
     }
 
-    [[ if .tempo.register_consul_service ]]
+    [[ if var "register_consul_service" . ]]
     service {
-      name = "[[ .tempo.consul_service_name ]]"
-      tags = [[ .tempo.consul_service_tags | toStringList ]]
-      port = "[[ .tempo.http_port ]]"
-      [[ if .tempo.register_consul_service ]]
+      name = "[[ var "consul_service_name" . ]]"
+      tags = [[ var "consul_service_tags" . | toStringList ]]
+      port = "[[ var "http_port" . ]]"
+      [[ if var "register_consul_service" . ]]
       connect {
         sidecar_service {}
       }
@@ -75,8 +75,8 @@ job [[ template "job_name" . ]] {
       driver = "docker"
 
       config {
-        image = "grafana/tempo:[[ .tempo.version_tag ]]"
-        [[- if ne .tempo.tempo_yaml "" ]]
+        image = "grafana/tempo:[[ var "version_tag" . ]]"
+        [[- if ne (var "tempo_yaml" .) "" ]]
         args = [
           "--config.file=/etc/tempo/config/tempo.yml",
         ]
@@ -87,14 +87,14 @@ job [[ template "job_name" . ]] {
       }
 
       resources {
-        cpu    = [[ .tempo.resources.cpu ]]
-        memory = [[ .tempo.resources.memory ]]
+        cpu    = [[ var "resources.cpu" . ]]
+        memory = [[ var "resources.memory" . ]]
       }
 
-      [[- if ne .tempo.tempo_yaml "" ]]
+      [[- if ne (var "tempo_yaml" .) "" ]]
       template {
         data = <<EOH
-[[ .tempo.tempo_yaml ]]
+[[ var "tempo_yaml" . ]]
 EOH
 
         change_mode   = "signal"

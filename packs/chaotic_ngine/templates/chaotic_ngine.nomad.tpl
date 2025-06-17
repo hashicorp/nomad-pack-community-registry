@@ -1,9 +1,9 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .my.datacenters | toStringList ]]
-  namespace = [[ .my.namespace | quote ]]
+  datacenters = [[ var "datacenters" . | toStringList ]]
+  namespace = [[ var "namespace" . | quote ]]
 
-  [[ if .my.constraints ]][[ range $idx, $constraint := .my.constraints ]]
+  [[ if var "constraints" . ]][[ range $idx, $constraint := var "constraints" . ]]
   constraint {
     attribute = [[ $constraint.attribute | quote ]]
     value = [[ $constraint.value | quote ]]
@@ -14,10 +14,10 @@ job [[ template "job_name" . ]] {
   [[- end ]][[- end ]]
 
   type = "batch"
-  priority = [[ .my.priority ]]
+  priority = [[ var "priority" . ]]
 
   periodic {
-    cron = [[ .my.cron | quote ]]
+    cron = [[ var "cron" . | quote ]]
     prohibit_overlap = true
   }
 
@@ -27,35 +27,35 @@ job [[ template "job_name" . ]] {
       driver = "docker"
 
       env = {
-        TZ = [[ .my.timezone | quote ]]
+        TZ = [[ var "timezone" . | quote ]]
 
-        [[- if .my.nomad_addr ]]
-        NOMAD_ADDR = [[ .my.nomad_addr | quote ]]
+        [[- if var "nomad_addr" . ]]
+        NOMAD_ADDR = [[ var "nomad_addr" . | quote ]]
         [[- end ]]
 
-        [[- if .my.config_template_url ]]
-        CHAOTIC_CONFIG = [[ .my.config_template_url | quote ]]
+        [[- if var "config_template_url" . ]]
+        CHAOTIC_CONFIG = [[ var "config_template_url" . | quote ]]
         [[ else ]]
         CHAOTIC_CONFIG = "/app/config.yaml"
         [[- end ]]
       }
 
       config {
-        image = "registry.gitlab.com/ngine/docker-images/chaotic:[[ .my.image_version ]]"
+        image = "registry.gitlab.com/ngine/docker-images/chaotic:[[ var "image_version" . ]]"
         force_pull = true
 
-        [[- if .my.config ]]
+        [[- if var "config" . ]]
         volumes = [
           "local/config.yaml:/app/config.yaml:ro",
         ]
         [[- end ]]
       }
 
-      [[- if not .my.config_template_url ]]
+      [[- if not (var "config_template_url" .) ]]
       template {
         change_mode = "noop"
         destination = "local/config.yaml"
-        data = [[ .my.config | quote ]]
+        data = [[ var "config" . | quote ]]
       }
       [[- end ]]
     }

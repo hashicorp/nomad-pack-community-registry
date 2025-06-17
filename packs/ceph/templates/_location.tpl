@@ -1,5 +1,5 @@
 [[- define "location" ]]
-  namespace   = "[[ .my.namespace ]]"
-  region      = "[[ .my.region ]]"
-  datacenters = [[ .my.datacenters | toJson ]]
+  namespace   = "[[ var "namespace" . ]]"
+  region      = "[[ var "region" . ]]"
+  datacenters = [[ var "datacenters" . | toJson ]]
 [[- end -]]

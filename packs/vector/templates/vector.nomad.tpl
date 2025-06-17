@@ -1,10 +1,10 @@
 job [[ template "full_job_name" . ]] {
 
-  region      = [[ .vector.region | quote ]]
-  datacenters = [ [[ range $idx, $dc := .vector.datacenters ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
+  region      = [[ var "region" . | quote ]]
+  datacenters = [ [[ range $idx, $dc := var "datacenters" . ]][[if $idx]],[[end]][[ $dc | quote ]][[ end ]] ]
   type        = "system"
-  namespace   = [[ .vector.namespace | quote ]]
-  [[ if .vector.constraints ]][[ range $idx, $constraint := .vector.constraints ]]
+  namespace   = [[ var "namespace" . | quote ]]
+  [[ if var "constraints" . ]][[ range $idx, $constraint := var "constraints" . ]]
   constraint {
     attribute = [[ $constraint.attribute | quote ]]
     value     = [[ $constraint.value | quote ]]
@@ -18,9 +18,9 @@ job [[ template "full_job_name" . ]] {
     count = 1
 
     network {
-      mode = [[ .vector.vector_group_network.mode | quote ]]
-      hostname = [[ .vector.vector_group_network.hostname | quote ]]
-      [[- range $label, $to := .vector.vector_group_network.ports ]]
+      mode = [[ var "vector_group_network.mode" . | quote ]]
+      hostname = [[ var "vector_group_network.hostname" . | quote ]]
+      [[- range $label, $to := var "vector_group_network.ports" . ]]
       port [[ $label | quote ]] {
         to = [[ $to ]]
       }
@@ -28,30 +28,30 @@ job [[ template "full_job_name" . ]] {
     }
 
     update {
-      min_healthy_time  = [[ .vector.vector_group_update.min_healthy_time | quote ]]
-      healthy_deadline  = [[ .vector.vector_group_update.healthy_deadline | quote ]]
-      progress_deadline = [[ .vector.vector_group_update.progress_deadline | quote ]]
-      auto_revert       = [[ .vector.vector_group_update.auto_revert ]]
+      min_healthy_time  = [[ var "vector_group_update.min_healthy_time" . | quote ]]
+      healthy_deadline  = [[ var "vector_group_update.healthy_deadline" . | quote ]]
+      progress_deadline = [[ var "vector_group_update.progress_deadline" . | quote ]]
+      auto_revert       = [[ var "vector_group_update.auto_revert" . ]]
     }
 
     ephemeral_disk {
-      migrate = [[ .vector.vector_group_ephemeral_disk.migrate ]]
-      size    = [[ .vector.vector_group_ephemeral_disk.size ]]
-      sticky  = [[ .vector.vector_group_ephemeral_disk.sticky ]]
+      migrate = [[ var "vector_group_ephemeral_disk.migrate" . ]]
+      size    = [[ var "vector_group_ephemeral_disk.size" . ]]
+      sticky  = [[ var "vector_group_ephemeral_disk.sticky" . ]]
     }
 
     task "vector" {
       driver = "docker"
 
       config {
-        image = "timberio/vector:[[ .vector.vector_task.version ]]"
+        image = "timberio/vector:[[ var "vector_task.version" . ]]"
 
-        ports = [ [[ range $label, $port := .vector.vector_group_network.ports ]][[if $label]][[ $label | quote ]],[[end]][[end]] ]
+        ports = [ [[ range $label, $port := var "vector_group_network.ports" . ]][[if $label]][[ $label | quote ]],[[end]][[end]] ]
 
         mount {
           type = "bind"
-          target = [[ .vector.vector_task_bind_mounts.target_procfs_root_path | quote ]]
-          source = [[ .vector.vector_task_bind_mounts.source_procfs_root_path | quote ]]
+          target = [[ var "vector_task_bind_mounts.target_procfs_root_path" . | quote ]]
+          source = [[ var "vector_task_bind_mounts.source_procfs_root_path" . | quote ]]
           readonly = true
           bind_options {
             propagation = "rslave"
@@ -60,8 +60,8 @@ job [[ template "full_job_name" . ]] {
 
         mount {
           type = "bind"
-          target = [[ .vector.vector_task_bind_mounts.target_sysfs_root_path | quote ]]
-          source = [[ .vector.vector_task_bind_mounts.source_sysfs_root_path | quote ]]
+          target = [[ var "vector_task_bind_mounts.target_sysfs_root_path" . | quote ]]
+          source = [[ var "vector_task_bind_mounts.source_sysfs_root_path" . | quote ]]
           readonly = true
           bind_options {
             propagation = "rslave"
@@ -70,8 +70,8 @@ job [[ template "full_job_name" . ]] {
 
         mount {
           type = "bind"
-          target = [[ .vector.vector_task_bind_mounts.target_docker_socket_path | quote ]]
-          source = [[ .vector.vector_task_bind_mounts.source_docker_socket_path | quote ]]
+          target = [[ var "vector_task_bind_mounts.target_docker_socket_path" . | quote ]]
+          source = [[ var "vector_task_bind_mounts.source_docker_socket_path" . | quote ]]
           readonly = true
           bind_options {
             propagation = "rslave"
@@ -81,15 +81,15 @@ job [[ template "full_job_name" . ]] {
 
       env {
         VECTOR_CONFIG      = "local/config/vector.toml"
-        PROCFS_ROOT        = [[ .vector.vector_task_bind_mounts.target_procfs_root_path | quote ]]
-        SYSFS_ROOT         = [[ .vector.vector_task_bind_mounts.target_sysfs_root_path | quote ]]
-        DOCKER_SOCKET_PATH = [[ .vector.vector_task_bind_mounts.target_docker_socket_path | quote ]]
+        PROCFS_ROOT        = [[ var "vector_task_bind_mounts.target_procfs_root_path" . | quote ]]
+        SYSFS_ROOT         = [[ var "vector_task_bind_mounts.target_sysfs_root_path" . | quote ]]
+        DOCKER_SOCKET_PATH = [[ var "vector_task_bind_mounts.target_docker_socket_path" . | quote ]]
       }
 
-[[- if ne .vector.vector_task_data_config_toml "" ]]
+[[- if ne (var "vector_task_data_config_toml" .) "" ]]
       template {
         data = <<EOH
-[[ .vector.vector_task_data_config_toml ]]
+[[ var "vector_task_data_config_toml" . ]]
 EOH
         left_delimiter  = "(("
         right_delimiter = "))"
@@ -101,13 +101,13 @@ EOH
 
       template {
         data = <<EOH
-      LOKI_ENDPOINT_URL = [[ .vector.vector_task_loki_prometheus.loki_endpoint_url | quote ]]
-      LOKI_USERNAME     = [[ .vector.vector_task_loki_prometheus.loki_username | quote ]]
-      LOKI_PASSWORD     = [[ .vector.vector_task_loki_prometheus.loki_password | quote ]]
+      LOKI_ENDPOINT_URL = [[ var "vector_task_loki_prometheus.loki_endpoint_url" . | quote ]]
+      LOKI_USERNAME     = [[ var "vector_task_loki_prometheus.loki_username" . | quote ]]
+      LOKI_PASSWORD     = [[ var "vector_task_loki_prometheus.loki_password" . | quote ]]
       
-      PROMETHEUS_ENDPOINT_URL = [[ .vector.vector_task_loki_prometheus.prometheus_endpoint_url | quote ]]
-      PROMETHEUS_USERNAME     = [[ .vector.vector_task_loki_prometheus.prometheus_username | quote ]]
-      PROMETHEUS_PASSWORD     = [[ .vector.vector_task_loki_prometheus.prometheus_password | quote ]]
+      PROMETHEUS_ENDPOINT_URL = [[ var "vector_task_loki_prometheus.prometheus_endpoint_url" . | quote ]]
+      PROMETHEUS_USERNAME     = [[ var "vector_task_loki_prometheus.prometheus_username" . | quote ]]
+      PROMETHEUS_PASSWORD     = [[ var "vector_task_loki_prometheus.prometheus_password" . | quote ]]
       EOH
 
         destination = "secrets/loki_prometheus.env"
@@ -115,12 +115,12 @@ EOH
       }
 
       resources {
-        cpu    = [[ .vector.vector_task_resources.cpu ]]
-        memory = [[ .vector.vector_task_resources.memory ]]
+        cpu    = [[ var "vector_task_resources.cpu" . ]]
+        memory = [[ var "vector_task_resources.memory" . ]]
       }
 
-      [[- if .vector.vector_task_services ]]
-      [[- range $idx, $service := .vector.vector_task_services ]]
+      [[- if var "vector_task_services" . ]]
+      [[- range $idx, $service := var "vector_task_services" . ]]
       service {
         name = [[ $service.service_name | quote ]]
         port = [[ $service.service_port_label | quote ]]

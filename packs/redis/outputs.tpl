@@ -1,3 +1,3 @@
-Congrats on deploying [[ .nomad_pack.pack.name ]]!
+Congrats on deploying [[ meta "pack.name" . ]]!
 
-There are [[ .redis.app_count ]] instances of your job now running on Nomad.
+There are [[ var "app_count" . ]] instances of your job now running on Nomad.

@@ -1,10 +1,10 @@
-job "[[ .my.job_name ]]_controller" {
+job "[[ var "job_name" . ]]_controller" {
 
   [[ template "location" . ]]
 
   group "controllers" {
 
-    count = [[ .my.controller_count ]]
+    count = [[ var "controller_count" . ]]
 
     [[ template "constraints" . ]]
 
@@ -17,7 +17,7 @@ job "[[ .my.job_name ]]_controller" {
       driver = "docker"
 
       config {
-        image = "[[ .my.plugin_image ]]"
+        image = "[[ var "plugin_image" . ]]"
 
         args = [
           "controller",
@@ -28,7 +28,7 @@ job "[[ .my.job_name ]]_controller" {
       }
 
       csi_plugin {
-        id        = "[[ .my.plugin_id ]]"
+        id        = "[[ var "plugin_id" . ]]"
         type      = "controller"
         mount_dir = "/csi"
       }

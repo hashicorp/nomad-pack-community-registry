@@ -10,7 +10,7 @@ pack {
   name        = "aws_ebs_csi"
   description = "This pack deploys the AWS EBS CSI plugin"
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/aws_ebs_csi"
-  version     = "0.1.0"
+  version     = "0.2.0"
 }
 
 integration {

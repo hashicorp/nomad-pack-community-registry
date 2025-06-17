@@ -1,9 +1,9 @@
 # Copyright (c) HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
-job [[ .tfe_fdo_nomad.tfe_agent_job_id | quote ]] {
+job [[ var "tfe_agent_job_id" . | quote ]] {
   type      = "batch"
-  namespace = [[ .tfe_fdo_nomad.tfe_agent_namespace | quote ]]
+  namespace = [[ var "tfe_agent_namespace" . | quote ]]
   constraint {
     attribute = "${attr.kernel.name}"
     value     = "linux"
@@ -31,7 +31,7 @@ job [[ .tfe_fdo_nomad.tfe_agent_job_id | quote ]] {
       driver = "docker"
   
       config {
-        image = [[ .tfe_fdo_nomad.tfe_agent_image | quote ]]
+        image = [[ var "tfe_agent_image" . | quote ]]
       }
 
       env {
@@ -49,8 +49,8 @@ job [[ .tfe_fdo_nomad.tfe_agent_job_id | quote ]] {
       }
 
       resources {
-        cpu    = [[ .tfe_fdo_nomad.tfe_agent_resource_cpu ]]
-        memory = [[ .tfe_fdo_nomad.tfe_agent_resource_memory ]]
+        cpu    = [[ var "tfe_agent_resource_cpu" . ]]
+        memory = [[ var "tfe_agent_resource_memory" . ]]
       }
     }
   }

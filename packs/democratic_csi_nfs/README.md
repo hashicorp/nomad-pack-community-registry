@@ -15,7 +15,7 @@ the controller task.
 ### Example NFS Server
 
 The following is an example of installing and configuring a NFS server
-on an apt-based Linux distrobution (ex. Debian or Ubuntu). This
+on an apt-based Linux distribution (ex. Debian or Ubuntu). This
 configuration exports the directory `/var/nfs/general` to any Nomad
 client on the `192.168.56.0/24` address space (this is commonly used
 for Vagrant hosts on Virtualbox).
@@ -72,7 +72,7 @@ nomad-pack plan \
 The following variables are optional:
 
 * `job_name` (string "democratic_csi") - The prefix to use as the job
-  name for the plugins. For exmaple, if `job_name = "democratic_csi"`,
+  name for the plugins. For example, if `job_name = "democratic_csi"`,
   the plugin job will be named `democratic_csi_controller`.
 * `datacenters` (list(string) ["dc1"]) - A list of datacenters in the
   region which are eligible for task placement.
@@ -127,8 +127,7 @@ which takes a list of objects with the following fields:
 * `value` (string) - Specifies the value to compare the attribute
   against using the specified operation.
 
-Below is also an example of how to pass `constraints` to the CLI with
-with the `-var` argument.
+Below is also an example of how to pass `constraints` to the CLI with the `-var` argument.
 
 ```bash
 nomad-pack run -var 'constraints=[{"attribute":"$${meta.my_custom_value}","operator":">","value":"3"}]' packs/democratic_csi_nfs

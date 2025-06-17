@@ -2,7 +2,7 @@
 
 This pack contains a single system job that runs the AWS EFS CSI plugin. It will run the nodes in
 monolith modes, which means they will run as both nodes and controllers. The job can only be run
-on Nomad hosts which have enabled privileged mode for Docker. In addition the hosts will need to have to
+on Nomad hosts which have enabled privileged mode for Docker. In addition, the hosts will need to have to
 be provided with access to AWS EFS through AWS IAM.
 
 ## Variables
@@ -27,7 +27,7 @@ on node task will run.
 - `value` (string) - Specifies the value to compare the attribute against using the specified
   operation.
 
-By default the job will run on hosts running linux and having Docker privileged mode enabled. The HCL
+By default, the job will run on hosts running linux and having Docker privileged mode enabled. The HCL
 variable list of objects for the default configuration is shown below and uses a double dollar sign for escaping:
 ```hcl
 [
@@ -43,7 +43,7 @@ variable list of objects for the default configuration is shown below and uses a
     }
 ]
 ```
-Below is also an example of how to pass `constraints` to the CLI with with the -var argument.
+Below is also an example of how to pass `constraints` to the CLI with the -var argument.
 ```bash
 nomad-pack run -var 'constraints=[{"attribute":"$${meta.my_custom_value}","operator":">","value":"3"}]' packs/aws_efs_csi
 ```

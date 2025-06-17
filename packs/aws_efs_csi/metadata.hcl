@@ -10,7 +10,7 @@ pack {
   name        = "aws_efs_csi"
   description = "Configures a set of nodes to run the AWS EFS CSI volume plugin."
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/tree/main/aws-efs-csi-driver"
-  version     = "0.0.1"
+  version     = "0.2.0"
 }
 
 integration {
