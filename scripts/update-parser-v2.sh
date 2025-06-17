@@ -61,7 +61,7 @@ done
 
 set -e
 
-./validate.sh "$path"
+$(dirname $0)/validate.sh "$path"
 
 # delete the log if all went well
 rm "$log"

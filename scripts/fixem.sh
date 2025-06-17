@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+test -d packs || {
+  echo 'please run this from the repo root'
+  exit 1
+}
+
 # these are more trouble than they're worth at the moment
 problem_children=''
 # complex templating
@@ -16,7 +21,7 @@ ls packs | while read -r p; do
     echo "🟨 $p"
     continue
   fi
-  ./update-parser-v2.sh "packs/$p" "$p" 2>&1 >> "./fixlogs/$p.log" && printf "💚" || printf "⭕"
+  "$(dirname $0)/update-parser-v2.sh" "packs/$p" "$p" 2>&1 >> "./fixlogs/$p.log" && printf "💚" || printf "⭕"
   printf " $p\n"
 done
 
