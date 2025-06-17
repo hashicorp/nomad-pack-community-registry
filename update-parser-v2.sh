@@ -2,16 +2,27 @@
 
 set -u
 
-pack="$1"
+if [ $# -ne 2 ]; then
+    cat <<EOF
+Update common nomad-pack parser v1 syntax to v2.
+
+Usage: $0 <path> <pack name>
+
+E.g.: $0 ./packs/hello_world hello_world
+EOF
+    exit 1
+fi
+
+path="$1"
+test -d "$path"
+pack="$2"
 
 mkdir -p fixlogs
+log="./fixlogs/$pack.log"
 # output `set -x` to a log file
-exec 19>./fixlogs/$pack.log
+exec 19>"$log"
 BASH_XTRACEFD=19
 set -x
-
-d="packs/$pack"
-test -d "$d"
 
 replace() {
   local f="$1"
@@ -23,7 +34,7 @@ replace() {
   sed -i -r "s~\.($pack|my)\.([0-9a-z_\.]+)~var \"\2\" .~g" "$f"
   # parentheses
   # (var "some_var" .)
-  sed -i -r 's~(not|eq|ne|len|keys|prepend) var "([0-9a-z_\.]+)"\s+(\S+)~\1 (var "\2" \3)~g' "$f"
+  sed -i -r 's~(not|eq|ne|keys|prepend) var "([0-9a-z_\.]+)"\s+(\S+)~\1 (var "\2" \3)~g' "$f"
   # template
   # template "tmpl_name" .
   sed -i -r "s~(template \"[0-9a-z_]+\"\s+\.)$pack~\1~g" "$f"
@@ -44,15 +55,13 @@ replace() {
   sed -i -r 's~(\[\[.*:=\s+)\.([0-9a-z_\]+)~\1var "\2" .~g' "$f"
 }
 
-find "$d" -type f -name '*.tpl' | while read -r tpl; do
+find "$path" -type f -name '*.tpl' | while read -r tpl; do
   replace "$tpl"
 done
 
 set -e
 
-mkdir -p rendered fixlogs
-nomad-pack render "./packs/$pack" -o ./rendered 2>&1 >> "./fixlogs/$pack.log"
-#nomad-pack render --no-format "./packs/$pack" -o ./rendered 2>&1 >> "./fixlogs/$pack.log"
-#nomad fmt -check -recursive "./rendered/$pack" 2>&1 >> "./fixlogs/$pack.log"
+./validate.sh "$path"
+
 # delete the log if all went well
-rm "./fixlogs/$pack.log"
+rm "$log"
