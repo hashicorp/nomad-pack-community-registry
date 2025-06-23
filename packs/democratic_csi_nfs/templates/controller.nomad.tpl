@@ -1,10 +1,10 @@
-job "[[ .my.job_name ]]_controller" {
+job "[[ var "job_name" . ]]_controller" {
 
   [[ template "location" . ]]
 
   group "controller" {
 
-    count = [[ .my.controller_count ]]
+    count = [[ var "controller_count" . ]]
 
     [[ template "constraints" . ]]
 
@@ -17,13 +17,13 @@ job "[[ .my.job_name ]]_controller" {
       driver = "docker"
 
       config {
-        image = "[[ .my.plugin_image ]]"
+        image = "[[ var "plugin_image" . ]]"
 
         args = [
-          "--csi-version=[[ .my.plugin_csi_spec_version ]]",
-          "--csi-name=[[ .my.plugin_id ]]",
+          "--csi-version=[[ var "plugin_csi_spec_version" . ]]",
+          "--csi-name=[[ var "plugin_id" . ]]",
           "--driver-config-file=${NOMAD_TASK_DIR}/driver-config-file.yaml",
-          "--log-level=[[ .my.plugin_log_level ]]",
+          "--log-level=[[ var "plugin_log_level" . ]]",
           "--csi-mode=controller",
           "--server-socket=${CSI_ENDPOINT}",
         ]
@@ -35,7 +35,7 @@ job "[[ .my.job_name ]]_controller" {
         privileged = true
         mount {
           type     = "bind"
-          source   = "[[ if not .my.nfs_controller_mount_path ]][[fail "nfs_controller_mount_path must be defined"]][[else]][[.my.nfs_controller_mount_path]][[end]]"
+          source   = "[[ if not (var "nfs_controller_mount_path" .) ]][[fail "nfs_controller_mount_path must be defined"]][[else]][[var "nfs_controller_mount_path" .]][[end]]"
           target   = "/storage"
           readonly = false
         }
@@ -46,7 +46,7 @@ job "[[ .my.job_name ]]_controller" {
       [[ template "resources" . ]]
 
       csi_plugin {
-        id        = "[[ .my.plugin_id ]]"
+        id        = "[[ var "plugin_id" . ]]"
         type      = "controller"
         mount_dir = "/csi"
       }

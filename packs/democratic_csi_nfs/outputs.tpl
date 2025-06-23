@@ -1,8 +1,8 @@
 type         = "csi"
-id           = "[[ .my.volume_id ]]"
-namespace    = "[[ .my.volume_namespace ]]"
-name         = "[[ .my.volume_id ]]"
-plugin_id    = "[[ .my.plugin_id ]]"
+id           = "[[ var "volume_id" . ]]"
+namespace    = "[[ var "volume_namespace" . ]]"
+name         = "[[ var "volume_id" . ]]"
+plugin_id    = "[[ var "plugin_id" . ]]"
 
 capability {
   access_mode     = "multi-node-multi-writer"

@@ -70,6 +70,11 @@ case "$pack" in
         export NOMAD_PACK_VAR_tfe_namespace='default'
         export NOMAD_PACK_VAR_tfe_agent_namespace='default'
         ;;
+    'democratic_csi_nfs')
+	export NOMAD_PACK_VAR_nfs_controller_mount_path='/tmp/nfs-mount'
+	export NOMAD_PACK_VAR_nfs_share_host='localhost'
+	export NOMAD_PACK_VAR_nfs_share_base_path='/export'
+	;;
 esac
 
 # `nomad-pack render` catches pack templating errors

@@ -48,6 +48,7 @@ replace() {
   sed -i -r 's~(printf "\S+")\s+(var \S+ \.)~\1 (\2)~g' "$f"
 
   # more var - inline var references without a prefixed ".$pack"
+  # note: this can be overzealous within a [[ define ... ]] template definition
   sed -i -r 's~(\[\[[-\s]+ if)\s+\.([0-9a-z_\.]+)~\1 var "\2" .~g' "$f"
   sed -i -r 's~(\[\[)\s+\.([0-9a-z_\.]+)~\1 var "\2" .~g' "$f"
 

@@ -1,4 +1,4 @@
-job "[[ .my.job_name ]]_node" {
+job "[[ var "job_name" . ]]_node" {
 
   # you can run node plugins as service jobs as well, but this ensures
   # that all nodes in the DC have a copy.
@@ -18,13 +18,13 @@ job "[[ .my.job_name ]]_node" {
       }
 
       config {
-        image = "[[ .my.plugin_image ]]"
+        image = "[[ var "plugin_image" . ]]"
 
         args = [
-          "--csi-version=[[ .my.plugin_csi_spec_version ]]",
-          "--csi-name=[[ .my.plugin_id ]]",
+          "--csi-version=[[ var "plugin_csi_spec_version" . ]]",
+          "--csi-name=[[ var "plugin_id" . ]]",
           "--driver-config-file=${NOMAD_TASK_DIR}/driver-config-file.yaml",
-          "--log-level=[[ .my.plugin_log_level ]]",
+          "--log-level=[[ var "plugin_log_level" . ]]",
           "--csi-mode=node",
           "--server-socket=${CSI_ENDPOINT}",
         ]
@@ -41,7 +41,7 @@ job "[[ .my.job_name ]]_node" {
       [[ template "resources" . ]]
 
       csi_plugin {
-        id        = "[[ .my.plugin_id ]]"
+        id        = "[[ var "plugin_id" . ]]"
         type      = "node"
         mount_dir = "/csi"
       }
