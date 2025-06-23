@@ -13,6 +13,7 @@ variable "datacenters" {
 variable "region" {
   description = "The region where the job should be placed."
   type        = string
+  default     = ""
 }
 
 variable "plugin_id" {
@@ -24,6 +25,7 @@ variable "plugin_id" {
 variable "plugin_namespace" {
   description = "The namespace for the plugin job."
   type        = string
+  default     = ""
 }
 
 variable "plugin_image" {

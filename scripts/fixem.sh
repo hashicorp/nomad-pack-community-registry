@@ -8,7 +8,6 @@ test -d packs || {
 # these are more trouble than they're worth at the moment
 problem_children=''
 # complex templating
-problem_children="$problem_children|democratic_csi_nfs"
 problem_children="$problem_children|rabbitmq"
 # odd `$vars := .$pack` construction
 problem_children="$problem_children|opentelemetry_collector"
