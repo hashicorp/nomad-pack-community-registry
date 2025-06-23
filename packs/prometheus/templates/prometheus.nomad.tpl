@@ -1,9 +1,9 @@
 job [[ template "full_job_name" . ]] {
 
-  region      = [[ .prometheus.region | quote ]]
-  datacenters = [[ .prometheus.datacenters | toStringList ]]
-  namespace   = [[ .prometheus.namespace | quote ]]
-  [[ if .prometheus.constraints ]][[ range $idx, $constraint := .prometheus.constraints ]]
+  region      = [[ var "region" . | quote ]]
+  datacenters = [[ var "datacenters" . | toStringList ]]
+  namespace   = [[ var "namespace" . | quote ]]
+  [[ if var "constraints" . ]][[ range $idx, $constraint := var "constraints" . ]]
   constraint {
     attribute = [[ $constraint.attribute | quote ]]
     value     = [[ $constraint.value | quote ]]
@@ -16,8 +16,8 @@ job [[ template "full_job_name" . ]] {
   group "prometheus" {
 
     network {
-      mode = [[ .prometheus.prometheus_group_network.mode | quote ]]
-      [[- range $label, $to := .prometheus.prometheus_group_network.ports ]]
+      mode = [[ var "prometheus_group_network.mode" . | quote ]]
+      [[- range $label, $to := var "prometheus_group_network.ports" . ]]
       port [[ $label | quote ]] {
         to = [[ $to ]]
       }
@@ -28,17 +28,17 @@ job [[ template "full_job_name" . ]] {
       driver = "docker"
 
       config {
-        image = "prom/prometheus:v[[ .prometheus.prometheus_task.version ]]"
-        args = [[ .prometheus.prometheus_task.cli_args | toPrettyJson ]]
+        image = "prom/prometheus:v[[ var "prometheus_task.version" . ]]"
+        args = [[ var "prometheus_task.cli_args" . | toPrettyJson ]]
         volumes = [
           "local/config:/etc/prometheus/config",
         ]
       }
 
-[[- if ne .prometheus.prometheus_task_app_prometheus_yaml "" ]]
+[[- if ne (var "prometheus_task_app_prometheus_yaml" .) "" ]]
       template {
         data = <<EOH
-[[ .prometheus.prometheus_task_app_prometheus_yaml ]]
+[[ var "prometheus_task_app_prometheus_yaml" . ]]
 EOH
 
         change_mode   = "signal"
@@ -47,10 +47,10 @@ EOH
       }
 [[- end ]]
 
-[[- if ne .prometheus.prometheus_task_app_rules_yaml "" ]]
+[[- if ne (var "prometheus_task_app_rules_yaml" .) "" ]]
       template {
         data = <<EOH
-[[ .prometheus.prometheus_task_app_rules_yaml ]]
+[[ var "prometheus_task_app_rules_yaml" . ]]
 EOH
 
         change_mode   = "signal"
@@ -60,12 +60,12 @@ EOH
 [[- end ]]
 
       resources {
-        cpu    = [[ .prometheus.prometheus_task_resources.cpu ]]
-        memory = [[ .prometheus.prometheus_task_resources.memory ]]
+        cpu    = [[ var "prometheus_task_resources.cpu" . ]]
+        memory = [[ var "prometheus_task_resources.memory" . ]]
       }
 
-      [[- if .prometheus.prometheus_task_services ]]
-      [[- range $idx, $service := .prometheus.prometheus_task_services ]]
+      [[- if var "prometheus_task_services" . ]]
+      [[- range $idx, $service := var "prometheus_task_services" . ]]
       service {
         name = [[ $service.service_name | quote ]]
         port = [[ $service.service_port_label | quote ]]
