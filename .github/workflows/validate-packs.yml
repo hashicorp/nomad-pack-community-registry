@@ -1,0 +1,40 @@
+name: Validate Packs
+
+on:
+  pull_request:
+    paths:
+      - "packs/**"
+      - "ci/**"
+      - ".github/workflows/validate-packs.yml"
+
+jobs:
+  validate_packs:
+    name: Validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
+
+      - name: Get changed files
+        # https://github.com/hanseltimeindustries/get-changed-files
+        uses: hanseltimeindustries/get-changed-files/@0b9ab9b0bdbe9384ab0202b4c119fd8f88747335 # v1.1.2
+        id: changed_files
+
+      - name: Install nomad-pack
+        uses: hashicorp/setup-nomad-pack@main
+        with:
+          version: latest
+
+      - name: Install nomad
+        uses: hashicorp/setup-nomad@main
+        with:
+          version: latest
+
+      - name: Run validation script
+        run: |
+          tr ' ' '\n' <<< "${{ steps.changed_files.outputs.added_modified }}" \
+          | grep -Eo 'packs/[0-9a-zA-Z_]+' | sort | uniq \
+          | while read pack; do
+            echo "::group::$pack"
+            ./ci/validate.sh "$pack"
+            echo "::endgroup::"
+          done
