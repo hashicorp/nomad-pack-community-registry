@@ -1,5 +1,5 @@
 job [[ template "job_name" . ]] {
-  [[ template "region" . ]]
+  [[- template "region" . ]]
   datacenters = [[ var "datacenters" . | toStringList ]]
   type = "service"
 
@@ -12,12 +12,13 @@ job [[ template "job_name" . ]] {
       }
     }
 
-    [[ if var "register_consul_service" . ]]
-    service {
-      name = "[[ var "consul_service_name" . ]]"
-      tags = [[ var "consul_service_tags" . | toStringList ]]
-      port = "http"
+    [[- if var "register_service" . ]]
 
+    service {
+      name = "[[ var "service_name" . ]]"
+      tags = [[ var "service_tags" . | toStringList ]]
+      provider = "nomad"
+      port = "http"
       check {
         name     = "alive"
         type     = "http"
@@ -26,7 +27,8 @@ job [[ template "job_name" . ]] {
         timeout  = "2s"
       }
     }
-    [[ end ]]
+
+    [[- end ]]
 
     restart {
       attempts = 2
@@ -47,7 +49,7 @@ job [[ template "job_name" . ]] {
       }
 
       env {
-        MESSAGE = [[ var "message" . | quote]]
+        MESSAGE = [[ var "message" . | quote ]]
       }
     }
   }
