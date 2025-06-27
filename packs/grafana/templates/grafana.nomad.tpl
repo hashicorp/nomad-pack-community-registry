@@ -34,7 +34,6 @@ job [[ template "job_name" . ]] {
     }
 
     [[- if var "grafana_vault" . ]]
-
     vault {
       policies = [[ var "grafana_vault" . | toStringList ]]
       change_mode   = "noop"
@@ -51,13 +50,13 @@ job [[ template "job_name" . ]] {
 
     service {
       name = "grafana"
-      port = "[[ var "grafana_http_port" . ]]"
+      port = [[ var "grafana_http_port" . | quote ]]
       tags = [[ var "grafana_consul_tags" . | toStringList ]]
 
       connect {
         sidecar_service {
           proxy {
-            [[ range $upstream := var "grafana_upstreams" . ]]
+            [[ range $upstream := (var "grafana_upstreams" .) ]]
             upstreams {
               destination_name = [[ $upstream.name | quote ]]
               local_bind_port  = [[ $upstream.port ]]
@@ -90,13 +89,13 @@ job [[ template "job_name" . ]] {
       }
 
       env {
-        [[- range $var := var "grafana_env_vars" . ]]
-        [[ $var.key ]] = "[[ $var.value ]]"
+        [[- range $var := (var "grafana_env_vars" .) ]]
+        [[ $var.key ]] = [[ $var.value | quote ]]
         [[- end ]]
       }
 
       [[- if var "grafana_task_artifacts" . ]]
-        [[- range $artifact := var "grafana_task_artifacts" . ]]
+        [[- range $artifact := (var "grafana_task_artifacts" .) ]]
 
       artifact {
         source      = [[ $artifact.source | quote ]]
@@ -140,14 +139,13 @@ EOF
       [[- end ]]
 
       [[- if var "grafana_task_config_plugins" . ]]
-
       template {
         data = <<EOF
 [[ var "grafana_task_config_plugins" . ]]
 EOF
         destination = "/local/grafana/provisioning/plugins/plugins.yml"
       }
-    [[- end ]]
+      [[- end ]]
     }
   }
 }
