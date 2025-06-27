@@ -1,4 +1,4 @@
-job "[[ .my.job_name ]]_node" {
+job "[[ var "job_name" . ]]_node" {
   # you can run node plugins as service jobs as well, but this ensures
   # that all nodes in the DC have a copy.
   type = "system"
@@ -16,19 +16,19 @@ job "[[ .my.job_name ]]_node" {
     }
 
     service {
-      name = "[[ .my.prometheus_service_name ]]"
+      name = "[[ var "prometheus_service_name" . ]]"
       port = "prometheus"
-      tags = [[ .my.prometheus_service_tags | toJson ]]
+      tags = [[ var "prometheus_service_tags" . | toJson ]]
     }
 
     task "plugin" {
       driver = "docker"
 
       config {
-        image = "[[ .my.plugin_image ]]"
+        image = "[[ var "plugin_image" . ]]"
 
         args = [
-          "--drivername=[[ .my.plugin_id ]]",
+          "--drivername=[[ var "plugin_id" . ]]",
           "--v=5",
           "--type=rbd",
           "--nodeserver=true",
@@ -54,7 +54,7 @@ EOT
       }
 
       csi_plugin {
-        id        = "[[ .my.plugin_id ]]"
+        id        = "[[ var "plugin_id" . ]]"
         type      = "node"
         mount_dir = "/csi"
       }

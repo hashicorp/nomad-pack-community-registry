@@ -4,7 +4,7 @@ constraint {
       value     = "linux"
     }
 
-[[ range $idx, $constraint := .my.constraints ]]
+[[ range $idx, $constraint := var "constraints" . ]]
     constraint {
       attribute = [[ $constraint.attribute | quote ]]
   [[- if $constraint.value ]]

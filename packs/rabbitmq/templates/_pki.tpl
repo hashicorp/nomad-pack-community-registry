@@ -9,8 +9,8 @@
 [[- define "_pki_vault" -]]
       template {
         data        = <<EOH
-        {{- $host := printf "common_name=%s.[[ .pki_vault_domain ]]" (env "attr.unique.hostname") -}}
-        {{- with secret [[ .pki_vault_secret_path | quote ]] $host -}}
+        {{- $host := printf "common_name=%s.[[ var "pki_vault_domain" . ]]" (env "attr.unique.hostname") -}}
+        {{- with secret [[ var "pki_vault_secret_path" . | quote ]] $host -}}
         {{- .Data.issuing_ca -}}
         {{ end }}
         EOH
@@ -20,8 +20,8 @@
 
       template {
         data        = <<EOH
-        {{- $host := printf "common_name=%s.[[ .pki_vault_domain ]]" (env "attr.unique.hostname") -}}
-        {{ with secret [[ .pki_vault_secret_path | quote ]] $host -}}
+        {{- $host := printf "common_name=%s.[[ var "pki_vault_domain" . ]]" (env "attr.unique.hostname") -}}
+        {{ with secret [[ var "pki_vault_secret_path" . | quote ]] $host -}}
         {{- .Data.certificate -}}
         {{ end }}
         EOH
@@ -31,8 +31,8 @@
 
       template {
         data        = <<EOH
-        {{- $host := printf "common_name=%s.[[ .pki_vault_domain ]]" (env "attr.unique.hostname") -}}
-        {{ with secret [[ .pki_vault_secret_path | quote ]] $host -}}
+        {{- $host := printf "common_name=%s.[[ var "pki_vault_domain" . ]]" (env "attr.unique.hostname") -}}
+        {{ with secret [[ var "pki_vault_secret_path" . | quote ]] $host -}}
         {{- .Data.private_key -}}
         {{ end }}
         EOH
@@ -42,41 +42,41 @@
 [[- end -]]
 
 [[- define "_pki_artifact" ]]
-  [[- if .pki_artifact_ca_cert.enabled ]]
+  [[- if var "pki_artifact_ca_cert.enabled" . ]]
       artifact {
-        source      = [[ .pki_artifact_ca_cert.source | quote ]]
+        source      = [[ var "pki_artifact_ca_cert.source" . | quote ]]
         destination = "${NOMAD_SECRETS_DIR}/ca.crt"
-        [[- if .pki_artifact_ca_cert.headers ]]
-        headers     = [[ .pki_artifact_ca_cert.headers | toPrettyJson ]]
+        [[- if var "pki_artifact_ca_cert.headers" . ]]
+        headers     = [[ var "pki_artifact_ca_cert.headers" . | toPrettyJson ]]
         [[- end ]]
-        [[- if .pki_artifact_ca_cert.headers ]]
-        options     = [[ .pki_artifact_ca_cert.options | toPrettyJson ]]
+        [[- if var "pki_artifact_ca_cert.headers" . ]]
+        options     = [[ var "pki_artifact_ca_cert.options" . | toPrettyJson ]]
         [[- end ]]
       }
   [[- end -]]
 
-  [[- if .pki_artifact_node_cert.enabled ]]
+  [[- if var "pki_artifact_node_cert.enabled" . ]]
       artifact {
-        source      = [[ .pki_artifact_node_cert.source | quote ]]
+        source      = [[ var "pki_artifact_node_cert.source" . | quote ]]
         destination = "${NOMAD_SECRETS_DIR}/rabbit.crt"
-        [[- if .pki_artifact_node_cert.headers ]]
-        headers     = [[ .pki_artifact_node_cert.headers | toPrettyJson ]]
+        [[- if var "pki_artifact_node_cert.headers" . ]]
+        headers     = [[ var "pki_artifact_node_cert.headers" . | toPrettyJson ]]
         [[- end ]]
-        [[- if .pki_artifact_node_cert.headers ]]
-        options     = [[ .pki_artifact_node_cert.options | toPrettyJson ]]
+        [[- if var "pki_artifact_node_cert.headers" . ]]
+        options     = [[ var "pki_artifact_node_cert.options" . | toPrettyJson ]]
         [[- end ]]
       }
   [[- end -]]
 
-  [[- if .pki_artifact_node_cert_key.enabled ]]
+  [[- if var "pki_artifact_node_cert_key.enabled" . ]]
       artifact {
-        source      = [[ .pki_artifact_node_cert_key.source | quote ]]
+        source      = [[ var "pki_artifact_node_cert_key.source" . | quote ]]
         destination = "${NOMAD_SECRETS_DIR}/rabbit.key"
-        [[- if .pki_artifact_node_cert_key.headers ]]
-        headers     = [[ .pki_artifact_node_cert_key.headers | toPrettyJson ]]
+        [[- if var "pki_artifact_node_cert_key.headers" . ]]
+        headers     = [[ var "pki_artifact_node_cert_key.headers" . | toPrettyJson ]]
         [[- end ]]
-        [[- if .pki_artifact_node_cert_key.headers ]]
-        options     = [[ .pki_artifact_node_cert_key.options | toPrettyJson ]]
+        [[- if var "pki_artifact_node_cert_key.headers" . ]]
+        options     = [[ var "pki_artifact_node_cert_key.options" . | toPrettyJson ]]
         [[- end ]]
       }
   [[- end -]]

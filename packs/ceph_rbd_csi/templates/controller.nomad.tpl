@@ -1,4 +1,4 @@
-job "[[ .my.job_name ]]_controller" {
+job "[[ var "job_name" . ]]_controller" {
 
   [[ template "location" . ]]
 
@@ -10,19 +10,19 @@ job "[[ .my.job_name ]]_controller" {
     }
 
     service {
-      name = "[[ .my.prometheus_service_name ]]"
+      name = "[[ var "prometheus_service_name" . ]]"
       port = "prometheus"
-      tags = [[ .my.prometheus_service_tags | toJson ]]
+      tags = [[ var "prometheus_service_tags" . | toJson ]]
     }
 
     task "plugin" {
       driver = "docker"
 
       config {
-        image = "[[ .my.plugin_image ]]"
+        image = "[[ var "plugin_image" . ]]"
 
         args = [
-          "--drivername=[[ .my.plugin_id ]]",
+          "--drivername=[[ var "plugin_id" . ]]",
           "--v=5",
           "--type=rbd",
           "--controllerserver=true",
@@ -67,9 +67,9 @@ EOT
 
         data = <<EOF
 [{
-    "clusterID": "[[ .my.ceph_cluster_id ]]",
+    "clusterID": "[[ var "ceph_cluster_id" . ]]",
     "monitors": [
-        {{range $index, $service := service "[[ .my.ceph_monitor_service_name ]]"}}{{if gt $index 0}}, {{end}}"{{.Address}}"{{end}}
+        {{range $index, $service := service "[[ var "ceph_monitor_service_name" . ]]"}}{{if gt $index 0}}, {{end}}"{{.Address}}"{{end}}
     ]
 }]
 EOF
@@ -78,7 +78,7 @@ EOF
       }
 
       csi_plugin {
-        id        = "[[ .my.plugin_id ]]"
+        id        = "[[ var "plugin_id" . ]]"
         type      = "controller"
         mount_dir = "/csi"
       }

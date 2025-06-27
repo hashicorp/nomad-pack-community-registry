@@ -1,10 +1,10 @@
 [[- define "config_file" -]]
-[[- if .my.ceph_config_file -]]
-[[ .my.ceph_config_file ]]
+[[- if var "ceph_config_file" . -]]
+[[ var "ceph_config_file" . ]]
 [[ else ]][global]
-fsid = [[ if .my.ceph_cluster_id ]][[ .my.ceph_cluster_id ]][[ else ]][[ uuidv4 ]][[ end ]]
+fsid = [[ if var "ceph_cluster_id" . ]][[ var "ceph_cluster_id" . ]][[ else ]][[ uuidv4 ]][[ end ]]
 mon initial members = {{ env "attr.unique.hostname" }}
-mon host = v2:{{ sockaddr "with $ifAddrs := GetDefaultInterfaces | include \"type\" \"IPv4\" | limit 1 -}}{{- range $ifAddrs -}}{{ attr \"address\" . }}{{ end }}{{ end " }}:[[ .my.ceph_monitor_port ]]/0
+mon host = v2:{{ sockaddr "with $ifAddrs := GetDefaultInterfaces | include \"type\" \"IPv4\" | limit 1 -}}{{- range $ifAddrs -}}{{ attr \"address\" . }}{{ end }}{{ end " }}:[[ var "ceph_monitor_port" . ]]/0
 
 osd crush chooseleaf type = 0
 osd journal size = 100

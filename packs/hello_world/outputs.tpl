@@ -1,1 +1,1 @@
-Congrats! You deployed a simple service on Nomad.
+Congrats! You deployed the [[ meta "pack.name" . ]] pack on Nomad.

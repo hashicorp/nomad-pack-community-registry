@@ -80,5 +80,5 @@ namespace. The default value `8080` and `1936` represent the HTTP router and Tra
 The default value for this variable configures a service and a check for both the ports configured
 by default within the `traefik_group_network.ports` mapping.
 
-[traefik_learn_guide]: (https://learn.hashicorp.com/tutorials/nomad/load-balancing-traefik)
-[docker_driver]: (https://www.nomadproject.io/docs/drivers/docker)
+[traefik_learn_guide]: https://learn.hashicorp.com/tutorials/nomad/load-balancing-traefik
+[docker_driver]: https://www.nomadproject.io/docs/drivers/docker

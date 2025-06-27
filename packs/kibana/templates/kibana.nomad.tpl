@@ -1,11 +1,11 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .kibana.datacenters | toJson ]]
+  datacenters = [[ var "datacenters" . | toJson ]]
   type = "service"
-  [[- if .kibana.namespace ]]
-  namespace   = [[ .kibana.namespace | quote ]]
+  [[- if var "namespace" . ]]
+  namespace   = [[ var "namespace" . | quote ]]
   [[- end]]
-  [[- if .kibana.constraints ]][[ range $idx, $constraint := .kibana.constraints ]]
+  [[- if var "constraints" . ]][[ range $idx, $constraint := var "constraints" . ]]
   constraint {
     [[- if ne $constraint.attribute "" ]]
     attribute = [[ $constraint.attribute | quote ]]
@@ -29,11 +29,11 @@ job [[ template "job_name" . ]] {
       }
     }
 
-    [[- if .kibana.register_consul_service ]]
+    [[- if var "register_consul_service" . ]]
     service {
-      name = "[[ .kibana.consul_service_name ]]"
-      [[if ne (len .kibana.consul_service_tags) 0 ]]
-      tags = [[ .kibana.consul_service_tags | toJson ]]
+      name = "[[ var "consul_service_name" . ]]"
+      [[if ne (len (var "consul_service_tags" .)) 0 ]]
+      tags = [[ var "consul_service_tags" . | toJson ]]
       [[ end ]]
       port = "http"
 
@@ -47,11 +47,11 @@ job [[ template "job_name" . ]] {
     }
     [[- end ]]
 
-    [[- if .kibana.config_volume_name ]]
-    volume "[[.kibana.config_volume_name]]" {
-      type      = "[[.kibana.config_volume_type]]"
+    [[- if var "config_volume_name" . ]]
+    volume "[[var "config_volume_name" .]]" {
+      type      = "[[var "config_volume_type" .]]"
       read_only = false
-      source    = "[[.kibana.config_volume_name]]"
+      source    = "[[var "config_volume_name" .]]"
     }
     [[- end]]
 
@@ -62,7 +62,7 @@ job [[ template "job_name" . ]] {
       mode = "fail"
     }
 
-    [[- if .kibana.config_volume_name ]]
+    [[- if var "config_volume_name" . ]]
     task "chown_config_volume" {
         lifecycle {
             hook = "prestart"
@@ -70,7 +70,7 @@ job [[ template "job_name" . ]] {
         }
 
         volume_mount {
-          volume      = "[[ .kibana.config_volume_name ]]"
+          volume      = "[[ var "config_volume_name" . ]]"
           destination = "/usr/share/kibana/config"
           read_only   = false
         }
@@ -90,7 +90,7 @@ job [[ template "job_name" . ]] {
     }
     [[- end]]
 
-    [[- if .kibana.kibana_config_file_path ]]
+    [[- if var "kibana_config_file_path" . ]]
     task "config_file_persist" {
         lifecycle {
             hook = "prestart"
@@ -98,7 +98,7 @@ job [[ template "job_name" . ]] {
         }
 
         volume_mount {
-          volume      = "[[ .kibana.config_volume_name ]]"
+          volume      = "[[ var "config_volume_name" . ]]"
           destination = "/usr/share/kibana/config"
           read_only   = false
         }
@@ -113,7 +113,7 @@ job [[ template "job_name" . ]] {
 
         template {
           data = <<EOH
-[[ fileContents .kibana.kibana_config_file_path ]]
+[[ fileContents var "kibana_config_file_path" . ]]
 EOH
           destination = "local/kibana.yml"
         }
@@ -125,7 +125,7 @@ EOH
     }
     [[- end]]
 
-    [[- if and .kibana.kibana_keystore_name .kibana.config_volume_name ]]
+    [[- if and (var "kibana_keystore_name" .) (var "config_volume_name" .) ]]
     task "kibana_keystore_persist" {
         lifecycle {
             hook = "poststart"
@@ -133,16 +133,16 @@ EOH
         }
 
         volume_mount {
-          volume      = "[[ .kibana.config_volume_name ]]"
+          volume      = "[[ var "config_volume_name" . ]]"
           destination = "/usr/share/kibana/config"
           read_only   = false
         }
 
         driver = "docker"
         config {
-          image   = "[[ .kibana.image_name ]]:[[ .kibana.image_tag ]]"
+          image   = "[[ var "image_name" . ]]:[[ var "image_tag" . ]]"
           command = "/bin/bash"
-          args    = ["-c", "bin/kibana-keystore create && bin/kibana-keystore add [[.kibana.kibana_keystore_name]]"]
+          args    = ["-c", "bin/kibana-keystore create && bin/kibana-keystore add [[var "kibana_keystore_name" .]]"]
         }
 
         resources {
@@ -155,43 +155,43 @@ EOH
     task [[ template "job_name" . ]] {
       driver = "docker"
 
-      [[- if .kibana.config_volume_name ]]
+      [[- if var "config_volume_name" . ]]
       volume_mount {
-        volume      = "[[ .kibana.config_volume_name ]]"
+        volume      = "[[ var "config_volume_name" . ]]"
         destination = "/usr/share/kibana/config"
         read_only   = false
       }
       [[- end]]
 
       config {
-        image = "[[ .kibana.image_name ]]:[[ .kibana.image_tag ]]"
+        image = "[[ var "image_name" . ]]:[[ var "image_tag" . ]]"
         ports = ["http"]
-        [[- if and .kibana.config_volume_name .kibana.kibana_config_file_path]]
+        [[- if and (var "config_volume_name" .) (var "kibana_config_file_path" .)]]
         volumes = [
           "local/kibana.yml:/usr/share/kibana/config/kibana.yml",
         ]
         [[- end]]
       }
 
-      [[- if ne (len .kibana.kibana_config_file_path) 0]]
+      [[- if ne (len (var "kibana_config_file_path" .)) 0]]
         template {
           data = <<EOH
-[[ fileContents .kibana.kibana_config_file_path ]]
+[[ fileContents var "kibana_config_file_path" . ]]
 EOH
           destination = "local/kibana.yml"
         }
       [[- end]]
 
-      [[- if ne (len .kibana.docker_kibana_env_vars) 0 ]]
+      [[- if ne (len (var "docker_kibana_env_vars" .)) 0 ]]
       env {
-        [[ range $key, $var := .kibana.docker_kibana_env_vars ]]
+        [[ range $key, $var := var "docker_kibana_env_vars" . ]]
         [[if ne (len $var) 0 ]][[ $key | upper ]] = [[ $var | quote ]][[ end ]]
         [[ end ]]
       }
       [[- end ]]
       resources {
-        cpu    = [[ .kibana.task_resources.cpu ]]
-        memory = [[ .kibana.task_resources.memory ]]
+        cpu    = [[ var "task_resources.cpu" . ]]
+        memory = [[ var "task_resources.memory" . ]]
       }
     }
   }
