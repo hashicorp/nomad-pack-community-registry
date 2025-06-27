@@ -10,7 +10,7 @@ pack {
   name        = "outline"
   description = "Outline - Wiki and knowledgebase for teams"
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/outline"
-  version     = "0.0.1"
+  version     = "0.2.0"
 }
 
 integration {

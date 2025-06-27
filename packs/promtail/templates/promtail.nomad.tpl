@@ -1,24 +1,24 @@
 job [[ template "job_name" . ]] {
 
   [[ template "region" . ]]
-  datacenters = [[ .promtail.datacenters | toStringList ]]
-  namespace   = [[ .promtail.namespace | quote ]]
+  datacenters = [[ var "datacenters" . | toStringList ]]
+  namespace   = [[ var "namespace" . | quote ]]
   type        = "system"
   
-  [[ template "constraints" .promtail.constraints ]]
+  [[ template "constraints" var "constraints" . ]]
 
   group "promtail" {
     network {
-      mode = [[ .promtail.promtail_group_network.mode | quote ]]
-      [[- range $label, $to := .promtail.promtail_group_network.ports ]]
+      mode = [[ var "promtail_group_network.mode" . | quote ]]
+      [[- range $label, $to := var "promtail_group_network.ports" . ]]
       port [[ $label | quote ]] {
         to = [[ $to ]]
       }
       [[- end ]]
     }
 
-    [[- if .promtail.promtail_task_services ]]
-    [[ template "service" .promtail.promtail_group_services ]]
+    [[- if var "promtail_task_services" . ]]
+    [[ template "service" var "promtail_group_services" . ]]
     [[- end ]]
 
     task "promtail" {
@@ -32,9 +32,9 @@ job [[ template "job_name" . ]] {
       }
 
       config {
-        image = "grafana/promtail:[[ .promtail.version_tag ]]"
+        image = "grafana/promtail:[[ var "version_tag" . ]]"
         privileged = true
-        args = [[ .promtail.container_args | toPrettyJson ]]
+        args = [[ var "container_args" . | toPrettyJson ]]
 
         mount {
           type = "bind"
@@ -44,18 +44,18 @@ job [[ template "job_name" . ]] {
           bind_options { propagation = "rshared" }
         }
 
-        [[- if (eq .promtail.config_file "") ]]
-        [[ template "mounts" .promtail.default_mounts ]]
+        [[- if (eq (var "config_file" .) "") ]]
+        [[ template "mounts" var "default_mounts" . ]]
         [[- end ]]
 
-        [[- if gt (len .promtail.extra_mounts) 0 ]]
-        [[ template "mounts" .promtail.extra_mounts ]]
+        [[- if gt (len (var "extra_mounts" .)) 0 ]]
+        [[ template "mounts" var "extra_mounts" . ]]
         [[- end ]]
 
       }
       resources {
-        cpu    = [[ .promtail.resources.cpu ]]
-        memory = [[ .promtail.resources.memory ]]
+        cpu    = [[ var "resources.cpu" . ]]
+        memory = [[ var "resources.memory" . ]]
       }
     }
   }

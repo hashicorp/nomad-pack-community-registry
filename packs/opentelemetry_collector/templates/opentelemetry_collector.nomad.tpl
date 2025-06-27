@@ -1,13 +1,12 @@
-[[- $vars := .opentelemetry_collector -]]
 job [[ template "full_job_name" . ]] {
   [[ template "region" . ]]
 
-  datacenters = [[ $vars.datacenters | toStringList ]]
-  namespace   = [[ $vars.namespace | quote ]]
+  datacenters = [[ var "datacenters" . | toStringList ]]
+  namespace   = [[ var "namespace" . | quote ]]
 
-  type = [[ $vars.job_type | quote ]]
+  type = [[ var "job_type" . | quote ]]
 
-  [[ if $vars.constraints ]][[ range $idx, $constraint := $vars.constraints ]]
+  [[ if var "constraints" . ]][[ range $idx, $constraint := var "constraints" . ]]
   constraint {
     attribute = [[ $constraint.attribute | quote ]]
     value     = [[ $constraint.value | quote ]]
@@ -18,12 +17,12 @@ job [[ template "full_job_name" . ]] {
   [[- end ]][[- end ]]
 
   group "otel-collector" {
-    [[- if eq $vars.job_type "service" ]]
-    count = [[ $vars.instance_count ]]
+    [[- if eq (var "job_type" .) "service" ]]
+    count = [[ var "instance_count" . ]]
     [[- end ]]
     network {
-      mode = [[ $vars.network_config.mode | quote ]]
-      [[- range $label, $to := $vars.network_config.ports ]]
+      mode = [[ var "network_config.mode" . | quote ]]
+      [[- range $label, $to := var "network_config.ports" . ]]
       port [[ $label | quote ]] {
         to = [[ $to ]]
       }
@@ -36,23 +35,23 @@ job [[ template "full_job_name" . ]] {
       driver = "docker"
 
       config {
-        image = "[[ $vars.task_config.image ]]:[[ $vars.task_config.version ]]"
+        image = "[[ var "task_config.image" . ]]:[[ var "task_config.version" . ]]"
         entrypoint = [
           "/otelcol-contrib",
-          "--config=[[ $vars.config_yaml_location ]]",
+          "--config=[[ var "config_yaml_location" . ]]",
         ]
 
 
-        [[- if $vars.privileged_mode ]]
+        [[- if var "privileged_mode" . ]]
         pid_mode   = "host"
         privileged = true
         [[- end ]]
 
-        ports = [[ keys $vars.network_config.ports | toPrettyJson ]]
+        ports = [[ keys (var "network_config.ports" .) | toPrettyJson ]]
 
         volumes = [
-          "[[ $vars.config_yaml_location ]]:/etc/otel/config.yaml",
-          [[- if $vars.privileged_mode ]]
+          "[[ var "config_yaml_location" . ]]:/etc/otel/config.yaml",
+          [[- if var "privileged_mode" . ]]
           "/:/hostfs:ro,rslave",
           [[- end ]]
         ]
@@ -63,26 +62,27 @@ job [[ template "full_job_name" . ]] {
 
       template {
         data = <<EOH
-[[ $vars.config_yaml ]]
+[[ var "config_yaml" . ]]
 EOH
 
         change_mode   = "restart"
-        destination   = "[[ $vars.config_yaml_location ]]"
+        destination   = "[[ var "config_yaml_location" . ]]"
       }
 
       [[ template "additional_templates" . ]]
 
       resources {
-        cpu    = [[ $vars.resources.cpu ]]
-        memory = [[ $vars.resources.memory ]]
+        cpu    = [[ var "resources.cpu" . ]]
+        memory = [[ var "resources.memory" . ]]
       }
 
-      [[- if $vars.task_services ]]
-      [[ range $idx, $service := $vars.task_services ]]
+      [[- if var "task_services" . ]]
+      [[- $traefik_config := var "traefik_config" . -]]
+      [[ range $idx, $service := var "task_services" . ]]
       service {
         name = [[ $service.service_name | quote ]]
         port = [[ $service.service_port_label | quote ]]
-        tags = [[ template "traefik_service_tags" (dict "traefik_config" $vars.traefik_config "service" $service) ]]
+        tags = [[ template "traefik_service_tags" (dict "traefik_config" $traefik_config "service" $service) ]]
         [[- if $service.check_enabled ]]
         check {
           type     = "http"

@@ -32,7 +32,7 @@ variable "message" {
 variable "register_service" {
   description = "If you want to register a Nomad service for the job"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "service_name" {

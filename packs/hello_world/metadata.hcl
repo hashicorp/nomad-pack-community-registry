@@ -5,7 +5,7 @@ app {
 pack {
   name = "hello_world"
   description = "This deploys a simple applicaton as a service with an optional associated Nomad service."
-  version = "0.0.2"
+  version = "0.2.0"
 }
 
 integration {

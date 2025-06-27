@@ -1,1 +1,1 @@
-Congrats! You deployed the hello_world pack on Nomad.
+Congrats! You deployed the [[ meta "pack.name" . ]] pack on Nomad.

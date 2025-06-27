@@ -1,1 +1,1 @@
-Congrats on deploying [[ .nomad_pack.pack.name ]].
+Congrats! You deployed the [[ meta "pack.name" . ]] pack on Nomad.

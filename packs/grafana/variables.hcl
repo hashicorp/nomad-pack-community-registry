@@ -42,6 +42,7 @@ variable "grafana_http_port" {
 
 variable "grafana_upstreams" {
   description = ""
+
   type = list(object({
     name = string
     port = number

@@ -69,8 +69,7 @@ which takes a list of objects with the following fields:
 * `value` (string) - Specifies the value to compare the attribute
   against using the specified operation.
 
-Below is also an example of how to pass `constraints` to the CLI with
-with the `-var` argument.
+Below is also an example of how to pass `constraints` to the CLI with the `-var` argument.
 
 ```bash
 nomad-pack run -var 'constraints=[{"attribute":"$${meta.my_custom_value}","operator":">","value":"3"}]' packs/aws_ebs_csi

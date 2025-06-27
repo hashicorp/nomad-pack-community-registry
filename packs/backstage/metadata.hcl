@@ -9,7 +9,7 @@ pack {
   name        = "backstage"
   description = "An open platform for building developer portals"
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/backstage"
-  version     = "0.0.1"
+  version     = "0.2.0"
 }
 
 integration {

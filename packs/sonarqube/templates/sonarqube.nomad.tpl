@@ -1,11 +1,11 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .sonarqube.datacenters | toStringList ]]
+  datacenters = [[ var "datacenters" . | toStringList ]]
   type = "service"
-  [[- if .sonarqube.namespace ]]
-  namespace   = [[ .sonarqube.namespace | quote ]]
+  [[- if var "namespace" . ]]
+  namespace   = [[ var "namespace" . | quote ]]
   [[- end ]]
-  [[- if .sonarqube.constraints ]][[ range $idx, $constraint := .sonarqube.constraints ]]
+  [[- if var "constraints" . ]][[ range $idx, $constraint := var "constraints" . ]]
   constraint {
     [[- if ne $constraint.attribute "" ]]
     attribute = [[ $constraint.attribute | quote ]]
@@ -29,11 +29,11 @@ job [[ template "job_name" . ]] {
       }
     }
   
-    [[- if .sonarqube.register_consul_service ]]
+    [[- if var "register_consul_service" . ]]
     service {
-      name = "[[ .sonarqube.consul_service_name ]]"
-      [[- if ne (len .sonarqube.consul_service_tags) 0 ]]
-      tags = [[ .sonarqube.consul_service_tags | toStringList ]]
+      name = "[[ var "consul_service_name" . ]]"
+      [[- if ne (len (var "consul_service_tags" .)) 0 ]]
+      tags = [[ var "consul_service_tags" . | toStringList ]]
       [[- end ]]
       port = "http"
       check {
@@ -46,11 +46,11 @@ job [[ template "job_name" . ]] {
     }
     [[- end ]]
 
-    [[- if .sonarqube.volume_name ]]
-    volume "[[.sonarqube.volume_name]]" {
-      type      = "[[.sonarqube.volume_type]]"
+    [[- if var "volume_name" . ]]
+    volume "[[var "volume_name" .]]" {
+      type      = "[[var "volume_type" .]]"
       read_only = false
-      source    = "[[.sonarqube.volume_name]]"
+      source    = "[[var "volume_name" .]]"
     }
     [[- end ]]
 
@@ -64,30 +64,30 @@ job [[ template "job_name" . ]] {
     task [[ template "job_name" . ]] {
       driver = "docker"
 
-      [[- if .sonarqube.volume_name ]]
+      [[- if var "volume_name" . ]]
       volume_mount {
-        volume      = "[[ .sonarqube.volume_name ]]"
+        volume      = "[[ var "volume_name" . ]]"
         destination = "/opt/sonarqube/data"
         read_only   = false
       }
       [[- end ]]
 
       config {
-        image = "[[ .sonarqube.image_name ]]:[[ .sonarqube.image_tag ]]"
+        image = "[[ var "image_name" . ]]:[[ var "image_tag" . ]]"
         ports = ["http"]
       }
 
-      [[if ne (len .sonarqube.sonarqube_env_vars) 0 ]]
+      [[if ne (len (var "sonarqube_env_vars" .)) 0 ]]
       env {
-        [[ range $key, $var := .sonarqube.sonarqube_env_vars ]]
+        [[ range $key, $var := var "sonarqube_env_vars" . ]]
         [[if ne (len $var) 0 ]][[ $key | upper ]] = [[ $var | quote ]][[ end ]]
         [[ end ]]
       }
       [[ end ]]
 
       resources {
-        cpu    = [[ .sonarqube.task_resources.cpu ]]
-        memory = [[ .sonarqube.task_resources.memory ]]
+        cpu    = [[ var "task_resources.cpu" . ]]
+        memory = [[ var "task_resources.memory" . ]]
       }
     }
   }

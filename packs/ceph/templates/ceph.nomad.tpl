@@ -1,4 +1,4 @@
-job "[[ .my.job_name ]]" {
+job "[[ var "job_name" . ]]" {
 
   [[- template "location" . ]]
 
@@ -18,13 +18,13 @@ job "[[ .my.job_name ]]" {
     }
 
     service {
-      name = "[[ .my.ceph_monitor_service_name ]]"
-      port = [[ .my.ceph_monitor_port ]]
+      name = "[[ var "ceph_monitor_service_name" . ]]"
+      port = [[ var "ceph_monitor_port" . ]]
     }
 
     service {
-      name = "[[ .my.ceph_dashboard_service_name ]]"
-      port = [[ .my.ceph_dashboard_port ]]
+      name = "[[ var "ceph_dashboard_service_name" . ]]"
+      port = [[ var "ceph_dashboard_port" . ]]
 
       check {
         type           = "http"
@@ -39,7 +39,7 @@ job "[[ .my.job_name ]]" {
       driver = "docker"
 
       config {
-        image        = "[[ .my.ceph_image ]]"
+        image        = "[[ var "ceph_image" . ]]"
         args         = ["demo"]
         network_mode = "host"
         privileged   = true
@@ -58,8 +58,8 @@ job "[[ .my.job_name ]]" {
         data = <<EOT
 MON_IP={{ sockaddr "with $ifAddrs := GetDefaultInterfaces | include \"type\" \"IPv4\" | limit 1 -}}{{- range $ifAddrs -}}{{ attr \"address\" . }}{{ end }}{{ end " }}
 CEPH_PUBLIC_NETWORK=0.0.0.0/0
-CEPH_DEMO_UID=[[ .my.ceph_demo_uid ]]
-CEPH_DEMO_BUCKET=[[ .my.ceph_demo_bucket ]]
+CEPH_DEMO_UID=[[ var "ceph_demo_uid" . ]]
+CEPH_DEMO_BUCKET=[[ var "ceph_demo_bucket" . ]]
 EOT
 
         destination = "${NOMAD_TASK_DIR}/env"

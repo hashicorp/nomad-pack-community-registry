@@ -1,10 +1,10 @@
 // allow nomad-pack to set the job name
 
 [[- define "job_name" -]]
-[[- if eq .rabbitmq.job_name "" -]]
-[[- .nomad_pack.pack.name | quote -]]
+[[- if eq (var "job_name" .) "" -]]
+[[- meta "pack.name" . | quote -]]
 [[- else -]]
-[[- .rabbitmq.job_name | quote -]]
+[[- var "job_name" . | quote -]]
 [[- end -]]
 [[- end -]]
 
@@ -14,9 +14,9 @@
 // if nothing is defined, return only consul:
 //    "[rabbitmq_peer_discovery_consul]."
 [[- define "rabbit_plugins" ]]
-  [[- if .enabled_plugins -]]
+  [[- if var "enabled_plugins" . -]]
     "[rabbitmq_peer_discovery_consul,
-    [[- range $index, $name := .enabled_plugins -]]
+    [[- range $index, $name := var "enabled_plugins" . -]]
       [[if $index]],[[end]][[ $name ]]
     [[- end -]]
     ]."
