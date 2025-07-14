@@ -1,6 +1,6 @@
 # Caddy
 
-This pack contains a single system job that runs [Caddy](https://caddyserver.com/v2) across all Nomad clients.
+This pack contains a single system job that runs [Caddy](https://caddyserver.com/) across all Nomad clients.
 
 ## Variables
 
