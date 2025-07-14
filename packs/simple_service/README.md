@@ -66,14 +66,14 @@ Optionally, this pack can configure a Consul service.
 
 If the `register_consul_service` is unset or set to true, the Consul service will be registered.
 
-Several load balancers in the [Nomad Pack Community Registry](../../README.md) are configured to connect to
+Several load balancers in the [Nomad Pack Community Registry][] are configured to connect to
 this service with ease.
 
-The [NginX](../nginx/README.md) and [HAProxy](../haproxy/README.md) packs can be configured to balance over the
+The [NginX][] and [HAProxy][] packs can be configured to balance over the
 Consul service deployed by this pack. Just ensure that the "consul_service_name" variable provided to those
 packs matches this consul_service_name.
 
-The [Fabio](../fabio/README.md) and [Traefik](../traefik/README.md) packs are configured to search for Consul
+The [Fabio][] and [Traefik][] packs are configured to search for Consul
 services with the specific tags.
 
 To tag this Consul service to work with Fabio, add `"urlprefix-<PATH>"`
@@ -112,3 +112,9 @@ upstreams = [
   }
 ]
 ```
+
+[Nomad Pack Community Registry](https://github.com/hashicorp/nomad-pack-community-registry/README.md)
+[NginX](https://github.com/hashicorp/nomad-pack-community-registry/nginx/README.md)
+[HAProxy](https://github.com/hashicorp/nomad-pack-community-registry/haproxy/README.md)
+[Fabio](https://github.com/hashicorp/nomad-pack-community-registry/fabio/README.md)
+[Traefik](https://github.com/hashicorp/nomad-pack-community-registry/traefik/README.md)
