@@ -60,10 +60,11 @@ variable "health_check" {
 }
 
 variable "upstreams" {
-description = ""
-type = list(object({
-  name   = string
-  port = string
+  description = ""
+  default = []
+  type = list(object({
+    name = string
+    port = string
   }))
 }
 
