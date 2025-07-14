@@ -27,7 +27,7 @@ variable "namespace" {
 
 variable "constraints" {
   description = "Constraints to apply to the entire job."
-
+  default     = []
   type        = list(object({
     attribute = string
     operator  = string
@@ -68,6 +68,7 @@ variable "http_healthcheck_path" {
 variable "https_healthcheck_path" {
   description = "The HTTPS path served by Caddy to call for health checks."
   type        = string
+  default     = ""
 }
 
 variable "resources" {

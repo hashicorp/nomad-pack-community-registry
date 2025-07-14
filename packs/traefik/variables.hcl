@@ -70,7 +70,7 @@ variable "traefik_task" {
 variable "traefik_task_dynamic_config" {
   description = "The TOML Traefik dynamic configuration to pass to the task."
   type        = string
-  default     = null
+  default     = ""
 }
 
 variable "traefik_task_app_config" {
@@ -155,17 +155,17 @@ variable "traefik_vault" {
 variable "traefik_task_cacert" {
   description = "CA for using external SSL"
   type = string
-  default = null
+  default = ""
 }
 
 variable "traefik_task_cert" {
   description = "Certificate for using external SSL"
   type = string
-  default = null
+  default = ""
   }
 
 variable "traefik_task_cert_key" {
   description = "Certificate private key for using external SSL"
   type = string
-  default = null
+  default = ""
   }

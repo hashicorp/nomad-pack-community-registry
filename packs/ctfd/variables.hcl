@@ -24,6 +24,7 @@ variable "datacenters" {
 variable "namespace" {
   description = "The namespace where the job should be placed."
   type        = string
+  default     = ""
 }
 
 variable "register_consul_service" {
@@ -107,6 +108,7 @@ variable "ctfd_image_tag" {
 variable "ctfd_port" {
   description = "The static host port that CTFd will be served on. If not specified, an external reverse proxy will be needed."
   type        = number
+  default     = 0
 }
 
 variable "ctfd_expect_reverse_proxy" {

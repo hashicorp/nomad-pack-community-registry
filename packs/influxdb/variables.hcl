@@ -23,6 +23,7 @@ variable "datacenters" {
 variable "namespace" {
   description = "The namespace where the job should be placed."
   type        = string
+  default     = ""
 }
 
 variable "constraints" {
@@ -86,6 +87,7 @@ variable "consul_service_tags" {
 variable "data_volume_name" {
   description = "The name of the dedicated data volume you want InfluxDB to use."
   type        = string
+  default     = ""
 }
 
 variable "data_volume_type" {
@@ -97,6 +99,7 @@ variable "data_volume_type" {
 variable "config_volume_name" {
   description = "The name of the dedicated config volume you want InfluxDB to use."
   type        = string
+  default     = ""
 }
 
 variable "config_volume_type" {
@@ -110,5 +113,3 @@ variable "docker_influxdb_env_vars" {
   description = "Environment variables to pass to Docker container."
   default     = {}
 }
-
-

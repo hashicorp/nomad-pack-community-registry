@@ -26,6 +26,7 @@ variable "dns" {
     searches = list(string)
     options = list(string)
   })
+  default = {}
 }
 
 variable "grafana_version_tag" {
@@ -47,6 +48,7 @@ variable "grafana_upstreams" {
     name = string
     port = number
   }))
+  default = []
 }
 
 variable "grafana_resources" {
@@ -79,6 +81,7 @@ variable "grafana_volume" {
     type    = string
     source = string
   })
+  default = {}
 }
 
 variable "grafana_task_config_ini" {
@@ -171,4 +174,5 @@ EOF
 variable "grafana_task_config_plugins" {
   description = "The yaml configuration for automatic provision of plugins"
   type        = string
+  default     = ""
 }
