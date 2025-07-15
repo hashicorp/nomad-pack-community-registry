@@ -1,7 +1,7 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
   datacenters = [[ .alertmanager.datacenters | toStringList ]]
-  node_pool = [[ .alertmanager.node_pool | quote ]]
+  node_pool = [[ var "node_pool" . | quote ]]
 
   [[ if .alertmanager.constraints ]][[ range $idx, $constraint := .alertmanager.constraints ]]
   constraint {

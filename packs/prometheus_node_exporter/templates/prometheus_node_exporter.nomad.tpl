@@ -2,7 +2,7 @@ job [[ template "job_name" . ]] {
 
   region      = [[ .prometheus_node_exporter.region | quote]]
   datacenters = [[ .prometheus_node_exporter.datacenters | toStringList ]]
-  node_pool = [[ .prometheus_node_exporter.node_pool | quote ]]
+  node_pool = [[ var "node_pool" . | quote ]]
   type        = "system"
   [[ if .prometheus_node_exporter.constraints ]][[ range $idx, $constraint := .prometheus_node_exporter.constraints ]]
   constraint {

@@ -1,7 +1,7 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
   datacenters = [[ .haproxy.datacenters | toStringList ]]
-  node_pool = [[ .haproxy.node_pool | quote ]]
+  node_pool = [[ var "node_pool" . | quote ]]
 
   type        = "service"
 

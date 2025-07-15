@@ -1,7 +1,7 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
   datacenters = [[ .influxdb.datacenters | toStringList ]]
-  node_pool = [[ .influxdb.node_pool | quote ]]
+  node_pool = [[ var "node_pool" . | quote ]]
   type = "service"
   [[- if .influxdb.namespace ]]
   namespace   = [[ .influxdb.namespace | quote ]]

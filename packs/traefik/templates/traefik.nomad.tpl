@@ -2,7 +2,7 @@ job [[ template "job_name" . ]] {
 
   region      = [[ .traefik.region | quote]]
   datacenters = [[ .traefik.datacenters | toStringList ]]
-  node_pool = [[ .traefik.node_pool | quote ]]
+  node_pool = [[ var "node_pool" . | quote ]]
   type        = "system"
   [[ if .traefik.constraints ]][[ range $idx, $constraint := .traefik.constraints ]]
   constraint {

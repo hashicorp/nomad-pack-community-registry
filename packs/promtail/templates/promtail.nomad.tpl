@@ -2,7 +2,7 @@ job [[ template "job_name" . ]] {
 
   [[ template "region" . ]]
   datacenters = [[ .promtail.datacenters | toStringList ]]
-  node_pool = [[ .promtail.node_pool | quote ]]
+  node_pool = [[ var "node_pool" . | quote ]]
   namespace   = [[ .promtail.namespace | quote ]]
   type        = "system"
   

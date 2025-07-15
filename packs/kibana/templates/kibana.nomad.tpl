@@ -1,7 +1,7 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
   datacenters = [[ .kibana.datacenters | toJson ]]
-  node_pool = [[ .kibana.node_pool | quote ]]
+  node_pool = [[ var "node_pool" . | quote ]]
   type = "service"
   [[- if .kibana.namespace ]]
   namespace   = [[ .kibana.namespace | quote ]]

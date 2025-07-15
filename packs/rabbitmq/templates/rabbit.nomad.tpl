@@ -1,7 +1,7 @@
 job [[ template "job_name" . ]] {
 
   datacenters = [[ .rabbitmq.datacenters | toJson ]]
-  node_pool = [[ .rabbitmq.node_pool | quote ]]
+  node_pool = [[ var "node_pool" . | quote ]]
   type        = "service"
 
   constraint {

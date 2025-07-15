@@ -2,7 +2,7 @@ job [[ .aws_efs_csi.job_name | quote]] {
 
   region      = [[ .aws_efs_csi.region | quote]]
   datacenters = [[ .aws_efs_csi.datacenters | toStringList ]]
-  node_pool = [[ .aws_efs_csi.node_pool | quote ]]
+  node_pool = [[ var "node_pool" . | quote ]]
   type        = "system"
   [[ if .aws_efs_csi.constraints ]][[ range $idx, $constraint := .aws_efs_csi.constraints ]]
   constraint {

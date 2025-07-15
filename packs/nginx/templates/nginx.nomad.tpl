@@ -1,7 +1,7 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
   datacenters = [[ .nginx.datacenters | toStringList ]]
-  node_pool = [[ .nginx.node_pool | quote ]]
+  node_pool = [[ var "node_pool" . | quote ]]
 
   // must have linux for network mode
   constraint {
