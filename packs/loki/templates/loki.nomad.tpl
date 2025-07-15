@@ -1,9 +1,9 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .loki.datacenters | toStringList ]]
-  node_pool = [[ var "node_pool" . | quote ]]
+  datacenters = [[ var "datacenters" . | toStringList ]]
+  node_pool   = [[ var "node_pool" . | quote ]]
 
-  [[ if .loki.constraints ]][[ range $idx, $constraint := .loki.constraints ]]
+  [[ if var "constraints" . ]][[ range $idx, $constraint := var "constraints" . ]]
   constraint {
     attribute = [[ $constraint.attribute | quote ]]
     value     = [[ $constraint.value | quote ]]
@@ -20,17 +20,17 @@ job [[ template "job_name" . ]] {
       mode = "bridge"
 
       port "http" {
-        to = [[ .loki.http_port ]]
+        to = [[ var "http_port" . ]]
       }
 
       port "grpc" {
-        to = [[ .loki.grpc_port ]]
+        to = [[ var "grpc_port" . ]]
       }
     }
 
     service {
       name = "loki"
-      port = "[[ .loki.http_port ]]"
+      port = "[[ var "http_port" . ]]"
 
       connect {
         sidecar_service {}
@@ -41,14 +41,14 @@ job [[ template "job_name" . ]] {
       driver = "docker"
 
       config {
-        image = "grafana/loki:[[ .loki.version_tag ]]"
-        [[- if ne .loki.loki_yaml "" ]]
+        image = "grafana/loki:[[ var "version_tag" . ]]"
+        [[- if ne (var "loki_yaml" .) "" ]]
         args = [
           "--config.file=/etc/loki/config/loki.yml",
         ]
         volumes = [
           "local/config:/etc/loki/config",
-          [[- if ne .loki.rules_yaml "" ]]
+          [[- if ne (var "rules_yaml" .) "" ]]
           "local/rules:/etc/loki/rules/default",
           [[- end ]]
         ]
@@ -56,14 +56,14 @@ job [[ template "job_name" . ]] {
       }
 
       resources {
-        cpu    = [[ .loki.resources.cpu ]]
-        memory = [[ .loki.resources.memory ]]
+        cpu    = [[ var "resources.cpu" . ]]
+        memory = [[ var "resources.memory" . ]]
       }
 
-      [[- if ne .loki.loki_yaml "" ]]
+      [[- if ne (var "loki_yaml" .) "" ]]
       template {
         data = <<EOH
-[[ .loki.loki_yaml ]]
+[[ var "loki_yaml" . ]]
 EOH
         change_mode   = "signal"
         change_signal = "SIGHUP"
@@ -71,10 +71,10 @@ EOH
       }
       [[- end ]]
 
-      [[- if ne .loki.rules_yaml "" ]]
+      [[- if ne (var "rules_yaml" .) "" ]]
       template {
         data = <<EOH
-[[ .loki.rules_yaml ]]
+[[ var "rules_yaml" . ]]
 EOH
         change_mode   = "signal"
         change_signal = "SIGHUP"

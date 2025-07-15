@@ -1,18 +1,18 @@
 // allow nomad-pack to set the job name
 
 [[- define "job_name" -]]
-[[- if eq .promtail.job_name "" -]]
-[[- .nomad_pack.pack.name | quote -]]
+[[- if eq (var "job_name" .) "" -]]
+[[- meta "pack.name" . | quote -]]
 [[- else -]]
-[[- .promtail.job_name | quote -]]
+[[- var "job_name" . | quote -]]
 [[- end -]]
 [[- end -]]
 
 // only deploys to a region if specified
 
 [[- define "region" -]]
-[[- if not (eq .promtail.region "") -]]
-region = [[ .promtail.region | quote]]
+[[- if not (eq (var "region" .) "") -]]
+region = [[ var "region" . | quote]]
 [[- end -]]
 [[- end -]]
 
@@ -30,20 +30,20 @@ region = [[ .promtail.region | quote]]
 
 // Use provided config file if defined, else render a default
 [[- define "promtail_config" -]]
-[[- if (eq .promtail.config_file "") ]]
+[[- if (eq (var "config_file" .) "") ]]
         server:
-          http_listen_port: [[ .promtail.http_port ]]
-          log_level: [[ .promtail.log_level ]]
+          http_listen_port: [[ var "http_port" . ]]
+          log_level: [[ var "log_level" . ]]
 
         positions:
           filename: /tmp/positions.yaml
 
         clients:
-          [[ range $idx, $url := .promtail.client_urls ]][[if $idx]]  [[end]][[ $url | printf "- url: %s\n" ]][[ end ]]
+          [[ range $idx, $url := var "client_urls" . ]][[if $idx]]  [[end]][[ $url | printf "- url: %s\n" ]][[ end ]]
         scrape_configs:
         - job_name: journal
           journal:
-            max_age: [[ .promtail.journal_max_age ]]
+            max_age: [[ var "journal_max_age" . ]]
             json: false
             labels:
               job: systemd-journal
@@ -58,7 +58,7 @@ region = [[ .promtail.region | quote]]
             - __journal_syslog_identifier
             target_label: syslog_identifier
 [[- else ]]
-[[ $config := .promtail.config_file ]][[ fileContents $config ]]
+[[ $config := var "config_file" . ]][[ fileContents $config ]]
 [[- end ]]
 [[- end -]]
 

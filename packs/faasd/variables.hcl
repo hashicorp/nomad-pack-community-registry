@@ -29,6 +29,7 @@ variable "node_pool" {
 variable "namespace" {
   description = "The namespace where the job should be placed."
   type        = string
+  default     = ""
 }
 
 variable "constraints" {
@@ -134,10 +135,12 @@ variable "basic_auth_task_resources" {
 
 variable "gateway_task_resources" {
   description = "Resources used by gateway task."
+
   type = object({
     cpu    = number
     memory = number
   })
+
   default = {
     cpu    = 50,
     memory = 50,
@@ -146,10 +149,12 @@ variable "gateway_task_resources" {
 
 variable "queue_worker_task_resources" {
   description = "Resources used by queue worker task."
+
   type = object({
     cpu    = number
     memory = number
   })
+
   default = {
     cpu    = 50,
     memory = 50,
@@ -161,16 +166,19 @@ variable "register_auth_consul_service" {
   type        = bool
   default     = false
 }
+
 variable "register_nats_consul_service" {
   description = "If you want to register a consul service for the nats task."
   type        = bool
   default     = false
 }
+
 variable "register_gateway_consul_service" {
   description = "If you want to register a consul service for the gateway task."
   type        = bool
   default     = false
 }
+
 variable "register_provider_consul_service" {
   description = "If you want to register a consul service for the provider task."
   type        = bool

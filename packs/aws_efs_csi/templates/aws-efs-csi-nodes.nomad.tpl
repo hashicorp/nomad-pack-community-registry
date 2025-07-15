@@ -1,10 +1,10 @@
-job [[ .aws_efs_csi.job_name | quote]] {
+job [[ var "job_name" . | quote]] {
 
-  region      = [[ .aws_efs_csi.region | quote]]
-  datacenters = [[ .aws_efs_csi.datacenters | toStringList ]]
-  node_pool = [[ var "node_pool" . | quote ]]
+  region      = [[ var "region" . | quote]]
+  datacenters = [[ var "datacenters" . | toStringList ]]
+  node_pool   = [[ var "node_pool" . | quote ]]
   type        = "system"
-  [[ if .aws_efs_csi.constraints ]][[ range $idx, $constraint := .aws_efs_csi.constraints ]]
+  [[ if var "constraints" . ]][[ range $idx, $constraint := var "constraints" . ]]
   constraint {
     attribute = [[ $constraint.attribute | quote ]]
     [[- if $constraint.value ]]
@@ -20,7 +20,7 @@ job [[ .aws_efs_csi.job_name | quote]] {
     task "plugin" {
 			driver = "docker"
 			config {
-				image = "[[ .aws_efs_csi.image ]]"
+				image = "[[ var "image" . ]]"
 				args = [
 					"--endpoint=unix://csi/csi.sock",
 					"--logtostderr",
@@ -29,13 +29,13 @@ job [[ .aws_efs_csi.job_name | quote]] {
 				privileged = true
 			}
 			csi_plugin {
-				id        = [[ .aws_efs_csi.csi_id | quote]]
+				id        = [[ var "csi_id" . | quote]]
 				type      = "monolith"
 				mount_dir = "/csi"
 			}
       resources {
-        cpu    = [[ .aws_efs_csi.resources.cpu ]]
-        memory = [[ .aws_efs_csi.resources.memory ]]
+        cpu    = [[ var "resources.cpu" . ]]
+        memory = [[ var "resources.memory" . ]]
       }
     }
   }

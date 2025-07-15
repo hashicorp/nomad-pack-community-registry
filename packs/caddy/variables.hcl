@@ -4,7 +4,7 @@
 variable "job_name" {
   description = "The name to use as the job name which overrides using the pack name."
   type        = string
-  default = ""
+  default     = ""
 }
 
 variable "datacenters" {
@@ -33,6 +33,7 @@ variable "namespace" {
 
 variable "constraints" {
   description = "Constraints to apply to the entire job."
+  default     = []
   type        = list(object({
     attribute = string
     operator  = string
@@ -66,21 +67,24 @@ variable "https_port" {
 
 variable "http_healthcheck_path" {
   description = "The HTTP path served by Caddy to call for health checks."
-  type = string
-  default = "/"
+  type        = string
+  default     = "/"
 }
 
 variable "https_healthcheck_path" {
   description = "The HTTPS path served by Caddy to call for health checks."
-  type = string
+  type        = string
+  default     = ""
 }
 
 variable "resources" {
   description = "The resource to assign to the Caddy system task that runs on every client"
+
   type = object({
     cpu    = number
     memory = number
   })
+
   default = {
     cpu    = 200,
     memory = 256
@@ -90,6 +94,7 @@ variable "resources" {
 variable "caddyfile" {
   description = "The Caddyfile configuration to pass to the task."
   type        = string
+
   default     = <<EOF
 # The Caddyfile is an easy way to configure your Caddy web server.
 #

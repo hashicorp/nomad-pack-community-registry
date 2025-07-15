@@ -1,7 +1,7 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .haproxy.datacenters | toStringList ]]
-  node_pool = [[ var "node_pool" . | quote ]]
+  datacenters = [[ var "datacenters" . | toStringList ]]
+  node_pool   = [[ var "node_pool" . | quote ]]
 
   type        = "service"
 
@@ -16,11 +16,11 @@ job [[ template "job_name" . ]] {
 
     network {
       port "http" {
-        static = [[ .haproxy.http_port ]]
+        static = [[ var "http_port" . ]]
       }
 
       port "haproxy_ui" {
-        static = [[ .haproxy.ui_port ]]
+        static = [[ var "ui_port" . ]]
       }
     }
 
@@ -40,7 +40,7 @@ job [[ template "job_name" . ]] {
       driver = "docker"
 
       config {
-        image        = "haproxy:[[.haproxy.version]]"
+        image        = "haproxy:[[var "version" .]]"
         network_mode = "host"
 
         volumes = [
@@ -54,21 +54,21 @@ defaults
    mode http
 
 frontend stats
-   bind *:[[ .haproxy.ui_port ]]
+   bind *:[[ var "ui_port" . ]]
    stats uri /
    stats show-legends
    no log
 
 frontend http_front
-   bind *:[[ .haproxy.http_port ]]
+   bind *:[[ var "http_port" . ]]
    default_backend http_back
 
 backend http_back
     balance roundrobin
-    server-template webapp [[ .haproxy.pre_provisioned_slot_count ]] _[[ .haproxy.consul_service_name ]]._tcp.service.consul resolvers consul resolve-opts allow-dup-ip resolve-prefer ipv4 check
+    server-template webapp [[ var "pre_provisioned_slot_count" . ]] _[[ var "consul_service_name" . ]]._tcp.service.consul resolvers consul resolve-opts allow-dup-ip resolve-prefer ipv4 check
 
 resolvers consul
-    nameserver consul 127.0.0.1:[[ .haproxy.consul_dns_port ]]
+    nameserver consul 127.0.0.1:[[ var "consul_dns_port" . ]]
     accepted_payload_size 8192
     hold valid 5s
 EOF
@@ -77,8 +77,8 @@ EOF
       }
 
       resources {
-        cpu    = [[ .haproxy.resources.cpu ]]
-        memory = [[ .haproxy.resources.memory ]]
+        cpu    = [[ var "resources.cpu" . ]]
+        memory = [[ var "resources.memory" . ]]
       }
     }
   }

@@ -28,6 +28,7 @@ variable "node_pool" {
 variable "namespace" {
   description = "The namespace where the job should be placed."
   type        = string
+  default     = ""
 }
 
 variable "constraints" {
@@ -91,6 +92,7 @@ variable "consul_service_tags" {
 variable "volume_name" {
   description = "The name of the volume you want sonarqube to use."
   type        = string
+  default     = ""
 }
 
 variable "volume_type" {

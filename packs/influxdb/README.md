@@ -24,5 +24,5 @@ This pack contains all you need to deploy InfluxDB (version 2 by default) in Nom
 
 ## Automated Setup
 
-If you pass the right environment variables to the pack, you can automatically setup the init of InfluxDB.
+If you pass the right environment variables to the pack, you can automatically set up the init of InfluxDB.
 An example of the `docker_influxdb_env_vars` to use is in the `vars.nomad` file.

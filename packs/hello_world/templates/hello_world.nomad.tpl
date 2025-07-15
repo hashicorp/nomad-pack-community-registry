@@ -1,11 +1,11 @@
 job [[ template "job_name" . ]] {
-  [[ template "region" . ]]
-  datacenters = [[ .hello_world.datacenters | toStringList ]]
-  node_pool = [[ var "node_pool" . | quote ]]
+  [[- template "region" . ]]
+  datacenters = [[ var "datacenters" . | toStringList ]]
+  node_pool   = [[ var "node_pool" . | quote ]]
   type = "service"
 
   group "app" {
-    count = [[ .hello_world.count ]]
+    count = [[ var "count" . ]]
 
     network {
       port "http" {
@@ -13,12 +13,13 @@ job [[ template "job_name" . ]] {
       }
     }
 
-    [[ if .hello_world.register_consul_service ]]
-    service {
-      name = "[[ .hello_world.consul_service_name ]]"
-      tags = [[ .hello_world.consul_service_tags | toStringList ]]
-      port = "http"
+    [[- if var "register_service" . ]]
 
+    service {
+      name = "[[ var "service_name" . ]]"
+      tags = [[ var "service_tags" . | toStringList ]]
+      provider = "nomad"
+      port = "http"
       check {
         name     = "alive"
         type     = "http"
@@ -27,13 +28,14 @@ job [[ template "job_name" . ]] {
         timeout  = "2s"
       }
     }
-    [[ end ]]
+
+    [[- end ]]
 
     restart {
       attempts = 2
       interval = "30m"
-      delay = "15s"
-      mode = "fail"
+      delay    = "15s"
+      mode     = "fail"
     }
 
     task "server" {
@@ -41,11 +43,14 @@ job [[ template "job_name" . ]] {
 
       config {
         image = "mnomitch/hello_world_server"
-        ports = ["http"]
+
+        ports = [
+          "http"
+          ]
       }
 
       env {
-        MESSAGE = [[.hello_world.message | quote]]
+        MESSAGE = [[ var "message" . | quote ]]
       }
     }
   }

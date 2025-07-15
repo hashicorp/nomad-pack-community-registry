@@ -1,7 +1,7 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .nginx.datacenters | toStringList ]]
-  node_pool = [[ var "node_pool" . | quote ]]
+  datacenters = [[ var "datacenters" . | toStringList ]]
+  node_pool   = [[ var "node_pool" . | quote ]]
 
   // must have linux for network mode
   constraint {
@@ -14,7 +14,7 @@ job [[ template "job_name" . ]] {
 
     network {
       port "http" {
-        static = [[ .nginx.http_port ]]
+        static = [[ var "http_port" . ]]
       }
     }
 
@@ -27,7 +27,7 @@ job [[ template "job_name" . ]] {
       driver = "docker"
 
       config {
-        image = "nginx:[[ .nginx.version_tag ]]"
+        image = "nginx:[[ var "version_tag" . ]]"
         ports = ["http"]
 
         volumes = [
@@ -38,14 +38,14 @@ job [[ template "job_name" . ]] {
       template {
         data = <<EOF
 upstream backend {
-{{ range service [[ .nginx.consul_service_name | quote ]] }}
+{{ range service [[ var "consul_service_name" . | quote ]] }}
   server {{ .Address }}:{{ .Port }};
 {{ else }}server 127.0.0.1:65535; # force a 502
 {{ end }}
 }
 
 server {
-   listen [[ .nginx.http_port ]];
+   listen [[ var "http_port" . ]];
 
    location / {
       proxy_pass http://backend;
@@ -59,8 +59,8 @@ EOF
       }
 
       resources {
-        cpu    = [[ .nginx.resources.cpu ]]
-        memory = [[ .nginx.resources.memory ]]
+        cpu    = [[ var "resources.cpu" . ]]
+        memory = [[ var "resources.memory" . ]]
       }
     }
   }

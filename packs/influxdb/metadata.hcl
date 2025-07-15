@@ -10,7 +10,7 @@ pack {
   name        = "influxdb"
   description = "InfluxDB is an open source time series database for recording metrics, events, and analytics."
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/influxdb"
-  version     = "0.0.1"
+  version     = "0.2.0"
 }
 
 integration {

@@ -66,11 +66,12 @@ variable "health_check" {
 }
 
 variable "upstreams" {
-description = ""
-type = list(object({
-  name   = string
-  port = string
+  description = ""
+  type = list(object({
+    name = string
+    port = string
   }))
+  default = []
 }
 
 variable "register_consul_service" {

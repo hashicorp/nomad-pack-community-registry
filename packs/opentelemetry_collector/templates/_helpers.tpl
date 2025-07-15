@@ -1,37 +1,37 @@
 // allow nomad-pack to set the job name
 [[- define "full_job_name" -]]
-[[- if eq .opentelemetry_collector.job_name "" -]]
-[[- .nomad_pack.pack.name | quote -]]
+[[- if eq (var "job_name" .) "" -]]
+[[- meta "pack.name" . | quote -]]
 [[- else -]]
-[[- .opentelemetry_collector.job_name | quote -]]
+[[- var "job_name" . | quote -]]
 [[- end -]]
 [[- end -]]
 
 // only deploys to a region if specified
 [[- define "region" -]]
-[[- if not (eq .opentelemetry_collector.region "") -]]
-region = [[ .opentelemetry_collector.region | quote]]
+[[- if not (eq (var "region" .) "") -]]
+region = [[ var "region" . | quote]]
 [[- end -]]
 [[- end -]]
 
 // generate the vault task config block if enabled
 [[- define "vault_config" -]]
-    [[ if .opentelemetry_collector.vault_config.enabled ]]
+    [[ if var "vault_config.enabled" . ]]
     vault {
-      [[- if .opentelemetry_collector.vault_config.policies ]]
-      policies      = [[ .opentelemetry_collector.vault_config.policies | toPrettyJson ]]
+      [[- if var "vault_config.policies" . ]]
+      policies      = [[ var "vault_config.policies" . | toPrettyJson ]]
       [[- end ]]
-      [[- if .opentelemetry_collector.vault_config.change_mode ]]
-      change_mode   = [[ .opentelemetry_collector.vault_config.change_mode ]]
+      [[- if var "vault_config.change_mode" . ]]
+      change_mode   = [[ var "vault_config.change_mode" . ]]
       [[- end ]]
-      [[- if .opentelemetry_collector.vault_config.change_signal ]]
-      change_signal = [[ .opentelemetry_collector.vault_config.change_signal ]]
+      [[- if var "vault_config.change_signal" . ]]
+      change_signal = [[ var "vault_config.change_signal" . ]]
       [[- end ]]
-      [[- if .opentelemetry_collector.vault_config.env ]]
-      env           = [[ .opentelemetry_collector.vault_config.env ]]
+      [[- if var "vault_config.env" . ]]
+      env           = [[ var "vault_config.env" . ]]
       [[- end ]]
-      [[- if .opentelemetry_collector.vault_config.namespace ]]
-      namespace     = [[ .opentelemetry_collector.vault_config.namespace ]]
+      [[- if var "vault_config.namespace" . ]]
+      namespace     = [[ var "vault_config.namespace" . ]]
       [[- end ]]
     }
     [[ end ]]
@@ -75,7 +75,7 @@ region = [[ .opentelemetry_collector.region | quote]]
   "HOST_DEV" "/hostfs/dev"
 ) -]]
     env {
-      [[- range $key, $value := mergeOverwrite $defaultEnv .opentelemetry_collector.task_config.env -]]
+      [[- range $key, $value := mergeOverwrite $defaultEnv (var "task_config.env" .) -]]
       [[- if $key ]]
         [[ $key ]] = [[ $value | quote ]]
       [[- end ]]
@@ -85,7 +85,7 @@ region = [[ .opentelemetry_collector.region | quote]]
 
 // render any additional templates for the task
 [[- define "additional_templates" -]]
-  [[- range $tmpl := .opentelemetry_collector.additional_templates ]]
+  [[- range $tmpl := var "additional_templates" . ]]
       template {
         destination = [[ $tmpl.destination | quote ]]
         data = <<EOH

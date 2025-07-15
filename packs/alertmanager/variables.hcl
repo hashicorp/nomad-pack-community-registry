@@ -32,6 +32,7 @@ variable "constraints" {
 variable "container_args" {
   description = "Arguments passed to the alertmanager docker container"
   type        = list(string)
+
   default = [
     "--config.file=/etc/alertmanager/config/alertmanager.yml",
   ]
@@ -39,10 +40,12 @@ variable "container_args" {
 
 variable "alertmanager_group_network" {
   description = "The node exporter network configuration options."
-  type        = object({
+
+  type = object({
     mode  = string
     ports = map(number)
   })
+
   default = {
     mode  = "bridge",
     ports = {
@@ -77,10 +80,12 @@ variable "version_tag" {
 
 variable "resources" {
   description = "The resource to assign to the alertmanager service task."
+
   type = object({
     cpu    = number
     memory = number
   })
+
   default = {
     cpu    = 200,
     memory = 256
@@ -89,6 +94,7 @@ variable "resources" {
 
 variable "alertmanager_task_services" {
   description = "Configuration options of the alertmanager services and checks."
+
   type        = list(object({
     service_port_label = string
     service_name       = string
@@ -99,6 +105,7 @@ variable "alertmanager_task_services" {
     check_timeout      = string
     connect_enabled    = bool
   }))
+
   default = [{
     service_port_label = "http",
     service_name       = "alertmanager",
@@ -114,6 +121,7 @@ variable "alertmanager_task_services" {
 variable "alertmanager_yaml" {
   description = "The alertmanager configuration to pass to the task."
   type        = string
+
   // defaults as used in the upstream getting started tutorial.
   default     = <<EOF
 route:

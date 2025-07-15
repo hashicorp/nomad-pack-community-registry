@@ -13,16 +13,16 @@ different ways.
 - `namespace` (`string` `"default"`) - The namespace where the job should be placed.
 - `constraints` (`list(object)` `[]`) - Constraints to apply to the entire job.
 - `job_type` (`string` `"system"`) - The scheduler type to use for the job.
-- `instance_count` (`number` `"1"`) - In case the job is ran as a service, how many copies of the OpenTelemetry
+- `instance_count` (`number` `"1"`) - In case the job is run as a service, how many copies of the OpenTelemetry
   Collector group to run.
 - `privileged_mode` (`bool` `"true"`) - Determines if the OpenTelemetry Collector should run with privleged access to
-  the host. Useful when using the [hostmetrics][hostmetricsreceiver] receiver. See `examples/privileged.hcl` for a an
+  the host. Useful when using the [hostmetrics][hostmetricsreceiver] receiver. See `examples/privileged.hcl` for an
   example.
 - `task_config` (`object`) - The OpenTelemetry Collector task config options.
 - `vault_config` (`object`) - The OpenTelemetry Collector job's Vault configuration. Set `enabled = true` to configure
   the job's [Vault integration][vault_integration].
 - `traefik_config` (`object`) - Traefik service configurations for the OpenTelemetry Collector. Includes support for
-  HTTP and gRPC. See [`examples/traefik.hcl`](examples/traefik.hcl) for an example (NOTE: Also deploy with Traefik
+  HTTP and gRPC. See [`examples/traefik.hcl`](./examples/with_traefik.hcl) for an example (NOTE: Also deploy with Traefik
   sample jobspec, [`examples/sample_traefik_spec.nomad`](examples/sample_traefik_spec.nomad)).
 - `network_config` (`object`) - The OpenTelemetry Collector job's network configuration options.
 - `resources` (`object`) - The resources to assign to the OpenTelemetry Collector task.
@@ -86,7 +86,7 @@ The default value for this variable configures a bridge network with the followi
 - `image` (`string` `"otel/opentelemetry-collector-contrib"`) - The OpenTelemetry Collector container image to use.
 - `version` (`string` `"latest"`) - The OpenTelemetry Collector version to run. Defaults to `latest` but it's
   recommended to set a specific [tag][otel_docker_tags].
-- `env` (`map(string)`) - A map of environment variables to set in the OpenTelemery Collector's environment
+- `env` (`map(string)`) - A map of environment variables to set in the OpenTelemetry Collector's environment
 
 ### `resources` Object
 

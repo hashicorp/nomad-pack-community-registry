@@ -15,6 +15,7 @@ Setup:
 Clients that expect to run this job require:
 - Nomad >= 1.4.0 (because the pack use [Nomad Variables](https://developer.hashicorp.com/nomad/docs/concepts/variables))
 - [Docker volumes](https://www.nomadproject.io/docs/drivers/docker "Docker volumes") to be enabled within their Docker plugin stanza, due to the usage of Nomad's host volume:
+
 ```hcl
 plugin "docker" {
   config {
@@ -26,6 +27,7 @@ plugin "docker" {
 ```
 
 - [Host volume](https://www.nomadproject.io/docs/configuration/client#host_volume-stanza "Host volume") to be enabled in the client configuration (the host volume directory - /var/lib/postgres - must be created in advance):
+
 ```hcl
 client {
   host_volume "backstage-postgres" {
@@ -42,6 +44,7 @@ The 2 docker images can be replaced by using their variable names:
 - backstage_task_image
 
 Example:
+
 ```bash
 $ nomad-pack run backstage --var backstage_task_image="ghcr.io/backstage/backstage:1.7.1"
 ```
@@ -52,7 +55,8 @@ $ nomad-pack run backstage --var backstage_task_image="ghcr.io/backstage/backsta
 
 ### Prerequisite
 
-Create an variable specification file:
+Create a variable specification file:
+
 ```hcl
 # spec.nv.hcl
 path = "nomad/jobs/backstage"
@@ -67,9 +71,9 @@ items {
 }
 ```
 
-The default docker image for Backstage is configured to use GitHub in order to locate entities (see [GitHub integration](https://backstage.io/docs/integrations/github/locations)), so you will need to define a variable to store your GitHub token. 
+The default docker image for Backstage is configured to use GitHub in order to locate entities (see [GitHub integration](https://backstage.io/docs/integrations/github/locations)), so you will need to define a variable to store your GitHub token.
 
-If you use an other integration in your custom image, Azure DevOps for instance, you will need to define a variable for it (e.g. ```azure_token = "your_ado_token"```).
+If you use another integration in your custom image, Azure DevOps for instance, you will need to define a variable for it (e.g. ```azure_token = "your_ado_token"```).
 
 To set your variables in your Nomad instance, execute the following command:
 

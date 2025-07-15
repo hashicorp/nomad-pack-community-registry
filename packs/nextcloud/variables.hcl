@@ -102,7 +102,7 @@ variable "app_service" {
       port = number
     }))
   })
-  default = null
+  default = {}
 }
 
 variable "db_service" {

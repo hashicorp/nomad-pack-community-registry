@@ -1,30 +1,30 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
-  datacenters = [[ .my.datacenters | toStringList ]]
-  node_pool = [[ var "node_pool" . | quote ]]
+  datacenters = [[ var "datacenters" . | toStringList ]]
+  node_pool   = [[ var "node_pool" . | quote ]]
 
   group "jaeger" {
     count = 1
 
     network {
       port "http_ui" {
-        to = [[ .my.http_ui_port ]]
+        to = [[ var "http_ui_port" . ]]
       }
       port "http_collector" {
-        to = [[ .my.http_collector_port ]]
+        to = [[ var "http_collector_port" . ]]
       }
     }
 
     service {
       name = "jaeger"
-      port = "[[ .my.http_ui_port ]]"
+      port = "[[ var "http_ui_port" . ]]"
     }
 
     task "jaeger" {
       driver = "docker"
 
       config {
-        image = "jaegertracing/all-in-one:[[ .my.version_tag ]]"
+        image = "jaegertracing/all-in-one:[[ var "version_tag" . ]]"
         ports = ["http_ui", "http_collector"]
       }
 
@@ -33,8 +33,8 @@ job [[ template "job_name" . ]] {
       }
 
       resources {
-        cpu    = [[ .my.resources.cpu ]]
-        memory = [[ .my.resources.memory ]]
+        cpu    = [[ var "resources.cpu" . ]]
+        memory = [[ var "resources.memory" . ]]
       }
     }
   }

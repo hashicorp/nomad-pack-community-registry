@@ -46,10 +46,12 @@ variable "postgresql_task_volume_path" {
 
 variable "postgresql_task_resources" {
   description = "The resources to assign to the PostgreSQL service."
+
   type = object({
     cpu    = number
     memory = number
   })
+
   default = {
     cpu    = 1024,
     memory = 1024
@@ -71,24 +73,28 @@ variable "backstage_task_image" {
 
 variable "backstage_task_nomad_vars" {
   description = "Backstage's nomad variables."
+
   type = list(object({
     key   = string
     value = string
   }))
-    default = [
+
+  default = [
     {
-      key   = "GITHUB_TOKEN"
-      value = "github_token"
+    key   = "GITHUB_TOKEN"
+    value = "github_token"
     }
   ]
 }
 
 variable "backstage_task_resources" {
   description = "The resources to assign to the Backstage service."
+
   type = object({
     cpu    = number
     memory = number
   })
+
   default = {
     cpu    = 512,
     memory = 256

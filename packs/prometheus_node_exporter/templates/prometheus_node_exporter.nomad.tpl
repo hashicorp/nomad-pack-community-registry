@@ -1,10 +1,10 @@
 job [[ template "job_name" . ]] {
 
-  region      = [[ .prometheus_node_exporter.region | quote]]
-  datacenters = [[ .prometheus_node_exporter.datacenters | toStringList ]]
-  node_pool = [[ var "node_pool" . | quote ]]
+  region      = [[ var "region" . | quote]]
+  datacenters = [[ var "datacenters" . | toStringList ]]
+  node_pool   = [[ var "node_pool" . | quote ]]
   type        = "system"
-  [[ if .prometheus_node_exporter.constraints ]][[ range $idx, $constraint := .prometheus_node_exporter.constraints ]]
+  [[ if var "constraints" . ]][[ range $idx, $constraint := var "constraints" . ]]
   constraint {
     attribute = [[ $constraint.attribute | quote ]]
     value     = [[ $constraint.value | quote ]]
@@ -17,8 +17,8 @@ job [[ template "job_name" . ]] {
   group "prometheus_node_exporter" {
 
     network {
-      mode = [[ .prometheus_node_exporter.node_exporter_group_network.mode | quote ]]
-      [[- range $label, $to := .prometheus_node_exporter.node_exporter_group_network.ports ]]
+      mode = [[ var "node_exporter_group_network.mode" . | quote ]]
+      [[- range $label, $to := var "node_exporter_group_network.ports" . ]]
       port [[ $label | quote ]] {
         to = [[ $to ]]
       }
@@ -29,7 +29,7 @@ job [[ template "job_name" . ]] {
       driver = "docker"
 
       config {
-        image    = "quay.io/prometheus/node-exporter:[[ .prometheus_node_exporter.node_exporter_task_config.version ]]"
+        image    = "quay.io/prometheus/node-exporter:[[ var "node_exporter_task_config.version" . ]]"
         args     = ["--path.rootfs=/host"]
         pid_mode = "host"
 
@@ -39,10 +39,10 @@ job [[ template "job_name" . ]] {
       }
 
       resources {
-        cpu    = [[ .prometheus_node_exporter.node_exporter_task_resources.cpu ]]
-        memory = [[ .prometheus_node_exporter.node_exporter_task_resources.memory ]]
+        cpu    = [[ var "node_exporter_task_resources.cpu" . ]]
+        memory = [[ var "node_exporter_task_resources.memory" . ]]
       }
-      [[ if .prometheus_node_exporter.node_exporter_task_services ]][[ range $idx, $service := .prometheus_node_exporter.node_exporter_task_services ]]
+      [[ if var "node_exporter_task_services" . ]][[ range $idx, $service := var "node_exporter_task_services" . ]]
       service {
         name = [[ $service.service_name | quote ]]
         port = [[ $service.service_port_label | quote ]]

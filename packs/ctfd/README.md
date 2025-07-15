@@ -4,9 +4,9 @@ This pack contains all you need to deploy CTFd in Nomad. It uses the Docker driv
 
 | Service | Default version |
 | ------- | --------------- |
-| CTFd | 3.3.1 |
-| MariaDB | 10 |
-| Redis | 6 |
+| CTFd    | 3.3.1           |
+| MariaDB | 10              |
+| Redis   | 6               |
 
 ## Dependencies
 

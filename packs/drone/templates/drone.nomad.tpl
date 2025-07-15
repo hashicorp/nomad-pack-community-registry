@@ -1,11 +1,11 @@
 job [[ template "full_job_name" . ]] {
 
-  region      = [[ .drone.region | quote ]]
-  datacenters = [[ .drone.datacenters | toStringList ]]
-  node_pool = [[ var "node_pool" . | quote ]]
-  namespace   = [[ .drone.namespace | quote ]]
+  region      = [[ var "region" . | quote ]]
+  datacenters = [[ var "datacenters" . | toStringList ]]
+  node_pool   = [[ var "node_pool" . | quote ]]
+  namespace   = [[ var "namespace" . | quote ]]
 
-  [[ if .drone.constraints ]][[ range $idx, $constraint := .drone.constraints ]]
+  [[ if var "constraints" . ]][[ range $idx, $constraint := var "constraints" . ]]
   constraint {
     attribute = [[ $constraint.attribute | quote ]]
     value     = [[ $constraint.value | quote ]]
@@ -18,8 +18,8 @@ job [[ template "full_job_name" . ]] {
   group "drone" {
 
     network {
-      mode = [[ .drone.group_network.mode | quote ]]
-      [[- range $label, $to := .drone.group_network.ports ]]
+      mode = [[ var "group_network.mode" . | quote ]]
+      [[- range $label, $to := var "group_network.ports" . ]]
       port [[ $label | quote ]] {
         to = [[ $to ]]
       }
@@ -30,13 +30,13 @@ job [[ template "full_job_name" . ]] {
       driver = "docker"
 
       config {
-        image = "[[ .drone.drone_server_image ]]:[[ .drone.drone_server_version ]]"
+        image = "[[ var "drone_server_image" . ]]:[[ var "drone_server_version" . ]]"
       }
 
-[[- if ne .drone.drone_server_cfg "" ]]
+[[- if ne (var "drone_server_cfg" .) "" ]]
       template {
         data        = <<EOH
-[[ .drone.drone_server_cfg ]]
+[[ var "drone_server_cfg" . ]]
 EOH
         destination = "local/env"
         env         = true
@@ -44,8 +44,8 @@ EOH
 [[- end ]]
 
       resources {
-        cpu    = [[ .drone.server_task_resources.cpu ]]
-        memory = [[ .drone.server_task_resources.memory ]]
+        cpu    = [[ var "server_task_resources.cpu" . ]]
+        memory = [[ var "server_task_resources.memory" . ]]
       }
     }
 
@@ -53,13 +53,13 @@ EOH
       driver = "docker"
 
       config {
-        image = "[[ .drone.drone_agent_image ]]:[[ .drone.drone_agent_version ]]"
+        image = "[[ var "drone_agent_image" . ]]:[[ var "drone_agent_version" . ]]"
       }
 
-[[- if ne .drone.drone_agent_cfg "" ]]
+[[- if ne (var "drone_agent_cfg" .) "" ]]
       template {
         data        = <<EOH
-[[ .drone.drone_agent_cfg ]]
+[[ var "drone_agent_cfg" . ]]
 EOH
         destination = "local/env"
         env         = true
@@ -67,12 +67,12 @@ EOH
 [[- end ]]
 
       resources {
-        cpu    = [[ .drone.agent_task_resources.cpu ]]
-        memory = [[ .drone.agent_task_resources.memory ]]
+        cpu    = [[ var "agent_task_resources.cpu" . ]]
+        memory = [[ var "agent_task_resources.memory" . ]]
       }
 
-      [[- if .drone.task_services ]]
-      [[- range $idx, $service := .drone.task_services ]]
+      [[- if var "task_services" . ]]
+      [[- range $idx, $service := var "task_services" . ]]
       service {
         name = [[ $service.service_name | quote ]]
         port = [[ $service.service_port_label | quote ]]

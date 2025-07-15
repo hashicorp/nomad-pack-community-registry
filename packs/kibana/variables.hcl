@@ -29,6 +29,7 @@ variable "node_pool" {
 variable "namespace" {
   description = "The namespace where the job should be placed."
   type        = string
+  default     = ""
 }
 
 variable "constraints" {
@@ -92,6 +93,7 @@ variable "consul_service_tags" {
 variable "config_volume_name" {
   description = "The name of the dedicated config volume you want Kibana to use."
   type        = string
+  default     = ""
 }
 
 variable "config_volume_type" {
@@ -103,6 +105,7 @@ variable "config_volume_type" {
 variable "kibana_keystore_name" {
   description = "The name of the file to persist Kibana secure settings."
   type        = string
+  default     = ""
 }
 
 variable "docker_kibana_env_vars" {

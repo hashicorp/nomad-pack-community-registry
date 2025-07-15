@@ -1,0 +1,11 @@
+[[- define "region" -]]
+[[- if ne (var "region" .) "" -]]
+  region = [[ var "region" . | quote ]]
+[[- end -]]
+[[- end -]]
+
+[[- define "plugin_namespace" -]]
+[[- if ne (var "plugin_namespace" .) "" -]]
+  namespace = [[ var "plugin_namespace" . | quote ]]
+[[- end -]]
+[[- end -]]

@@ -4,6 +4,7 @@
 variable "job_name" {
   description = "The name to use as the job name which overrides using the pack name."
   type        = string
+
   // If "", the pack name will be used
   default = "ctfd"
 }
@@ -29,6 +30,7 @@ variable "node_pool" {
 variable "namespace" {
   description = "The namespace where the job should be placed."
   type        = string
+  default     = ""
 }
 
 variable "register_consul_service" {
@@ -92,8 +94,8 @@ variable "ctfd_resources" {
     memory = number
   })
   default = {
-    cpu    = 250,
-    memory = 500,
+    cpu    = 250
+    memory = 500
   }
 }
 
@@ -112,6 +114,7 @@ variable "ctfd_image_tag" {
 variable "ctfd_port" {
   description = "The static host port that CTFd will be served on. If not specified, an external reverse proxy will be needed."
   type        = number
+  default     = 0
 }
 
 variable "ctfd_expect_reverse_proxy" {
@@ -122,13 +125,15 @@ variable "ctfd_expect_reverse_proxy" {
 
 variable "mariadb_resources" {
   description = "The resources reserved for MariaDB."
+
   type = object({
     cpu    = number
     memory = number
   })
+
   default = {
-    cpu    = 250,
-    memory = 500,
+    cpu    = 250
+    memory = 500
   }
 }
 
@@ -158,13 +163,15 @@ variable "mariadb_ctfd_password" {
 
 variable "redis_resources" {
   description = "The resources reserved for Redis."
+
   type = object({
     cpu    = number
     memory = number
   })
+
   default = {
-    cpu    = 250,
-    memory = 500,
+    cpu    = 250
+    memory = 500
   }
 }
 

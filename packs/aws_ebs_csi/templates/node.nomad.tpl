@@ -1,4 +1,4 @@
-job "[[ .my.job_name ]]_node" {
+job "[[ var "job_name" . ]]_node" {
 
   # you can run node plugins as service jobs as well, but this ensures
   # that all nodes in the DC have a copy.
@@ -18,7 +18,7 @@ job "[[ .my.job_name ]]_node" {
       driver = "docker"
 
       config {
-        image = "[[ .my.plugin_image ]]"
+        image = "[[ var "plugin_image" . ]]"
 
         args = [
           "node",
@@ -31,7 +31,7 @@ job "[[ .my.job_name ]]_node" {
       }
 
       csi_plugin {
-        id        = "[[ .my.plugin_id ]]"
+        id        = "[[ var "plugin_id" . ]]"
         type      = "node"
         mount_dir = "/csi"
       }

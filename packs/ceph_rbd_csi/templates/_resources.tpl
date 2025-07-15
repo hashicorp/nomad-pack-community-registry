@@ -1,6 +1,6 @@
 [[- define "resources" ]]
       resources {
-        cpu    = [[ .my.resources.cpu ]]
-        memory = [[ .my.resources.memory ]]
+        cpu    = [[ var "resources.cpu" . ]]
+        memory = [[ var "resources.memory" . ]]
       }
 [[- end -]]

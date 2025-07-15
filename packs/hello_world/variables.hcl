@@ -2,10 +2,10 @@
 # SPDX-License-Identifier: MPL-2.0
 
 variable "job_name" {
+  # If "", the pack name will be used
   description = "The name to use as the job name which overrides using the pack name"
   type        = string
-  // If "", the pack name will be used
-  default = ""
+  default     = ""
 }
 
 variable "region" {
@@ -17,7 +17,7 @@ variable "region" {
 variable "datacenters" {
   description = "A list of datacenters in the region which are eligible for task placement"
   type        = list(string)
-  default     = ["dc1"]
+  default     = ["*"]
 }
 
 variable "node_pool" {
@@ -38,26 +38,26 @@ variable "message" {
   default     = "Hello World!"
 }
 
-variable "register_consul_service" {
-  description = "If you want to register a consul service for the job"
+variable "register_service" {
+  description = "If you want to register a Nomad service for the job"
   type        = bool
-  default     = true
+  default     = false
 }
 
-variable "consul_service_name" {
-  description = "The consul service name for the hello-world application"
+variable "service_name" {
+  description = "The service name for the hello_world application"
   type        = string
   default     = "webapp"
 }
 
-variable "consul_service_tags" {
-  description = "The consul service name for the hello-world application"
+variable "service_tags" {
+  description = "The service tags for the hello_world application"
   type        = list(string)
-  // defaults to integrate with Fabio or Traefik
-  // This routes at the root path "/", to route to this service from
-  // another path, change "urlprefix-/" to "urlprefix-/<PATH>" and
-  // "traefik.http.routers.http.rule=Path(`/`)" to
-  // "traefik.http.routers.http.rule=Path(`/<PATH>`)"
+  # The default value is shaped to integrate with Traefik
+  # This routes at the root path "/", to route to this service from
+  # another path, change "urlprefix-/" to "urlprefix-/<PATH>" and
+  # "traefik.http.routers.http.rule=Path(∫/∫)" to
+  # "traefik.http.routers.http.rule=Path(∫/<PATH>∫)"
   default = [
     "urlprefix-/",
     "traefik.enable=true",

@@ -66,18 +66,23 @@ Optionally, this pack can configure a Consul service.
 
 If the `register_consul_service` is unset or set to true, the Consul service will be registered.
 
-Several load balancers in the [The Nomad Pack Community Registry](../README.md) are configured to connect to
-this service with ease.
+Several load balancers in the
+[Nomad Pack Community Registry](https://github.com/hashicorp/nomad-pack-community-registry)
+are configured to connect to this service with ease.
 
-The [NginX](../nginx/README.md) and [HAProxy](../haproxy/README.md) packs can be configured to balance over the
+The [NginX](https://github.com/hashicorp/nomad-pack-community-registry/blob/main/packs/nginx/README.md)
+and [HAProxy](https://github.com/hashicorp/nomad-pack-community-registry/blob/main/packs/haproxy/README.md)
+packs can be configured to balance over the
 Consul service deployed by this pack. Just ensure that the "consul_service_name" variable provided to those
 packs matches this consul_service_name.
 
-The [Fabio](../fabio/README.md) and [Traefik](../traefik/README.md) packs are configured to search for Consul
+The [Fabio](https://github.com/hashicorp/nomad-pack-community-registry/blob/main/packs/fabio/README.md)
+and [Traefik](https://github.com/hashicorp/nomad-pack-community-registry/blob/main/packs/traefik/README.md)
+packs are configured to search for Consul
 services with the specific tags.
 
 To tag this Consul service to work with Fabio, add `"urlprefix-<PATH>"`
-to the consul_tags. For instance, to route at the root path, you would add `"urlprefix-/"`. To route at the path `"/api/v1"`, you would add '"urlprefix-/api/v1".
+to the consul_tags. For instance, to route at the root path, you would add `"urlprefix-/"`. To route at the path `"/api/v1"`, you would add `"urlprefix-/api/v1"`.
 
 To tag this Consul service to work with Traefik, add "traefik.enable=true" to the consul_tags, also add "traefik.http.routers.http.rule=Path(\`<PATH>\`)". To route at the root path, you would add "traefik.http.routers.http.rule=Path(\`/\`)". To route at the path "/api/v1", you would add "traefik.http.routers.http.rule=Path(\`/api/v1\`)".
 
@@ -93,7 +98,7 @@ consul_tags = [
 
 ## Customizing Consul and Upstream Services
 
-Consul configuration can be tweaked and (upstream services)[https://www.nomadproject.io/docs/job-specification/upstreams]
+Consul configuration can be tweaked and [upstream services](https://www.nomadproject.io/docs/job-specification/upstreams)
 can be added as well.
 
 ```

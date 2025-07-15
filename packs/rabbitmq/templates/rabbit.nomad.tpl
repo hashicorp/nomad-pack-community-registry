@@ -1,8 +1,7 @@
 job [[ template "job_name" . ]] {
 
-  datacenters = [[ .rabbitmq.datacenters | toJson ]]
-  node_pool = [[ var "node_pool" . | quote ]]
-  type        = "service"
+  datacenters = [[ var "datacenters" . | toJson ]]
+  node_pool   = [[ var "node_pool" . | quote ]]
 
   constraint {
     attribute = "${attr.consul.version}"
@@ -10,7 +9,7 @@ job [[ template "job_name" . ]] {
   }
 
   group "cluster" {
-    count = [[ .rabbitmq.cluster_size ]]
+    count = [[ var "cluster_size" . ]]
 
     update {
       max_parallel = 1
@@ -26,34 +25,34 @@ job [[ template "job_name" . ]] {
     network {
       port "amqp" {
         to = 5671
-        [[- template "port" .rabbitmq.port_amqp ]]
+        [[- template "port" var "port_amqp" . ]]
       }
       port "ui" {
         to     = 15671
-        [[- template "port" .rabbitmq.port_ui ]]
+        [[- template "port" var "port_ui" . ]]
       }
       port "discovery" {
-        to     = [[ .rabbitmq.port_discovery ]]
-        static = [[ .rabbitmq.port_discovery ]]
+        to     = [[ var "port_discovery" . ]]
+        static = [[ var "port_discovery" . ]]
       }
       port "clustering" {
-        to     = [[ .rabbitmq.port_clustering ]]
-        static = [[ .rabbitmq.port_clustering ]]
+        to     = [[ var "port_clustering" . ]]
+        static = [[ var "port_clustering" . ]]
       }
     }
 
     task "rabbit" {
       driver = "docker"
 
-      [[ if .rabbitmq.vault_enabled -]]
+      [[ if var "vault_enabled" . -]]
       vault {
-        policies    = [[ .rabbitmq.vault_roles | toJson ]]
+        policies    = [[ var "vault_roles" . | toJson ]]
         change_mode = "restart"
       }
       [[- end ]]
 
       config {
-        image      = "[[ .rabbitmq.image ]]"
+        image      = "[[ var "image" . ]]"
         hostname   = "${attr.unique.hostname}"
         ports      = ["amqp", "ui", "discovery", "clustering"]
 
@@ -67,12 +66,12 @@ job [[ template "job_name" . ]] {
         CONSUL_HOST        = "${attr.unique.network.ip-address}"
         CONSUL_SVC_PORT    = "${NOMAD_HOST_PORT_amqp}"
         CONSUL_SVC_TAGS    = "amqp"
-        ERL_EPMD_PORT      = "[[ .rabbitmq.port_discovery ]]"
-        RABBITMQ_DIST_PORT = "[[ .rabbitmq.port_clustering ]]"
+        ERL_EPMD_PORT      = "[[ var "port_discovery" . ]]"
+        RABBITMQ_DIST_PORT = "[[ var "port_clustering" . ]]"
       }
 
       template {
-        data        = [[ template "rabbit_plugins" .rabbitmq ]]
+        data        = [[ template "rabbit_plugins" . ]]
         destination = "local/enabled_plugins"
       }
 
@@ -94,16 +93,16 @@ ssl_options.cacertfile           = /secrets/ca.crt
 ssl_options.certfile             = /secrets/rabbit.crt
 ssl_options.keyfile              = /secrets/rabbit.key
 
-[[ .rabbitmq.extra_conf ]]
+[[ var "extra_conf" . ]]
         EOH
         destination = "local/rabbitmq.conf"
       }
 
-      [[ template "pki" .rabbitmq ]]
+      [[ template "pki" . ]]
 
-      [[ template "rabbit_env" .rabbitmq ]]
+      [[ template "rabbit_env" . ]]
 
-      [[ template "consul_services" .rabbitmq ]]
+      [[ template "consul_services" . ]]
 
     }
   }

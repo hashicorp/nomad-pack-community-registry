@@ -1,6 +1,6 @@
-job [[ .backstage.job_name | quote ]] {
+job [[ var "job_name" . | quote ]] {
   [[ template "region" . ]]
-  datacenters = [[ .backstage.datacenters  | toStringList ]]
+  datacenters = [[ var "datacenters" .  | toStringList ]]
   type = "service"
 
   group "backstage-postgresql" {
@@ -15,7 +15,7 @@ job [[ .backstage.job_name | quote ]] {
     }
 
     service {
-      name = [[ .backstage.postgresql_group_nomad_service_name | quote ]]
+      name = [[ var "postgresql_group_nomad_service_name" . | quote ]]
       port = "db"
       provider = "nomad"  
     }
@@ -37,13 +37,13 @@ job [[ .backstage.job_name | quote ]] {
       driver = "docker"
 
       config {
-        image = [[.backstage.postgresql_task_image | quote]]
+        image = [[var "postgresql_task_image" . | quote]]
         ports = ["db"]
       }
 
       volume_mount {
         volume      = "backstage-postgres"
-        destination = "[[.backstage.postgresql_task_volume_path]]"
+        destination = "[[var "postgresql_task_volume_path" .]]"
         read_only   = false
       }
 
@@ -52,7 +52,7 @@ job [[ .backstage.job_name | quote ]] {
         env         = true
         change_mode = "restart"
         data        = <<EOF
-{{- with nomadVar "nomad/jobs/[[ .backstage.job_name ]]" -}}
+{{- with nomadVar "nomad/jobs/[[ var "job_name" . ]]" -}}
 POSTGRES_USER = {{ .postgres_user }}
 POSTGRES_PASSWORD = {{ .postgres_password }}
 {{- end -}}
@@ -60,8 +60,8 @@ EOF
       }
 
       resources {
-        cpu    = [[ .backstage.postgresql_task_resources.cpu ]]
-        memory = [[ .backstage.postgresql_task_resources.memory ]]
+        cpu    = [[ var "postgresql_task_resources.cpu" . ]]
+        memory = [[ var "postgresql_task_resources.memory" . ]]
       }
     }
   }
@@ -78,7 +78,7 @@ EOF
     }
 
     service {
-      name = [[ .backstage.backstage_group_nomad_service_name | quote ]]
+      name = [[ var "backstage_group_nomad_service_name" . | quote ]]
       port = "http"
       provider = "nomad"  
     }
@@ -94,13 +94,13 @@ EOF
       driver = "docker"
 
       config {
-        image = [[ .backstage.backstage_task_image | quote]]
+        image = [[ var "backstage_task_image" . | quote]]
         ports = ["http"]
       }
 
       template {
         data        = <<EOH
-{{ range nomadService [[ .backstage.postgresql_group_nomad_service_name | quote ]] }}
+{{ range nomadService [[ var "postgresql_group_nomad_service_name" . | quote ]] }}
 POSTGRES_HOST="{{ .Address }}"
 POSTGRES_PORT="{{ .Port }}"
 {{ end }}
@@ -114,12 +114,12 @@ EOH
         env         = true
         change_mode = "restart"
         data        = <<EOF
-{{- with nomadVar "nomad/jobs/[[ .backstage.job_name ]]" -}}
+{{- with nomadVar "nomad/jobs/[[ var "job_name" . ]]" -}}
 POSTGRES_USER = {{ .postgres_user }}
 POSTGRES_PASSWORD = {{ .postgres_password }}
-[[- $backstage_task_env_vars_length := len .backstage.backstage_task_nomad_vars ]]
+[[- $backstage_task_env_vars_length := len (var "backstage_task_nomad_vars" .) ]]
   [[- if not (eq $backstage_task_env_vars_length 0) ]]
-    [[- range $var := .backstage.backstage_task_nomad_vars ]]
+    [[- range $var := var "backstage_task_nomad_vars" . ]]
 [[ $var.key ]] = {{ .[[ $var.value ]] }}
     [[- end ]]
 [[- end ]]
@@ -128,8 +128,8 @@ EOF
       }
 
       resources {
-        cpu    = [[ .backstage.backstage_task_resources.cpu ]]
-        memory = [[ .backstage.backstage_task_resources.memory ]]
+        cpu    = [[ var "backstage_task_resources.cpu" . ]]
+        memory = [[ var "backstage_task_resources.memory" . ]]
       }
     }
   }

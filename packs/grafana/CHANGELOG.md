@@ -1,4 +1,8 @@
-# Changelog
+## 0.2.0 (June 27, 2025)
+
+- Update to parser v2
+
+## 0.1.1 Support for grafana.ini and vault
 
 ## 0.1.0 Redesign of Pack
 
