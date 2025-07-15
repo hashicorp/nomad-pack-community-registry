@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 tfe_hostname      = "localhost"
 tfe_database_host = "localhost"
 tfe_redis_host    = "localhost"
