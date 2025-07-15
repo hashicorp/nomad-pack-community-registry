@@ -23,6 +23,7 @@ variable "datacenters" {
 variable "namespace" {
   description = "The namespace where the job should be placed."
   type        = string
+  default     = ""
 }
 
 variable "constraints" {

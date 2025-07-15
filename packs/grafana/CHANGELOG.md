@@ -1,6 +1,6 @@
-# Changelog
+## 0.2.0 (June 27, 2025)
 
-## 0.1.2 Updated to new template syntax
+- Update to parser v2
 
 ## 0.1.1 Support for grafana.ini and vault
 

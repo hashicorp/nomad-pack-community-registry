@@ -1,5 +1,6 @@
-# Unreleased
+## 0.2.0 (June 19, 2025)
 
+- Update to parser v2
 - fix typo in `additional_templates` variable's object definition
 
 ## 0.0.2 (May 17, 2022)

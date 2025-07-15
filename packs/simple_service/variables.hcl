@@ -61,11 +61,11 @@ variable "health_check" {
 
 variable "upstreams" {
   description = ""
-  default = []
   type = list(object({
     name = string
     port = string
   }))
+  default = []
 }
 
 variable "register_consul_service" {

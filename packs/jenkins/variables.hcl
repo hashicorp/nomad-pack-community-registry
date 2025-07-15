@@ -23,16 +23,19 @@ variable "datacenters" {
 variable "namespace" {
   description = "The namespace where the job should be placed."
   type        = string
+  default     = ""
 }
 
 variable "plugins" {
   description = "A list of jenkins plugins to install. See https://github.com/jenkinsci/docker/blob/master/README.md#plugin-installation-manager-cli-preview-1 for more info."
   type        = list(string)
+  default     = []
 }
 
 variable "jasc_config" {
   description = "Use the Jenkins as Code plugin to configure jenkins. This requires the configuration-as-code plugin to be installed."
   type        = string
+  default     = ""
 }
 
 variable "constraints" {
@@ -96,6 +99,7 @@ variable "consul_service_tags" {
 variable "volume_name" {
   description = "The name of the volume you want Jenkins to use."
   type        = string
+  default     = ""
 }
 
 variable "volume_type" {
@@ -109,5 +113,3 @@ variable "docker_jenkins_env_vars" {
   description = "Environment variables to pass to Docker container."
   default     = {}
 }
-
-
