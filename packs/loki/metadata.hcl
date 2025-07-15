@@ -10,7 +10,7 @@ pack {
   name        = "loki"
   description = "Loki is a horizontally-scalable, highly-available, multi-tenant log aggregation system inspired by Prometheus."
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/loki"
-  version     = "0.2.0"
+  version     = "0.2.1"
 }
 
 integration {

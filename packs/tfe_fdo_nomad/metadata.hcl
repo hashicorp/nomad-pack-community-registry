@@ -8,5 +8,5 @@ pack {
   name        = "tfe_fdo_nomad"
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/tfe_fdo_nomad"
   description = "Terraform Enterprise"
-  version     = "0.2.0"
+  version     = "0.2.1"
 }

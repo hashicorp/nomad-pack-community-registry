@@ -10,7 +10,7 @@ pack {
   name        = "prometheus_node_exporter"
   description = "The Prometheus Node Exporter exposes a wide variety of hardware and kernel related metrics."
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/tree/main/prometheus_node_exporter"
-  version     = "0.2.0"
+  version     = "0.2.1"
 }
 
 integration {

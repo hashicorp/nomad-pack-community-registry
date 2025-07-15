@@ -10,7 +10,7 @@ pack {
   name        = "ceph_rbd_csi"
   description = "This pack deploys the Ceph RBD CSI plugin"
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/ceph_rbd_csi"
-  version     = "0.2.0"
+  version     = "0.2.1"
 }
 
 integration {

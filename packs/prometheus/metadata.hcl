@@ -10,7 +10,7 @@ pack {
   name        = "prometheus"
   description = "Prometheus is used to collect telemetry data and make it queryable."
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/tree/main/prometheus"
-  version     = "0.2.0"
+  version     = "0.2.1"
 }
 
 integration {

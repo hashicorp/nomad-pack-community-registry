@@ -10,7 +10,7 @@ pack {
   name        = "vector"
   description = "Vector is a high-performance observability data pipeline."
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/tree/main/vector"
-  version     = "0.2.0"
+  version     = "0.2.1"
 }
 
 integration {

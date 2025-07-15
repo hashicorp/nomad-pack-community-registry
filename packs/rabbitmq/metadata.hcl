@@ -10,7 +10,7 @@ pack {
   name        = "rabbitmq"
   description = "A RabbitMQ Cluster"
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/rabbitmq"
-  version     = "0.0.1"
+  version     = "0.2.1"
 }
 
 integration {
