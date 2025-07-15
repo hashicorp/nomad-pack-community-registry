@@ -66,14 +66,19 @@ Optionally, this pack can configure a Consul service.
 
 If the `register_consul_service` is unset or set to true, the Consul service will be registered.
 
-Several load balancers in the [Nomad Pack Community Registry][] are configured to connect to
-this service with ease.
+Several load balancers in the
+[Nomad Pack Community Registry](https://github.com/hashicorp/nomad-pack-community-registry)
+are configured to connect to this service with ease.
 
-The [NginX][] and [HAProxy][] packs can be configured to balance over the
+The [NginX](https://github.com/hashicorp/nomad-pack-community-registry/blob/main/packs/nginx/README.md)
+and [HAProxy](https://github.com/hashicorp/nomad-pack-community-registry/blob/main/packs/haproxy/README.md)
+packs can be configured to balance over the
 Consul service deployed by this pack. Just ensure that the "consul_service_name" variable provided to those
 packs matches this consul_service_name.
 
-The [Fabio][] and [Traefik][] packs are configured to search for Consul
+The [Fabio](https://github.com/hashicorp/nomad-pack-community-registry/blob/main/packs/fabio/README.md)
+and [Traefik](https://github.com/hashicorp/nomad-pack-community-registry/blob/main/packs/traefik/README.md)
+packs are configured to search for Consul
 services with the specific tags.
 
 To tag this Consul service to work with Fabio, add `"urlprefix-<PATH>"`
@@ -93,7 +98,7 @@ consul_tags = [
 
 ## Customizing Consul and Upstream Services
 
-Consul configuration can be tweaked and (upstream services)[https://www.nomadproject.io/docs/job-specification/upstreams]
+Consul configuration can be tweaked and [upstream services](https://www.nomadproject.io/docs/job-specification/upstreams)
 can be added as well.
 
 ```
@@ -112,9 +117,3 @@ upstreams = [
   }
 ]
 ```
-
-[Nomad Pack Community Registry](https://github.com/hashicorp/nomad-pack-community-registry/README.md)
-[NginX](https://github.com/hashicorp/nomad-pack-community-registry/nginx/README.md)
-[HAProxy](https://github.com/hashicorp/nomad-pack-community-registry/haproxy/README.md)
-[Fabio](https://github.com/hashicorp/nomad-pack-community-registry/fabio/README.md)
-[Traefik](https://github.com/hashicorp/nomad-pack-community-registry/traefik/README.md)
