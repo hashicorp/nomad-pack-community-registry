@@ -32,10 +32,24 @@ variable "version_tag" {
   default     = "latest"
 }
 
+// configuration: https://grafana.com/docs/loki/latest/send-data/promtail/configuration/
+
 variable "config_file" {
   description = "Path to custom Promtail configuration file."
   type        = string
   default     = ""
+}
+
+variable "http_port" {
+  description = "HTTP port for Promtail to listen on. Should match promtail_group_network http port."
+  type        = number
+  default     = 9090
+}
+
+variable "log_level" {
+  description = "Promtail log level. Must be one of: debug, info, warn, error"
+  type        = string
+  default     = "info"
 }
 
 // Default config options used when no config file is specified
