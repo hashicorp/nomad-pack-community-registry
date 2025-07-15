@@ -10,7 +10,7 @@ pack {
   name        = "ctfd"
   description = "The open source Capture The Flag framework for hiring, training, and teaching hackers"
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/ctfd"
-  version     = "0.2.0"
+  version     = "0.2.1"
 }
 
 integration {

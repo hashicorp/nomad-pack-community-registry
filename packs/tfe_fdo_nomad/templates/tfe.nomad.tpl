@@ -2,7 +2,8 @@
 # SPDX-License-Identifier: MPL-2.0
 
 job [[ var "job_name" . | quote ]] {
-  datacenters = [[ var "datacenters" .  | toStringList ]]
+  datacenters = [[ var "datacenters" . | toStringList ]]
+  node_pool   = [[ var "node_pool" . | quote ]]
   namespace   = [[ var "tfe_namespace" . | quote ]]
   type        = "service"
 
@@ -114,11 +115,11 @@ EOF
             server_address = [[ var "tfe_image_server_address" . | quote ]]
          }
          ports = ["tfe", "http", "vault"]
-  
+
       }
 
       env {
-        
+
         TFE_RUN_PIPELINE_DRIVER = "nomad"
         TFE_DISK_CACHE_VOLUME_NAME                 = "${NOMAD_TASK_DIR}/terraform-enterprise-cache"
 
@@ -144,7 +145,7 @@ EOF
         TFE_REDIS_USE_AUTH = [[ var "tfe_redis_use_auth" . | quote ]]
 
         TFE_HOSTNAME = [[ var "tfe_hostname" . | quote ]]
-        
+
         TFE_TLS_CERT_FILE      = "${NOMAD_SECRETS_DIR}/cert.pem"
         TFE_TLS_KEY_FILE       = "${NOMAD_SECRETS_DIR}/key.pem"
         TFE_TLS_CA_BUNDLE_FILE = "${NOMAD_SECRETS_DIR}/bundle.pem"
@@ -152,7 +153,7 @@ EOF
         TFE_IACT_SUBNETS    = [[ var "tfe_iact_subnets" . | quote ]]
         TFE_IACT_TIME_LIMIT = [[ var "tfe_iact_time_limit" . | quote ]]
 
-        # Disabling mlock is recommended for TFE installations on Nomad. 
+        # Disabling mlock is recommended for TFE installations on Nomad.
         # Here is a link to the docuementation for more info https://developer.hashicorp.com/vault/docs/configuration#disable_mlock
         TFE_VAULT_DISABLE_MLOCK   = [[ var "tfe_vault_disable_mlock" . | quote ]]
         TFE_VAULT_CLUSTER_ADDRESS = [[ var "tfe_vault_cluster_address" . | quote ]]

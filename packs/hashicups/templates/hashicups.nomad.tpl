@@ -1,7 +1,8 @@
 job "hashicups" {
   type   = "service"
-  region = "[[ var "region" . ]]"
+  region      = "[[ var "region" . ]]"
   datacenters = [[ var "datacenters" . | toStringList ]]
+  node_pool   = [[ var "node_pool" . | quote ]]
 
   group "hashicups" {
     network {

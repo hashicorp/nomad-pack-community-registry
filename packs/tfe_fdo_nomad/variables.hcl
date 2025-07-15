@@ -55,6 +55,12 @@ variable "datacenters" {
   default     = ["*"]
 }
 
+variable "node_pool" {
+  description = "The node pool where the job should be placed."
+  type        = string
+  default     = "default"
+}
+
 variable "tfe_database_user" {
   description = "The user to be used while connecting to the database by TFE."
   type        = string

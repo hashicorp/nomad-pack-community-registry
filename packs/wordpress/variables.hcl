@@ -21,6 +21,12 @@ variable "datacenters" {
   default     = ["dc1"]
 }
 
+variable "node_pool" {
+  description = "The node pool where the job should be placed."
+  type        = string
+  default     = "default"
+}
+
 // MariaDB variables
 variable "mariadb_group_update" {
   description = "The MariaDB update configuration options."

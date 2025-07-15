@@ -2,6 +2,7 @@ job [[ var "job_name" . | quote]] {
 
   region      = [[ var "region" . | quote]]
   datacenters = [[ var "datacenters" . | toStringList ]]
+  node_pool   = [[ var "node_pool" . | quote ]]
   type        = "system"
   [[ if var "constraints" . ]][[ range $idx, $constraint := var "constraints" . ]]
   constraint {

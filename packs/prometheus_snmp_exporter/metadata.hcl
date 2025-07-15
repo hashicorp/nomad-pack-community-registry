@@ -10,7 +10,7 @@ pack {
   name        = "prometheus_snmp_exporter"
   description = "The Prometheus SNMP exporter alows prometheus to collect SNMP data"
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/tree/main/prometheus_snmp_exporter"
-  version     = "0.2.0"
+  version     = "0.2.1"
 }
 
 integration {

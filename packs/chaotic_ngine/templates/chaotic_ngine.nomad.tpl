@@ -1,7 +1,8 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
   datacenters = [[ var "datacenters" . | toStringList ]]
-  namespace = [[ var "namespace" . | quote ]]
+  node_pool   = [[ var "node_pool" . | quote ]]
+  namespace   = [[ var "namespace" . | quote ]]
 
   [[ if var "constraints" . ]][[ range $idx, $constraint := var "constraints" . ]]
   constraint {

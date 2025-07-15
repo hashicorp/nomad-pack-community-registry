@@ -42,6 +42,12 @@ variable "datacenters" {
   default     = ["dc1"]
 }
 
+variable "node_pool" {
+  description = "The node pool where the job should be placed."
+  type        = string
+  default     = "default"
+}
+
 // PostgreSQL variables
 variable "postgresql_group_update" {
   description = "The PostgreSQL update configuration options."

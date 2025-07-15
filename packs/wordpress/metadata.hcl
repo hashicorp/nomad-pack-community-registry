@@ -10,7 +10,7 @@ pack {
   name        = "wordpress"
   description = "WordPress - Open-source CMS"
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/wordpress"
-  version     = "0.2.0"
+  version     = "0.2.1"
 }
 
 integration {

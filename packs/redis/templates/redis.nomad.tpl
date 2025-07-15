@@ -1,7 +1,7 @@
 job [[ template "job_name" . ]] {
   [[ template "region" . ]]
   datacenters = [[ var "datacenters" . | toStringList ]]
-  type        = "service"
+  node_pool   = [[ var "node_pool" . | quote ]]
 
   group "redis" {
     count = [[ var "app_count" . ]]

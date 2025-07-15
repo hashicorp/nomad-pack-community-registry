@@ -2,6 +2,7 @@ job [[ template "job_name" . ]] {
 
   [[ template "region" . ]]
   datacenters = [[ var "datacenters" . | toStringList ]]
+  node_pool   = [[ var "node_pool" . | quote ]]
   namespace   = [[ var "namespace" . | quote ]]
   type        = "system"
   

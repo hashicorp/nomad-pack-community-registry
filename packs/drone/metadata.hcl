@@ -10,7 +10,7 @@ pack {
   name        = "drone"
   description = "Drone is a self-service Continuous Integration platform for busy development teams."
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/tree/main/drone"
-  version     = "0.2.0"
+  version     = "0.2.1"
 }
 
 integration {

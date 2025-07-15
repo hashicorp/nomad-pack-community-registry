@@ -2,8 +2,8 @@ job [[ template "job_name" . ]] {
 
   [[ template "region" . ]]
   datacenters = [[ var "datacenters" . | toJson ]]
+  node_pool   = [[ var "node_pool" . | quote ]]
   namespace   = [[ var "namespace" . | quote ]]
-  type        = "service"
 
   [[ template "constraints" var "constraints" . ]]
 

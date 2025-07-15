@@ -1,7 +1,7 @@
 job [[ template "job_name" . ]] {
 
   datacenters = [[ var "datacenters" . | toJson ]]
-  type        = "service"
+  node_pool   = [[ var "node_pool" . | quote ]]
 
   constraint {
     attribute = "${attr.consul.version}"
