@@ -2,8 +2,10 @@
 # SPDX-License-Identifier: MPL-2.0
 
 job [[ var "tfe_agent_job_id" . | quote ]] {
-  type      = "batch"
-  namespace = [[ var "tfe_agent_namespace" . | quote ]]
+  type        = "batch"
+  namespace   = [[ var "tfe_agent_namespace" . | quote ]]
+  datacenters = [[ var "datacenters" . | toStringList ]]
+  node_pool   = [[ var "node_pool" . | quote ]]
   constraint {
     attribute = "${attr.kernel.name}"
     value     = "linux"
@@ -23,13 +25,13 @@ job [[ var "tfe_agent_job_id" . | quote ]] {
       "HTTP_PROXY",
       "NO_PROXY"
     ]
-  }  
+  }
 
   group "tfe-agent-group" {
 
     task "tfc-agent-task" {
       driver = "docker"
-  
+
       config {
         image = [[ var "tfe_agent_image" . | quote ]]
       }

@@ -2,4 +2,5 @@
   [[ template "region" . ]]
   [[ template "plugin_namespace" . ]]
   datacenters = [[ var "datacenters" . | toJson ]]
+  node_pool   = [[ var "node_pool" . | quote ]]
 [[- end -]]
