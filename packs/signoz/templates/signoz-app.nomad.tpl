@@ -1,5 +1,5 @@
 # SigNoz Main Application Job
-job "[[ var "job_name" . ]]_signoz"  {
+job "[[ template "job_name" . ]]_signoz"  {
   [[ template "region" . ]]
   datacenters = [[ var "datacenters" . | toStringList ]]
   type = "service"
@@ -8,6 +8,7 @@ job "[[ var "job_name" . ]]_signoz"  {
     count = [[ var "signoz_count" . ]]
     
     network {
+      mode = "bridge"
       port "http" { static = [[ var "signoz_http_port" . ]] }
       port "http-internal" { static = [[ var "signoz_internal_port" . ]] }
       port "opamp-internal" { static = [[ var "signoz_opamp_port" . ]] }
@@ -30,13 +31,7 @@ job "[[ var "job_name" . ]]_signoz"  {
       
       env {
         CLICKHOUSE_HOST = "clickhouse.service.consul"
-        CLICKHOUSE_PORT = [[ var "clickhouse_tcp_port" . ]]
         CLICKHOUSE_HTTP_PORT = [[ var "clickhouse_http_port" . ]]
-        CLICKHOUSE_CLUSTER = [[ var "clickhouse_cluster_name" . | quote ]]
-        CLICKHOUSE_USER = [[ var "clickhouse_user" . | quote ]]
-        CLICKHOUSE_PASSWORD = [[ var "clickhouse_password" . | quote ]]
-        CLICKHOUSE_SECURE = [[ var "clickhouse_secure" . | quote ]]
-        DOT_METRICS_ENABLED = "true"
       }
       
       config {
@@ -62,13 +57,10 @@ job "[[ var "job_name" . ]]_signoz"  {
       env {
         CLICKHOUSE_HOST = "clickhouse.service.consul"
         CLICKHOUSE_PORT = [[ var "clickhouse_tcp_port" . ]]
-        CLICKHOUSE_HTTP_PORT = [[ var "clickhouse_http_port" . ]]
         CLICKHOUSE_USER = [[ var "clickhouse_user" . | quote ]]
         CLICKHOUSE_PASSWORD = [[ var "clickhouse_password" . | quote ]]
-        CLICKHOUSE_SECURE = [[ var "clickhouse_secure" . | quote ]]
-        DOT_METRICS_ENABLED = "true"
         SIGNOZ_TELEMETRYSTORE_PROVIDER = "clickhouse"
-        SIGNOZ_TELEMETRYSTORE_CLICKHOUSE_DSN = "tcp://[[ var "clickhouse_user" . ]]:[[ var "clickhouse_password" . ]]@clickhouse.service.consul:[[ var "clickhouse_tcp_port" . ]]"
+        SIGNOZ_TELEMETRYSTORE_CLICKHOUSE_DSN = "tcp://$${CLICKHOUSE_USER}:$${{CLICKHOUSE_PASSWORD}@$${CLICKHOUSE_HOST}:$${CLICKHOUSE_PORT}"
         SIGNOZ_TELEMETRYSTORE_CLICKHOUSE_CLUSTER = [[ var "clickhouse_cluster_name" . | quote ]]
       }
 
@@ -91,8 +83,6 @@ job "[[ var "job_name" . ]]_signoz"  {
       service {
         name = "signoz"
         port = "http"
-        provider = "consul"
-        address_mode = "driver"
 
         check {
           name     = "http-ping"
@@ -101,15 +91,12 @@ job "[[ var "job_name" . ]]_signoz"  {
           port     = "http"
           interval = "10s"
           timeout  = "3s"
-          address_mode = "host"
         }
       }
 
       service {
         name = "signoz"
         port = "http-internal"
-        provider = "consul"
-        address_mode = "driver"
 
         check {
           name     = "http-internal"
@@ -117,15 +104,12 @@ job "[[ var "job_name" . ]]_signoz"  {
           port     = "http-internal"
           interval = "10s"
           timeout  = "3s"
-          address_mode = "host"
         }
       }
 
       service {
         name = "signoz"
         port = "opamp-internal"
-        provider = "consul"
-        address_mode = "driver"
 
         check {
           name     = "opamp-internal"
@@ -133,7 +117,6 @@ job "[[ var "job_name" . ]]_signoz"  {
           port     = "opamp-internal"
           interval = "10s"
           timeout  = "3s"
-          address_mode = "host"
         }
       }
     }

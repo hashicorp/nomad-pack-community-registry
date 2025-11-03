@@ -1,5 +1,5 @@
 # Schema Migrator Async Job
-job "[[ var "job_name" . ]]_schema_migrator_async" {
+job "[[ template "job_name" . ]]_schema_migrator_async" {
   [[ template "region" . ]]
   datacenters = [[ var "datacenters" . | toStringList ]]
   type = "batch"
@@ -26,7 +26,7 @@ job "[[ var "job_name" . ]]_schema_migrator_async" {
         CLICKHOUSE_USER       = [[ var "clickhouse_user" . | quote ]]
         CLICKHOUSE_SECURE     = [[ var "clickhouse_secure" . | quote ]]
         CLICKHOUSE_VERSION    = [[ var "clickhouse_version" . | quote ]]
-        CLICKHOUSE_SHARDS     = [[ var "clickhouse_shards" . | quote ]]
+        CLICKHOUSE_SHARDS     = [[ var "clickhouse_shards" . | quote ]] 
         CLICKHOUSE_REPLICAS   = [[ var "clickhouse_replicas" . | quote ]]
       }
 

@@ -17,13 +17,6 @@ variable "datacenters" {
   default     = ["*"]
 }
 
-# ClickHouse Configuration
-variable "clickhouse_count" {
-  description = "Number of ClickHouse instances to deploy"
-  type        = number
-  default     = 1
-}
-
 variable "clickhouse_version" {
   description = "ClickHouse version to deploy"
   type        = string
@@ -94,36 +87,6 @@ variable "clickhouse_replicas" {
   description = "Number of ClickHouse replicas"
   type        = string
   default     = "1"
-}
-
-variable "clickhouse_config_path" {
-  description = "Path to ClickHouse config.xml file"
-  type        = string
-  default     = "templates/configs/clickhouse/config.xml"
-}
-
-variable "clickhouse_users_config_path" {
-  description = "Path to ClickHouse users.xml file"
-  type        = string
-  default     = "templates/configs/clickhouse/users.xml"
-}
-
-variable "clickhouse_cluster_config_path" {
-  description = "Path to ClickHouse cluster.xml file"
-  type        = string
-  default     = "templates/configs/clickhouse/cluster.xml"
-}
-
-variable "clickhouse_storage_config_path" {
-  description = "Path to ClickHouse storage.xml file"
-  type        = string
-  default     = "templates/configs/clickhouse/storage.xml"
-}
-
-variable "clickhouse_custom_function_config_path" {
-  description = "Path to ClickHouse custom-function.xml file"
-  type        = string
-  default     = "templates/configs/clickhouse/custom-function.xml"
 }
 
 # ZooKeeper Configuration

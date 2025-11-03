@@ -38,26 +38,7 @@ it won't.
 [[- end -]]
 [[- end -]]
 
-[[- /*
 
-## `constraints` helper
-
-This helper creates Nomad constraint blocks from a value of type
-  `list(object(attribute string, operator string, value string))`
-
-*/ -]]
-
-[[ define "constraints" -]]
-[[ range $idx, $constraint := . ]]
-  constraint {
-    attribute = [[ $constraint.attribute | quote ]]
-    [[ if $constraint.operator -]]
-    operator  = [[ $constraint.operator | quote ]]
-    [[ end -]]
-    value     = [[ $constraint.value | quote ]]
-  }
-[[ end -]]
-[[- end -]]
 
 [[- /*
 
@@ -142,20 +123,3 @@ block
         memory = [[ $resources.memory ]]
       }
 [[- end ]]
-
-[[- /*
-
-## `job_name_with_suffix` helper
-
-This helper creates a job name with a specific suffix.
-
-Usage: [[ template "job_name_with_suffix" (dict "suffix" "my-suffix" "context" .) ]]
-
-*/ -]]
-
-[[- define "job_name_with_suffix" -]]
-[[- $suffix := .suffix -]]
-[[- $context := .context -]]
-[[- $baseName := coalesce ( var "job_name" $context) (meta "pack.name" $context) -]]
-[[- printf "%s-%s" $baseName $suffix | quote ]]
-[[- end -]]

@@ -1,5 +1,5 @@
 # Schema Migrator Sync Job
-job "[[ var "job_name" . ]]_schema_migrator_sync"  {
+job "[[ template "job_name" . ]]_schema_migrator_sync"  {
   [[ template "region" . ]]
   datacenters = [[ var "datacenters" . | toStringList ]]
   type = "batch"

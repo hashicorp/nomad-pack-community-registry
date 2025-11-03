@@ -1,18 +1,19 @@
 # ClickHouse Database Job
-job "[[ var "job_name" . ]]_clickhouse"  {
+job "[[ template "job_name" . ]]_clickhouse"  {
   [[ template "region" . ]]
   datacenters = [[ var "datacenters" . | toStringList ]]
   type = "service"
 
   group "clickhouse" {
-    count = [[ var "clickhouse_count" . ]]
+    count = [[ var "clickhouse_repliacs" . ]]
 
     network {
+      mode = "bridge"
       port "http" {
-        static = [[ var "clickhouse_http_port" . ]]
+        to = [[ var "clickhouse_http_port" . ]]
       }
       port "tcp" {
-        static = [[ var "clickhouse_tcp_port" . ]]
+        to = [[ var "clickhouse_tcp_port" . ]]
       }
       port "interserver" {
         to = 9009
@@ -85,8 +86,6 @@ job "[[ var "job_name" . ]]_clickhouse"  {
       service {
         name     = "clickhouse"
         port     = "http"
-        provider = "consul"
-        address_mode = "driver"
 
         check {
           name     = "http-ping"
@@ -95,22 +94,18 @@ job "[[ var "job_name" . ]]_clickhouse"  {
           port     = "http"
           interval = "10s"
           timeout  = "3s"
-          address_mode = "host"
         }
       }
 
       service {
         name     = "clickhouse"
         port     = "tcp"
-        provider = "consul"
-        address_mode = "driver"
         check {
           name     = "tcp-check"
           type     = "tcp"
           port     = "tcp"
           interval = "10s"
           timeout  = "3s"
-          address_mode = "host"
         }
       }
 
@@ -133,9 +128,10 @@ job "[[ var "job_name" . ]]_clickhouse"  {
       template {
         env = true
         data = <<EOH
-          ZOOKEEPER_PORT=2181
-          ZOOKEEPER_HOST=zookeeper.service.consul
-
+{{range service "zookeeper"}}
+          ZOOKEEPER_PORT={{ .Port }}
+          ZOOKEEPER_HOST={{ .Address }}
+{{end}}
           CLICKHOUSE_HOST={{ env "NOMAD_IP_tcp" }}
           CLICKHOUSE_PORT={{ env "NOMAD_PORT_tcp" }}
           EOH
@@ -149,7 +145,7 @@ job "[[ var "job_name" . ]]_clickhouse"  {
         change_mode   = "signal"
         change_signal = "SIGHUP"
         data          = <<EOH
-[[ fileContents (var "clickhouse_cluster_config_path" .) ]]
+[[ fileContents templates/configs/clickhouse/cluster.xml ]]
         EOH
       }
       template {
@@ -158,7 +154,7 @@ job "[[ var "job_name" . ]]_clickhouse"  {
         change_mode   = "signal"
         change_signal = "SIGHUP"
         data          = <<EOH
-[[ fileContents (var "clickhouse_users_config_path" .) ]]
+[[ fileContents templates/configs/clickhouse/users.xml ]]
         EOH
       }
       template {
@@ -167,7 +163,7 @@ job "[[ var "job_name" . ]]_clickhouse"  {
         change_mode   = "signal"
         change_signal = "SIGHUP"
         data          = <<EOH
-[[ fileContents (var "clickhouse_config_path" .) ]]
+[[ fileContents templates/configs/clickhouse/config.xml ]]
         EOH
       }
       template {
@@ -176,14 +172,14 @@ job "[[ var "job_name" . ]]_clickhouse"  {
         change_mode   = "signal"
         change_signal = "SIGHUP"
         data          = <<EOH
-[[ fileContents (var "clickhouse_storage_config_path" .) ]]
+[[ fileContents templates/configs/clickhouse/storage.xml ]]
         EOH
       }
       template {
         destination = "/local/custom-function.xml"
         perms       = "0644"
         data        = <<EOH
-[[ fileContents (var "clickhouse_custom_function_config_path" .) ]]
+[[ fileContents templates/configs/clickhouse/custom-function.xml ]]
         EOH
       }
     }
@@ -193,11 +189,12 @@ job "[[ var "job_name" . ]]_clickhouse"  {
     count = [[ var "zookeeper_count" . ]]
     
     network {
-      port "client" { static = 2181 }
+      mode = "bridge"
+      port "client" { to = 2181 }
       port "follower" { to = 2888 }
       port "election" { to = 3888 }
       port "metrics"  { to = 9141 }
-      port "server"   { static = 3181 }
+      port "server"   { to = 3181 }
     }
 
     # Persistent data volume
@@ -246,8 +243,6 @@ job "[[ var "job_name" . ]]_clickhouse"  {
       service {
         name = "zookeeper"
         port = "client"
-        provider = "consul"
-        address_mode="driver"
 
         check {
           name = "tcp-2181"
@@ -255,7 +250,6 @@ job "[[ var "job_name" . ]]_clickhouse"  {
           type = "tcp"
           interval = "10s"
           timeout  = "2s"
-          address_mode="host"
         }
 
         check {
@@ -265,7 +259,6 @@ job "[[ var "job_name" . ]]_clickhouse"  {
           port     = "server"
           interval = "10s"
           timeout  = "5s"
-          address_mode="host"
         }
       }
 

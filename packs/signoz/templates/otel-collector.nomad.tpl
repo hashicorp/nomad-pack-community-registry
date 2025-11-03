@@ -1,5 +1,5 @@
 # OpenTelemetry Collector Job
-job "[[ var "job_name" . ]]_otel_collector" {
+job "[[ template "job_name" . ]]_otel_collector" {
   [[ template "region" . ]]
   datacenters = [[ var "datacenters" . | toStringList ]]
   type = "service"
@@ -8,6 +8,7 @@ job "[[ var "job_name" . ]]_otel_collector" {
     count = [[ var "otel_collector_count" . ]]
 
     network {
+      mode = "bridge"
       port "metrics" { static = [[ var "otel_collector_metrics_port" . ]] }
       port "otlp" { static = [[ var "otel_collector_otlp_port" . ]] }
       port "otlp_http" { static = [[ var "otel_collector_otlp_http_port" . ]] }
@@ -63,9 +64,7 @@ job "[[ var "job_name" . ]]_otel_collector" {
 
       service {
         name         = "signoz-otel-collector"
-        provider     = "consul"
         port         = "metrics"
-        address_mode = "driver"
 
         check {
           name          = "liveness"
@@ -75,13 +74,11 @@ job "[[ var "job_name" . ]]_otel_collector" {
           interval      = "10s"
           timeout       = "5s"
           initial_status = "critical"
-          address_mode  = "host"
         }
       }
 
       service {
         name         = "signoz-otel-collector-otlp"
-        provider     = "consul"
         port         = "otlp"
         address_mode = "driver"
         check {
@@ -89,21 +86,17 @@ job "[[ var "job_name" . ]]_otel_collector" {
           type         = "tcp"
           interval     = "15s"
           timeout      = "3s"
-          address_mode = "host"
         }
       }
       
       service {
         name         = "signoz-otel-collector-otlp-http"
-        provider     = "consul"
         port         = "otlp_http"
-        address_mode = "driver"
         check {
           name         = "tcp-otlp-http"
           type         = "tcp"
           interval     = "15s"
           timeout      = "3s"
-          address_mode = "host"
         }
       }
 
