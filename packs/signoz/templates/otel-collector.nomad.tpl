@@ -1,5 +1,5 @@
 # OpenTelemetry Collector Job
-job "[[ template "job_name" . ]]_otel_collector" {
+job "[[ var "job_name" . ]]_otel_collector" {
   [[ template "region" . ]]
   datacenters = [[ var "datacenters" . | toStringList ]]
   type = "service"
@@ -23,7 +23,7 @@ job "[[ template "job_name" . ]]_otel_collector" {
         change_mode   = "signal"
         change_signal = "SIGHUP"
         data          = <<EOT
-[[ fileContents (var "otel_collector_config_path" .) ]]
+[[ fileContents "templates/configs/signoz/otel-collector-config.yaml" ]]
         EOT
       }
       
@@ -65,7 +65,6 @@ job "[[ template "job_name" . ]]_otel_collector" {
       service {
         name         = "signoz-otel-collector"
         port         = "metrics"
-
         check {
           name          = "liveness"
           type          = "http"
@@ -80,7 +79,6 @@ job "[[ template "job_name" . ]]_otel_collector" {
       service {
         name         = "signoz-otel-collector-otlp"
         port         = "otlp"
-        address_mode = "driver"
         check {
           name         = "tcp-otlp"
           type         = "tcp"

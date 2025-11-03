@@ -1,5 +1,5 @@
 # Schema Migrator Async Job
-job "[[ template "job_name" . ]]_schema_migrator_async" {
+job "[[ var "job_name" . ]]_schema_migrator_async" {
   [[ template "region" . ]]
   datacenters = [[ var "datacenters" . | toStringList ]]
   type = "batch"

@@ -212,11 +212,6 @@ variable "otel_collector_memory" {
   default     = 256
 }
 
-variable "otel_collector_config_path" {
-  description = "Path to OTEL Collector config file"
-  type        = string
-  default     = "templates/configs/signoz/otel-collector-config.yaml"
-}
 
 # Schema Migrator Configuration
 variable "schema_migrator_version" {

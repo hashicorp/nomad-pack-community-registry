@@ -1,5 +1,5 @@
 # SigNoz Main Application Job
-job "[[ template "job_name" . ]]_signoz"  {
+job "[[ var "job_name" . ]]_signoz"  {
   [[ template "region" . ]]
   datacenters = [[ var "datacenters" . | toStringList ]]
   type = "service"

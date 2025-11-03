@@ -1,11 +1,11 @@
 # ClickHouse Database Job
-job "[[ template "job_name" . ]]_clickhouse"  {
+job "[[ var "job_name" . ]]_clickhouse"  {
   [[ template "region" . ]]
   datacenters = [[ var "datacenters" . | toStringList ]]
   type = "service"
 
   group "clickhouse" {
-    count = [[ var "clickhouse_repliacs" . ]]
+    count = [[ var "clickhouse_replicas" . ]]
 
     network {
       mode = "bridge"
@@ -86,7 +86,6 @@ job "[[ template "job_name" . ]]_clickhouse"  {
       service {
         name     = "clickhouse"
         port     = "http"
-
         check {
           name     = "http-ping"
           type     = "http"
@@ -128,10 +127,10 @@ job "[[ template "job_name" . ]]_clickhouse"  {
       template {
         env = true
         data = <<EOH
-{{range service "zookeeper"}}
-          ZOOKEEPER_PORT={{ .Port }}
-          ZOOKEEPER_HOST={{ .Address }}
-{{end}}
+        {{range service "zookeeper"}}
+        ZOOKEEPER_PORT={{ .Port }}
+        ZOOKEEPER_HOST={{ .Address }}
+        {{end}}
           CLICKHOUSE_HOST={{ env "NOMAD_IP_tcp" }}
           CLICKHOUSE_PORT={{ env "NOMAD_PORT_tcp" }}
           EOH
@@ -145,7 +144,7 @@ job "[[ template "job_name" . ]]_clickhouse"  {
         change_mode   = "signal"
         change_signal = "SIGHUP"
         data          = <<EOH
-[[ fileContents templates/configs/clickhouse/cluster.xml ]]
+[[ fileContents "templates/configs/clickhouse/cluster.xml" ]]
         EOH
       }
       template {
@@ -154,7 +153,7 @@ job "[[ template "job_name" . ]]_clickhouse"  {
         change_mode   = "signal"
         change_signal = "SIGHUP"
         data          = <<EOH
-[[ fileContents templates/configs/clickhouse/users.xml ]]
+[[ fileContents "templates/configs/clickhouse/users.xml" ]]
         EOH
       }
       template {
@@ -163,7 +162,7 @@ job "[[ template "job_name" . ]]_clickhouse"  {
         change_mode   = "signal"
         change_signal = "SIGHUP"
         data          = <<EOH
-[[ fileContents templates/configs/clickhouse/config.xml ]]
+[[ fileContents "templates/configs/clickhouse/config.xml" ]]
         EOH
       }
       template {
@@ -172,14 +171,14 @@ job "[[ template "job_name" . ]]_clickhouse"  {
         change_mode   = "signal"
         change_signal = "SIGHUP"
         data          = <<EOH
-[[ fileContents templates/configs/clickhouse/storage.xml ]]
+[[ fileContents "templates/configs/clickhouse/storage.xml" ]]
         EOH
       }
       template {
         destination = "/local/custom-function.xml"
         perms       = "0644"
         data        = <<EOH
-[[ fileContents templates/configs/clickhouse/custom-function.xml ]]
+[[ fileContents "templates/configs/clickhouse/custom-function.xml" ]]
         EOH
       }
     }
@@ -207,7 +206,6 @@ job "[[ template "job_name" . ]]_clickhouse"  {
 
     task "zookeeper" {
       driver = "docker"
-
       env = {
         BITNAMI_DEBUG                    = "false"
         ZOO_PORT_NUMBER                  = "2181"
@@ -218,7 +216,6 @@ job "[[ template "job_name" . ]]_clickhouse"  {
         ZOO_SNAPCOUNT                    = "100000"
         ZOO_MAX_CLIENT_CNXNS             = "60"
         ZOO_4LW_COMMANDS_WHITELIST       = "srvr, mntr, ruok"
-        ZOO_LISTEN_ALLIPS_ENABLED        = "no"
         ZOO_AUTOPURGE_INTERVAL           = "1"
         ZOO_AUTOPURGE_RETAIN_COUNT       = "3"
         ZOO_MAX_SESSION_TIMEOUT          = "40000"
@@ -233,17 +230,17 @@ job "[[ template "job_name" . ]]_clickhouse"  {
         ZOO_ENABLE_ADMIN_SERVER            = "yes"
         ZOO_ADMIN_SERVER_ADDRESS           = "0.0.0.0"
         ZOO_ADMIN_SERVER_PORT_NUMBER       = "3181"
+        ZOOKEEPER_DATA_DIR                = "/tmp/bitnami/zookeeper"
       }
 
       config {
         image = "signoz/zookeeper:3.7.1"
         ports = ["client", "follower", "election", "metrics", "server"]
       }
-
+      
       service {
         name = "zookeeper"
         port = "client"
-
         check {
           name = "tcp-2181"
           port = "client"
@@ -264,7 +261,7 @@ job "[[ template "job_name" . ]]_clickhouse"  {
 
       volume_mount {
         volume      = "data"
-        destination = "/bitnami/zookeeper"
+        destination = "/tmp/bitnami/zookeeper/"
         read_only   = false
       }
 
