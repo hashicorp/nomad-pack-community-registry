@@ -3,9 +3,8 @@ job "[[ var "job_name" . ]]_signoz"  {
   [[ template "region" . ]]
   datacenters = [[ var "datacenters" . | toStringList ]]
   type = "service"
-
+  node_pool   = [[ var "node_pool" . | quote ]]
   group "signoz" {
-    count = [[ var "signoz_count" . ]]
     network {
       mode = "bridge"
       port "http" { static = [[ var "signoz_http_port" . ]] }

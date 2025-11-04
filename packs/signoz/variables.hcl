@@ -17,6 +17,12 @@ variable "datacenters" {
   default     = ["*"]
 }
 
+variable "node_pool" {
+  description = "The node pool where the job should be placed."
+  type        = string
+  default     = "default"
+}
+
 variable "clickhouse_version" {
   description = "ClickHouse version to deploy"
   type        = string
@@ -71,12 +77,6 @@ variable "clickhouse_password" {
   default     = ""
 }
 
-variable "clickhouse_secure" {
-  description = "Whether to use secure ClickHouse connections"
-  type        = string
-  default     = "false"
-}
-
 variable "clickhouse_shards" {
   description = "Number of ClickHouse shards"
   type        = string
@@ -114,12 +114,6 @@ variable "zookeeper_volume_name" {
   default     = "zookeeper-data"
 }
 
-# SigNoz Configuration
-variable "signoz_count" {
-  description = "Number of SigNoz instances to deploy"
-  type        = number
-  default     = 1
-}
 
 variable "signoz_version" {
   description = "SigNoz version to deploy"

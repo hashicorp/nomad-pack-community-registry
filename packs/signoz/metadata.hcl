@@ -1,5 +1,6 @@
 app {
   url = "https://signoz.io"
+  author = "SigNoz"
 }
 pack {
   name        = "signoz"

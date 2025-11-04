@@ -65,6 +65,6 @@ All configurable variables are listed in `variables.hcl`. Common ones:
 - Versions: `signoz_version`, `otel_collector_version`, `clickhouse_version`
 - Resources: `*_cpu`, `*_memory`
 - Ports: `*_*_port`
-- ClickHouse auth: `clickhouse_user`, `clickhouse_password`, `clickhouse_secure`
+- ClickHouse auth: `clickhouse_user`, `clickhouse_password`
 
 

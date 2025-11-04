@@ -3,7 +3,7 @@ job "[[ var "job_name" . ]]_schema_migrator_async" {
   [[ template "region" . ]]
   datacenters = [[ var "datacenters" . | toStringList ]]
   type = "batch"
-
+  node_pool   = [[ var "node_pool" . | quote ]]
   group "signoz-schema-migrator-async" {
     count = 1
 

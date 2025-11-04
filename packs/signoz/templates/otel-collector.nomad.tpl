@@ -3,7 +3,7 @@ job "[[ var "job_name" . ]]_otel_collector" {
   [[ template "region" . ]]
   datacenters = [[ var "datacenters" . | toStringList ]]
   type = "service"
-
+  node_pool   = [[ var "node_pool" . | quote ]]
   group "signoz-otel-collector" {
     count = [[ var "otel_collector_count" . ]]
 
@@ -51,7 +51,6 @@ job "[[ var "job_name" . ]]_otel_collector" {
         CLICKHOUSE_CLUSTER = [[ var "clickhouse_cluster_name" . | quote ]]
         CLICKHOUSE_USER = [[ var "clickhouse_user" . | quote ]]
         CLICKHOUSE_PASSWORD = [[ var "clickhouse_password" . | quote ]]
-        CLICKHOUSE_SECURE = [[ var "clickhouse_secure" . | quote ]]
         DOT_METRICS_ENABLED = "true"
       }
 

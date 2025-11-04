@@ -3,7 +3,7 @@ job "[[ var "job_name" . ]]_clickhouse"  {
   [[ template "region" . ]]
   datacenters = [[ var "datacenters" . | toStringList ]]
   type = "service"
-
+  node_pool   = [[ var "node_pool" . | quote ]]
   group "clickhouse" {
     count = [[ var "clickhouse_replicas" . ]]
 
