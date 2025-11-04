@@ -84,7 +84,7 @@ job "[[ var "job_name" . ]]_clickhouse"  {
       }
 
       service {
-        name     = "clickhouse"
+        name     = "clickhouse-http"
         port     = "http"
         check {
           name     = "http-ping"
@@ -97,7 +97,7 @@ job "[[ var "job_name" . ]]_clickhouse"  {
       }
 
       service {
-        name     = "clickhouse"
+        name     = "clickhouse-tcp"
         port     = "tcp"
         check {
           name     = "tcp-check"
@@ -131,9 +131,9 @@ job "[[ var "job_name" . ]]_clickhouse"  {
         ZOOKEEPER_PORT={{ .Port }}
         ZOOKEEPER_HOST={{ .Address }}
         {{end}}
-          CLICKHOUSE_HOST={{ env "NOMAD_IP_tcp" }}
-          CLICKHOUSE_PORT={{ env "NOMAD_PORT_tcp" }}
-          EOH
+        CLICKHOUSE_HOST={{ env "NOMAD_IP_tcp" }}
+        CLICKHOUSE_PORT={{ env "NOMAD_PORT_tcp" }}
+        EOH
         destination = "secrets/hosts.env"
       }
 
@@ -196,6 +196,19 @@ job "[[ var "job_name" . ]]_clickhouse"  {
       port "server"   { to = 3181 }
     }
 
+    service {
+      name = "zookeeper"
+      port = "client"
+      check {
+        name = "tcp-2181"
+        port = "client"
+        type = "tcp"
+        interval = "10s"
+        timeout  = "2s"
+      }
+
+    }
+
     # Persistent data volume
     volume "data" {
       type   = "host"
@@ -236,27 +249,6 @@ job "[[ var "job_name" . ]]_clickhouse"  {
       config {
         image = "signoz/zookeeper:3.7.1"
         ports = ["client", "follower", "election", "metrics", "server"]
-      }
-      
-      service {
-        name = "zookeeper"
-        port = "client"
-        check {
-          name = "tcp-2181"
-          port = "client"
-          type = "tcp"
-          interval = "10s"
-          timeout  = "2s"
-        }
-
-        check {
-          name     = "ruok"
-          type     = "http"
-          path     = "/commands/ruok"
-          port     = "server"
-          interval = "10s"
-          timeout  = "5s"
-        }
       }
 
       volume_mount {

@@ -38,13 +38,13 @@ variable "clickhouse_tcp_port" {
 variable "clickhouse_cpu" {
   description = "CPU allocation for ClickHouse (MHz)"
   type        = number
-  default     = 1000
+  default     = 100
 }
 
 variable "clickhouse_memory" {
   description = "Memory allocation for ClickHouse (MB)"
   type        = number
-  default     = 4096
+  default     = 512
 }
 
 variable "clickhouse_volume_name" {
@@ -154,7 +154,7 @@ variable "signoz_cpu" {
 variable "signoz_memory" {
   description = "Memory allocation for SigNoz (MB)"
   type        = number
-  default     = 512
+  default     = 100
 }
 
 variable "signoz_volume_name" {

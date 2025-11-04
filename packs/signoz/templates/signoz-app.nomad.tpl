@@ -6,7 +6,6 @@ job "[[ var "job_name" . ]]_signoz"  {
 
   group "signoz" {
     count = [[ var "signoz_count" . ]]
-    
     network {
       mode = "bridge"
       port "http" { static = [[ var "signoz_http_port" . ]] }
@@ -20,7 +19,6 @@ job "[[ var "job_name" . ]]_signoz"  {
       source = [[ var "signoz_volume_name" . | quote ]]
       attachment_mode="file-system"
     }
-
     # SigNoz initialization task
     task "signoz-init" {
       driver = "docker"
@@ -29,9 +27,17 @@ job "[[ var "job_name" . ]]_signoz"  {
         sidecar = false
       }
       
-      env {
-        CLICKHOUSE_HOST = "clickhouse.service.consul"
-        CLICKHOUSE_HTTP_PORT = [[ var "clickhouse_http_port" . ]]
+      # Environment variables for ZooKeeper and ClickHouse
+      template {
+        env = true
+        data = <<EOH
+        {{range service "clickhouse-http"}}
+        CLICKHOUSE_PORT={{ .Port }}
+        CLICKHOUSE_HOST={{ .Address }}
+        {{end}}
+        EOH
+        destination = "secrets/hosts.env"
+        change_mode   = "restart"
       }
       
       config {
@@ -41,8 +47,8 @@ job "[[ var "job_name" . ]]_signoz"  {
           "-c",
           <<-EOT
           echo "Waiting for ClickHouse HTTP ping..."
-          until wget -q --spider "http://$${CLICKHOUSE_HOST}:$${CLICKHOUSE_HTTP_PORT}/ping"; do
-          echo "waiting for clickhouseDB (HTTP $${CLICKHOUSE_HOST}:$${CLICKHOUSE_HTTP_PORT}/ping)"; sleep 5;
+          until wget -q --spider "http://$${CLICKHOUSE_HOST}:$${CLICKHOUSE_PORT}/ping"; do
+          echo "waiting for clickhouseDB (HTTP $${CLICKHOUSE_HOST}:$${CLICKHOUSE_PORT}/ping)"; sleep 5;
           done
           echo "ClickHouse HTTP is up"
           EOT
@@ -54,13 +60,22 @@ job "[[ var "job_name" . ]]_signoz"  {
     task "signoz" {
       driver = "docker"
 
+      template {
+        env = true
+        data = <<EOH
+        {{range service "clickhouse-tcp"}}
+        CLICKHOUSE_PORT={{ .Port }}
+        CLICKHOUSE_HOST={{ .Address }}
+        {{end}}
+        EOH
+        destination = "secrets/clickhouse.env"
+        change_mode   = "restart"
+      }
       env {
-        CLICKHOUSE_HOST = "clickhouse.service.consul"
-        CLICKHOUSE_PORT = [[ var "clickhouse_tcp_port" . ]]
         CLICKHOUSE_USER = [[ var "clickhouse_user" . | quote ]]
         CLICKHOUSE_PASSWORD = [[ var "clickhouse_password" . | quote ]]
         SIGNOZ_TELEMETRYSTORE_PROVIDER = "clickhouse"
-        SIGNOZ_TELEMETRYSTORE_CLICKHOUSE_DSN = "tcp://$${CLICKHOUSE_USER}:$${{CLICKHOUSE_PASSWORD}@$${CLICKHOUSE_HOST}:$${CLICKHOUSE_PORT}"
+        SIGNOZ_TELEMETRYSTORE_CLICKHOUSE_DSN = "tcp://$${CLICKHOUSE_USER}:$${CLICKHOUSE_PASSWORD}@$${CLICKHOUSE_HOST}:$${CLICKHOUSE_PORT}"
         SIGNOZ_TELEMETRYSTORE_CLICKHOUSE_CLUSTER = [[ var "clickhouse_cluster_name" . | quote ]]
       }
 

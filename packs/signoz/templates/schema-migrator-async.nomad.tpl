@@ -13,21 +13,20 @@ job "[[ var "job_name" . ]]_schema_migrator_async" {
       delay    = "10s"
       mode     = "fail"
     }
-
     # Wait for ClickHouse HTTP ping
     task "schema-migrator-async-init" {
       driver = "docker"
-
-      env {
-        CLICKHOUSE_HOST       = "clickhouse.service.consul"
-        CLICKHOUSE_PORT       = [[ var "clickhouse_tcp_port" . ]]
-        CLICKHOUSE_HTTP_PORT  = [[ var "clickhouse_http_port" . ]]
-        CLICKHOUSE_CLUSTER    = [[ var "clickhouse_cluster_name" . | quote ]]
-        CLICKHOUSE_USER       = [[ var "clickhouse_user" . | quote ]]
-        CLICKHOUSE_SECURE     = [[ var "clickhouse_secure" . | quote ]]
-        CLICKHOUSE_VERSION    = [[ var "clickhouse_version" . | quote ]]
-        CLICKHOUSE_SHARDS     = [[ var "clickhouse_shards" . | quote ]] 
-        CLICKHOUSE_REPLICAS   = [[ var "clickhouse_replicas" . | quote ]]
+      template {
+        env = true
+        data = <<EOH
+        {{range service "clickhouse-http"}}
+        CLICKHOUSE_PORT={{ .Port }}
+        CLICKHOUSE_HOST={{ .Address }}
+        {{end}}
+        EOH
+        destination = "secrets/hosts.env"
+        change_mode = "restart"
+        once = true
       }
 
       lifecycle {
@@ -42,8 +41,8 @@ job "[[ var "job_name" . ]]_schema_migrator_async" {
           "-c",
           <<-EOT
           echo "Waiting for ClickHouse HTTP ping..."
-          until wget -q --spider "http://$${CLICKHOUSE_HOST}:$${CLICKHOUSE_HTTP_PORT}/ping"; do
-            echo "waiting for clickhouseDB (HTTP $${CLICKHOUSE_HOST}:$${CLICKHOUSE_HTTP_PORT}/ping)"; sleep 5;
+          until wget -q --spider "http://$${CLICKHOUSE_HOST}:$${CLICKHOUSE_PORT}/ping"; do
+            echo "waiting for clickhouseDB (HTTP $${CLICKHOUSE_HOST}:$${CLICKHOUSE_PORT}/ping)"; sleep 5;
           done
           echo "ClickHouse HTTP is up"
           EOT
@@ -59,14 +58,21 @@ job "[[ var "job_name" . ]]_schema_migrator_async" {
         hook    = "prestart"
         sidecar = false
       }
-      
+      template {
+        env = true
+        data = <<EOH
+        {{range service "clickhouse-tcp"}}
+        CLICKHOUSE_PORT={{ .Port }}
+        CLICKHOUSE_HOST={{ .Address }}
+        {{end}}
+        EOH
+        destination = "secrets/hosts.env"
+        change_mode = "restart"
+        once = true
+      }
       env {
-        CLICKHOUSE_HOST       = "clickhouse.service.consul"
-        CLICKHOUSE_PORT       = [[ var "clickhouse_tcp_port" . ]]
-        CLICKHOUSE_HTTP_PORT  = [[ var "clickhouse_http_port" . ]]
         CLICKHOUSE_CLUSTER    = [[ var "clickhouse_cluster_name" . | quote ]]
         CLICKHOUSE_USER       = [[ var "clickhouse_user" . | quote ]]
-        CLICKHOUSE_SECURE     = [[ var "clickhouse_secure" . | quote ]]
         CLICKHOUSE_VERSION    = [[ var "clickhouse_version" . | quote ]]
         CLICKHOUSE_SHARDS     = [[ var "clickhouse_shards" . | quote ]]
         CLICKHOUSE_REPLICAS   = [[ var "clickhouse_replicas" . | quote ]]
@@ -112,17 +118,20 @@ job "[[ var "job_name" . ]]_schema_migrator_async" {
     # Main schema migrator async task
     task "schema-migrator" {
       driver = "docker"
-      
+      template {
+        env = true
+        data = <<EOH
+        {{range service "clickhouse-tcp"}}
+        CLICKHOUSE_PORT={{ .Port }}
+        CLICKHOUSE_HOST={{ .Address }}
+        {{end}}
+        EOH
+        destination = "secrets/hosts.env"
+        change_mode = "restart"
+        once = true
+      }
       env {
-        CLICKHOUSE_HOST       = "clickhouse.service.consul"
-        CLICKHOUSE_PORT       = [[ var "clickhouse_tcp_port" . ]]
-        CLICKHOUSE_HTTP_PORT  = [[ var "clickhouse_http_port" . ]]
-        CLICKHOUSE_CLUSTER    = [[ var "clickhouse_cluster_name" . | quote ]]
         CLICKHOUSE_USER       = [[ var "clickhouse_user" . | quote ]]
-        CLICKHOUSE_SECURE     = [[ var "clickhouse_secure" . | quote ]]
-        CLICKHOUSE_VERSION    = [[ var "clickhouse_version" . | quote ]]
-        CLICKHOUSE_SHARDS     = [[ var "clickhouse_shards" . | quote ]]
-        CLICKHOUSE_REPLICAS   = [[ var "clickhouse_replicas" . | quote ]]
         CLICKHOUSE_PASSWORD   = [[ var "clickhouse_password" . | quote ]]
       }
 
@@ -133,7 +142,7 @@ job "[[ var "job_name" . ]]_schema_migrator_async" {
           "--cluster-name",
           [[ var "clickhouse_cluster_name" . | quote ]],
           "--dsn",
-          "tcp://[[ var "clickhouse_user" . ]]:[[ var "clickhouse_password" . ]]@clickhouse.service.consul:[[ var "clickhouse_tcp_port" . ]]",
+          "tcp://${CLICKHOUSE_USER}:$${CLICKHOUSE_PASSWORD}@$${CLICKHOUSE_HOST}:$${CLICKHOUSE_PORT}",
           "--up="
         ]
       }

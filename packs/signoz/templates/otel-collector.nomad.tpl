@@ -36,9 +36,18 @@ job "[[ var "job_name" . ]]_otel_collector" {
           EOT
       }
       
+      template {
+        env = true
+        data = <<EOH
+        {{range service "clickhouse-tcp"}}
+        CLICKHOUSE_PORT={{ .Port }}
+        CLICKHOUSE_HOST={{ .Address }}
+        {{end}}
+        EOH
+        destination = "secrets/hosts.env"
+      }
+      
       env {
-        CLICKHOUSE_HOST = "clickhouse.service.consul"
-        CLICKHOUSE_PORT = [[ var "clickhouse_tcp_port" . ]]
         CLICKHOUSE_CLUSTER = [[ var "clickhouse_cluster_name" . | quote ]]
         CLICKHOUSE_USER = [[ var "clickhouse_user" . | quote ]]
         CLICKHOUSE_PASSWORD = [[ var "clickhouse_password" . | quote ]]
