@@ -136,6 +136,16 @@ job "[[ var "job_name" . ]]_clickhouse"  {
         EOH
         destination = "secrets/hosts.env"
       }
+      template {
+        destination = "${NOMAD_SECRETS_DIR}/env.vars"
+        env         = true
+        change_mode = "restart"
+        data        = <<EOF
+{{- with nomadVar "nomad/jobs/[[ var "job_name" . ]]" -}}
+CLICKHOUSE_PASSWORD = {{ .clickhouse_password }}
+{{- end -}}
+EOF
+      }
 
       # Configuration templates
       template {

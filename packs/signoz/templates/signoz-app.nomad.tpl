@@ -70,9 +70,18 @@ job "[[ var "job_name" . ]]_signoz"  {
         destination = "secrets/clickhouse.env"
         change_mode   = "restart"
       }
+      template {
+        destination = "${NOMAD_SECRETS_DIR}/env.vars"
+        env         = true
+        change_mode = "restart"
+        data        = <<EOF
+{{- with nomadVar "nomad/jobs/[[ var "job_name" . ]]" -}}
+CLICKHOUSE_PASSWORD = {{ .clickhouse_password }}
+{{- end -}}
+EOF
+      }
       env {
         CLICKHOUSE_USER = [[ var "clickhouse_user" . | quote ]]
-        CLICKHOUSE_PASSWORD = [[ var "clickhouse_password" . | quote ]]
         SIGNOZ_TELEMETRYSTORE_PROVIDER = "clickhouse"
         SIGNOZ_TELEMETRYSTORE_CLICKHOUSE_DSN = "tcp://$${CLICKHOUSE_USER}:$${CLICKHOUSE_PASSWORD}@$${CLICKHOUSE_HOST}:$${CLICKHOUSE_PORT}"
         SIGNOZ_TELEMETRYSTORE_CLICKHOUSE_CLUSTER = [[ var "clickhouse_cluster_name" . | quote ]]

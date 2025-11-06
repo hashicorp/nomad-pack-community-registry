@@ -70,13 +70,24 @@ job "[[ var "job_name" . ]]_schema_migrator_async" {
         change_mode = "restart"
         once = true
       }
+
+      template {
+        destination = "${NOMAD_SECRETS_DIR}/env.vars"
+        env         = true
+        change_mode = "restart"
+        data        = <<EOF
+{{- with nomadVar "nomad/jobs/[[ var "job_name" . ]]" -}}
+CLICKHOUSE_PASSWORD = {{ .clickhouse_password }}
+{{- end -}}
+EOF
+      }
+
       env {
         CLICKHOUSE_CLUSTER    = [[ var "clickhouse_cluster_name" . | quote ]]
         CLICKHOUSE_USER       = [[ var "clickhouse_user" . | quote ]]
         CLICKHOUSE_VERSION    = [[ var "clickhouse_version" . | quote ]]
         CLICKHOUSE_SHARDS     = [[ var "clickhouse_shards" . | quote ]]
         CLICKHOUSE_REPLICAS   = [[ var "clickhouse_replicas" . | quote ]]
-        CLICKHOUSE_PASSWORD   = [[ var "clickhouse_password" . | quote ]]
       }
 
       config {
@@ -130,9 +141,20 @@ job "[[ var "job_name" . ]]_schema_migrator_async" {
         change_mode = "restart"
         once = true
       }
+
+      template {
+        destination = "${NOMAD_SECRETS_DIR}/env.vars"
+        env         = true
+        change_mode = "restart"
+        data        = <<EOF
+{{- with nomadVar "nomad/jobs/[[ var "job_name" . ]]" -}}
+CLICKHOUSE_PASSWORD = {{ .clickhouse_password }}
+{{- end -}}
+EOF
+      }
+
       env {
-        CLICKHOUSE_USER       = [[ var "clickhouse_user" . | quote ]]
-        CLICKHOUSE_PASSWORD   = [[ var "clickhouse_password" . | quote ]]
+        CLICKHOUSE_USER   = [[ var "clickhouse_user" . | quote ]]
       }
 
       config {

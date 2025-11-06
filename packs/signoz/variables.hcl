@@ -23,6 +23,25 @@ variable "node_pool" {
   default     = "default"
 }
 
+variable "zookeeper_volume_name" {
+  description = "Name of the host volume for ZooKeeper data"
+  type        = string
+  default     = ""
+}
+
+variable "clickhouse_volume_name" {
+  description = "Name of the host volume for ClickHouse data"
+  type        = string
+  default     = ""
+}
+
+variable "signoz_volume_name" {
+  description = "Name of the host volume for SigNoz data"
+  type        = string
+  default     = ""
+}
+
+
 variable "clickhouse_version" {
   description = "ClickHouse version to deploy"
   type        = string
@@ -53,11 +72,7 @@ variable "clickhouse_memory" {
   default     = 512
 }
 
-variable "clickhouse_volume_name" {
-  description = "Name of the host volume for ClickHouse data"
-  type        = string
-  default     = "clickhouse-data"
-}
+
 
 variable "clickhouse_cluster_name" {
   description = "ClickHouse cluster name"
@@ -69,12 +84,6 @@ variable "clickhouse_user" {
   description = "ClickHouse username"
   type        = string
   default     = "default"
-}
-
-variable "clickhouse_password" {
-  description = "ClickHouse password"
-  type        = string
-  default     = ""
 }
 
 variable "clickhouse_shards" {
@@ -108,17 +117,11 @@ variable "zookeeper_memory" {
   default     = 512
 }
 
-variable "zookeeper_volume_name" {
-  description = "Name of the host volume for ZooKeeper data"
-  type        = string
-  default     = "zookeeper-data"
-}
-
 
 variable "signoz_version" {
   description = "SigNoz version to deploy"
   type        = string
-  default     = "v0.95.0"
+  default     = "v0.100.0"
 }
 
 variable "signoz_http_port" {
@@ -149,12 +152,6 @@ variable "signoz_memory" {
   description = "Memory allocation for SigNoz (MB)"
   type        = number
   default     = 100
-}
-
-variable "signoz_volume_name" {
-  description = "Name of the host volume for SigNoz data"
-  type        = string
-  default     = "signoz-db"
 }
 
 # OpenTelemetry Collector Configuration

@@ -46,11 +46,21 @@ job "[[ var "job_name" . ]]_otel_collector" {
         EOH
         destination = "secrets/hosts.env"
       }
-      
+
+      template {
+        destination = "${NOMAD_SECRETS_DIR}/env.vars"
+        env         = true
+        change_mode = "restart"
+        data        = <<EOF
+{{- with nomadVar "nomad/jobs/[[ var "job_name" . ]]" -}}
+CLICKHOUSE_PASSWORD = {{ .clickhouse_password }}
+{{- end -}}
+EOF
+      }
+
       env {
         CLICKHOUSE_CLUSTER = [[ var "clickhouse_cluster_name" . | quote ]]
         CLICKHOUSE_USER = [[ var "clickhouse_user" . | quote ]]
-        CLICKHOUSE_PASSWORD = [[ var "clickhouse_password" . | quote ]]
         DOT_METRICS_ENABLED = "true"
       }
 
