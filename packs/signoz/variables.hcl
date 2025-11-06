@@ -208,5 +208,5 @@ variable "otel_collector_memory" {
 variable "schema_migrator_version" {
   description = "Schema migrator version to deploy"
   type        = string
-  default     = "v0.129.5"
+  default     = "v0.129.8"
 }
