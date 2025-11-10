@@ -1,3 +1,4 @@
+# Copyright SigNoz: https://github.com/SigNoz/signoz/tree/main/deploy/common/signoz
 receivers:
   otlp:
     protocols:
