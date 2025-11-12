@@ -1,5 +1,5 @@
-<!-- Copyright SigNoz: https://github.com/SigNoz/signoz/tree/main/deploy/common/clickhouse -->
 <?xml version="1.0"?>
+<!-- Copyright SigNoz: https://github.com/SigNoz/signoz/tree/main/deploy/common/clickhouse -->
 <clickhouse>
     <!-- ZooKeeper is used to store metadata about replicas, when using Replicated tables.
          Optional. If you don't use replicated tables, you could omit that.

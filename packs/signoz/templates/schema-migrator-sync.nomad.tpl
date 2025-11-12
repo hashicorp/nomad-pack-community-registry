@@ -21,12 +21,12 @@ job "[[ var "job_name" . ]]_schema_migrator_sync"  {
       template {
         env = true
         data = <<EOH
-        {{range service "clickhouse-http"}}
-        CLICKHOUSE_PORT={{ .Port }}
-        CLICKHOUSE_HOST={{ .Address }}
-        {{end}}
-        EOH
-        destination = "secrets/hosts.env"
+{{range service "clickhouse-http"}}
+CLICKHOUSE_PORT={{ .Port }}
+CLICKHOUSE_HOST={{ .Address }}
+{{end}}
+EOH
+        destination = "local/clickhouse.env"
         change_mode = "restart"
       }
 
@@ -60,30 +60,10 @@ job "[[ var "job_name" . ]]_schema_migrator_sync"  {
         sidecar = false
       }
       
-      template {
-        env = true
-        data = <<EOH
-        {{range service "clickhouse-tcp"}}
-        CLICKHOUSE_PORT={{ .Port }}
-        CLICKHOUSE_HOST={{ .Address }}
-        {{end}}
-        EOH
-        destination = "secrets/hosts.env"
-        change_mode = "restart"
-      }
-      template {
-        destination = "${NOMAD_SECRETS_DIR}/env.vars"
-        env         = true
-        change_mode = "restart"
-        data        = <<EOF
-{{- with nomadVar "nomad/jobs/[[ var "job_name" . ]]" -}}
-CLICKHOUSE_PASSWORD = {{ .clickhouse_password }}
-{{- end -}}
-EOF
-      }
+      [[ template "clickhouse_address" . ]]
+      [[ template "clickhouse_password" . ]]
       env {
         CLICKHOUSE_CLUSTER    = [[ var "clickhouse_cluster_name" . | quote ]]
-        CLICKHOUSE_USER       = [[ var "clickhouse_user" . | quote ]]
         CLICKHOUSE_VERSION    = [[ var "clickhouse_version" . | quote ]]
         CLICKHOUSE_SHARDS     = [[ var "clickhouse_shards" . | quote ]]
         CLICKHOUSE_REPLICAS   = [[ var "clickhouse_replicas" . | quote ]]
@@ -129,30 +109,8 @@ EOF
     task "schema-migrator" {
       driver = "docker"
       
-      template {
-        env = true
-        data = <<EOH
-        {{range service "clickhouse-tcp"}}
-        CLICKHOUSE_PORT={{ .Port }}
-        CLICKHOUSE_HOST={{ .Address }}
-        {{end}}
-        EOH
-        destination = "secrets/hosts.env"
-        change_mode = "restart"
-      }
-      template {
-        destination = "${NOMAD_SECRETS_DIR}/env.vars"
-        env         = true
-        change_mode = "restart"
-        data        = <<EOF
-{{- with nomadVar "nomad/jobs/[[ var "job_name" . ]]" -}}
-CLICKHOUSE_PASSWORD = {{ .clickhouse_password }}
-{{- end -}}
-EOF
-      }
-      env {
-        CLICKHOUSE_USER       = [[ var "clickhouse_user" . | quote ]]
-      }
+      [[ template "clickhouse_address" . ]]
+      [[ template "clickhouse_password" . ]]
 
       config {
         image = "docker.io/signoz/signoz-schema-migrator:[[ var "schema_migrator_version" . ]]"

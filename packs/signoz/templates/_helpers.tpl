@@ -24,3 +24,34 @@ it won't.
   region = "[[ var "region" . ]]"
 [[- end -]]
 [[- end -]]
+
+
+##  `clickhouse_password` helper
+[[ define "clickhouse_password" ]]
+  template {
+    destination = "${NOMAD_SECRETS_DIR}/env.vars"
+    env         = true
+    change_mode = "restart"
+    data        = <<EOF
+CLICKHOUSE_USER     = [[ var "clickhouse_user" . | quote ]]
+{{- with nomadVar "nomad/jobs" -}}
+CLICKHOUSE_PASSWORD = {{ .clickhouse_password }}
+{{- end -}}
+EOF
+  }
+[[- end -]]
+
+##  `clickhouse_address` helper
+[[ define "clickhouse_address" ]]
+  template {
+    env = true
+    data = <<EOH
+{{range service "clickhouse-tcp"}}
+CLICKHOUSE_PORT={{ .Port }}
+CLICKHOUSE_HOST={{ .Address }}
+{{end}}
+    EOH
+    destination = "local/clickhouse.env"
+    change_mode   = "restart"
+  }
+[[- end -]]

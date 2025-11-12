@@ -63,13 +63,13 @@ variable "clickhouse_tcp_port" {
 variable "clickhouse_cpu" {
   description = "CPU allocation for ClickHouse (MHz)"
   type        = number
-  default     = 100
+  default     = 250
 }
 
 variable "clickhouse_memory" {
   description = "Memory allocation for ClickHouse (MB)"
   type        = number
-  default     = 512
+  default     = 1560
 }
 
 
@@ -108,7 +108,7 @@ variable "zookeeper_count" {
 variable "zookeeper_cpu" {
   description = "CPU allocation for ZooKeeper (MHz)"
   type        = number
-  default     = 100
+  default     = 200
 }
 
 variable "zookeeper_memory" {
@@ -209,4 +209,16 @@ variable "schema_migrator_version" {
   description = "Schema migrator version to deploy"
   type        = string
   default     = "v0.129.8"
+}
+
+variable "schema_migrator_cpu" {
+  description = "CPU allocation for OTEL Collector (MHz)"
+  type        = number
+  default     = 200
+}
+
+variable "schema_migrator_memory" {
+  description = "Memory allocation for OTEL Collector (MB)"
+  type        = number
+  default     = 256
 }

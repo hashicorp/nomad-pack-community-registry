@@ -1,4 +1,5 @@
 <!-- Copyright SigNoz: https://github.com/SigNoz/signoz/tree/main/deploy/common/clickhouse -->
+
 <functions>
     <function>
         <type>executable</type>

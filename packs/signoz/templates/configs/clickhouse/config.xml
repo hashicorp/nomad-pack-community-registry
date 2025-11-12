@@ -1,5 +1,5 @@
-<!-- Copyright SigNoz: https://github.com/SigNoz/signoz/tree/main/deploy/common/clickhouse -->
 <?xml version="1.0"?>
+<!-- Copyright SigNoz: https://github.com/SigNoz/signoz/tree/main/deploy/common/clickhouse -->
 <clickhouse>
     <logger>
         <!-- Logger Possible Values: https://github.com/pocoproject/poco/blob/poco-1.9.4-release/Foundation/include/Poco/Logger.h#L105-L114

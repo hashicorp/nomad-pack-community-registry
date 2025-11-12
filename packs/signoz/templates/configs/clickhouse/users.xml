@@ -1,5 +1,5 @@
-<!-- Copyright SigNoz: https://github.com/SigNoz/signoz/tree/main/deploy/common/clickhouse -->
 <?xml version="1.0"?>
+<!-- Copyright SigNoz: https://github.com/SigNoz/signoz/tree/main/deploy/common/clickhouse -->
 <clickhouse>
     <!-- See also the files in users.d directory where the settings can be overridden. -->
 
@@ -66,7 +66,7 @@
                  Execute: PASSWORD=$(base64 < /dev/urandom | head -c8); echo "$PASSWORD"; echo -n "$PASSWORD" | sha1sum | tr -d '-' | xxd -r -p | sha1sum | tr -d '-'
                  In first line will be password and in second - corresponding double SHA1.
             -->
-            <host from_env="CLICKHOUSE_PASSWORD"/>
+            <password from_env="CLICKHOUSE_PASSWORD"/>
             <!-- List of networks with open access.
 
                  To open access from everywhere, specify:

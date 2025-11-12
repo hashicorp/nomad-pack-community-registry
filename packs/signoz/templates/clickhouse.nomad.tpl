@@ -131,17 +131,18 @@ job "[[ var "job_name" . ]]_clickhouse"  {
         ZOOKEEPER_PORT={{ .Port }}
         ZOOKEEPER_HOST={{ .Address }}
         {{end}}
-        CLICKHOUSE_HOST={{ env "NOMAD_IP_tcp" }}
-        CLICKHOUSE_PORT={{ env "NOMAD_PORT_tcp" }}
+        CLICKHOUSE_HOST={{ env "NOMAD_ALLOC_IP_tcp" }}
+        CLICKHOUSE_PORT={{ env "NOMAD_ALLOC_PORT_tcp" }}
         EOH
-        destination = "secrets/hosts.env"
+        destination = "local/clickhouse.env"
+        change_mode = "restart"
       }
       template {
-        destination = "${NOMAD_SECRETS_DIR}/env.vars"
+        destination = "${NOMAD_SECRETS_DIR}/clickhouse.env"
         env         = true
         change_mode = "restart"
         data        = <<EOF
-{{- with nomadVar "nomad/jobs/[[ var "job_name" . ]]" -}}
+{{- with nomadVar "nomad/jobs" -}}
 CLICKHOUSE_PASSWORD = {{ .clickhouse_password }}
 {{- end -}}
 EOF

@@ -26,18 +26,7 @@ job "[[ var "job_name" . ]]_signoz"  {
         sidecar = false
       }
       
-      # Environment variables for ZooKeeper and ClickHouse
-      template {
-        env = true
-        data = <<EOH
-        {{range service "clickhouse-http"}}
-        CLICKHOUSE_PORT={{ .Port }}
-        CLICKHOUSE_HOST={{ .Address }}
-        {{end}}
-        EOH
-        destination = "secrets/hosts.env"
-        change_mode   = "restart"
-      }
+      [[ template "clickhouse_address" . ]]
       
       config {
         image = "docker.io/busybox:1.35"
@@ -59,31 +48,27 @@ job "[[ var "job_name" . ]]_signoz"  {
     task "signoz" {
       driver = "docker"
 
-      template {
-        env = true
-        data = <<EOH
-        {{range service "clickhouse-tcp"}}
-        CLICKHOUSE_PORT={{ .Port }}
-        CLICKHOUSE_HOST={{ .Address }}
-        {{end}}
-        EOH
-        destination = "secrets/clickhouse.env"
-        change_mode   = "restart"
-      }
-      template {
-        destination = "${NOMAD_SECRETS_DIR}/env.vars"
-        env         = true
-        change_mode = "restart"
-        data        = <<EOF
-{{- with nomadVar "nomad/jobs/[[ var "job_name" . ]]" -}}
-CLICKHOUSE_PASSWORD = {{ .clickhouse_password }}
+template {
+  destination = "${NOMAD_SECRETS_DIR}/env.vars"
+  env         = true
+  change_mode = "restart"
+  data        = <<EOF
+CLICKHOUSE_USER=[[ var "clickhouse_user" . ]]
+{{range service "clickhouse-tcp"}}
+{{- $clickhouse_host := .Address -}}
+{{- $clickhouse_port := .Port -}}
+CLICKHOUSE_HOST={{ $clickhouse_host }}
+CLICKHOUSE_PORT={{ $clickhouse_port }}
+{{- with nomadVar "nomad/jobs" -}}
+CLICKHOUSE_PASSWORD={{ .clickhouse_password }}
+SIGNOZ_TELEMETRYSTORE_CLICKHOUSE_DSN=tcp://[[ var "clickhouse_user" . ]]:{{ .clickhouse_password }}@{{ $clickhouse_host }}:{{ $clickhouse_port }}
 {{- end -}}
+{{end}}
 EOF
-      }
+}
+
       env {
-        CLICKHOUSE_USER = [[ var "clickhouse_user" . | quote ]]
         SIGNOZ_TELEMETRYSTORE_PROVIDER = "clickhouse"
-        SIGNOZ_TELEMETRYSTORE_CLICKHOUSE_DSN = "tcp://$${CLICKHOUSE_USER}:$${CLICKHOUSE_PASSWORD}@$${CLICKHOUSE_HOST}:$${CLICKHOUSE_PORT}"
         SIGNOZ_TELEMETRYSTORE_CLICKHOUSE_CLUSTER = [[ var "clickhouse_cluster_name" . | quote ]]
       }
 

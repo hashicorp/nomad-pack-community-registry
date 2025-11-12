@@ -15,7 +15,8 @@ Before deploying, store your ClickHouse password using Nomad variables:
 
 ```hcl
 # spec.nv.hcl
-path = "nomad/jobs/signoz"
+# Keep the path as "nomad/jobs" so that it would be accessible by all of jobs under the signoz pack
+path = "nomad/jobs"
 
 items {
   clickhouse_password = "your_clickhouse_password"  # Update this value
@@ -57,7 +58,7 @@ nomad volume create packs/signoz/templates/volumes/signoz-volume.hcl
 > **Note:**  
 > Create a separate volume for each of ClickHouse, ZooKeeper, and SigNoz data.  
 > When running the pack, supply the names as variables:  
-> `nomad run --signoz_volume_name <SIGNOZ_VOLUME> --clickhouse_volume_name <CLICKHOUSE_VOLUME> --zookeeper_volume_name <ZOOKEEPER_VOLUME>`
+> `nomad-pack run --var=signoz_volume_name=<SIGNOZ_VOLUME> --var=clickhouse_volume_name=<CLICKHOUSE_VOLUME> --var=zookeeper_volume_name=<ZOOKEEPER_VOLUME> signoz`
 
 ## Consul Service Registration
 
@@ -104,8 +105,7 @@ Customize variables in `variables.hcl`. Common settings include:
   - `otel_collector_otlp_port`, `otel_collector_otlp_http_port` – Collector endpoints
 
 - **Authentication**:
-  - `clickhouse_user`, `clickhouse_password` – ClickHouse DB credentials
-  - `signoz_admin_email`, `signoz_admin_password` – (Optional) SigNoz admin login
+  - `clickhouse_user`, – ClickHouse DB credentials
 
 - **Persistence**:
   - `signoz_volume_name` – Volume for SigNoz data

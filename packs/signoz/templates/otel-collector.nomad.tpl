@@ -36,32 +36,10 @@ job "[[ var "job_name" . ]]_otel_collector" {
           EOT
       }
       
-      template {
-        env = true
-        data = <<EOH
-        {{range service "clickhouse-tcp"}}
-        CLICKHOUSE_PORT={{ .Port }}
-        CLICKHOUSE_HOST={{ .Address }}
-        {{end}}
-        EOH
-        destination = "secrets/hosts.env"
-      }
-
-      template {
-        destination = "${NOMAD_SECRETS_DIR}/env.vars"
-        env         = true
-        change_mode = "restart"
-        data        = <<EOF
-{{- with nomadVar "nomad/jobs/[[ var "job_name" . ]]" -}}
-CLICKHOUSE_PASSWORD = {{ .clickhouse_password }}
-{{- end -}}
-EOF
-      }
-
+      [[ template "clickhouse_address" . ]]
+      [[ template "clickhouse_password" . ]]
       env {
         CLICKHOUSE_CLUSTER = [[ var "clickhouse_cluster_name" . | quote ]]
-        CLICKHOUSE_USER = [[ var "clickhouse_user" . | quote ]]
-        DOT_METRICS_ENABLED = "true"
       }
 
       config {
