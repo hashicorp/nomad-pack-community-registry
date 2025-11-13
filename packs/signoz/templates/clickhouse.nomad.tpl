@@ -1,5 +1,5 @@
 # ClickHouse Database Job
-job "[[ var "job_name" . ]]_clickhouse"  {
+job "[[ var "release_name" . ]]_clickhouse"  {
   [[ template "region" . ]]
   datacenters = [[ var "datacenters" . | toStringList ]]
   type = "service"
@@ -127,13 +127,13 @@ job "[[ var "job_name" . ]]_clickhouse"  {
       template {
         env = true
         data = <<EOH
-        {{range service "zookeeper"}}
-        ZOOKEEPER_PORT={{ .Port }}
-        ZOOKEEPER_HOST={{ .Address }}
-        {{end}}
-        CLICKHOUSE_HOST={{ env "NOMAD_ALLOC_IP_tcp" }}
-        CLICKHOUSE_PORT={{ env "NOMAD_ALLOC_PORT_tcp" }}
-        EOH
+{{range service "zookeeper"}}
+ZOOKEEPER_PORT={{ .Port }}
+ZOOKEEPER_HOST={{ .Address }}
+{{end}}
+CLICKHOUSE_HOST={{ env "NOMAD_ALLOC_IP_tcp" }}
+CLICKHOUSE_PORT={{ env "NOMAD_ALLOC_PORT_tcp" }}
+EOH
         destination = "local/clickhouse.env"
         change_mode = "restart"
       }
@@ -142,7 +142,7 @@ job "[[ var "job_name" . ]]_clickhouse"  {
         env         = true
         change_mode = "restart"
         data        = <<EOF
-{{- with nomadVar "nomad/jobs" -}}
+{{- with nomadVar "nomad/jobs/[[ var "release_name" .  ]]" -}}
 CLICKHOUSE_PASSWORD = {{ .clickhouse_password }}
 {{- end -}}
 EOF
@@ -231,23 +231,12 @@ EOF
     task "zookeeper" {
       driver = "docker"
       env = {
-        BITNAMI_DEBUG                    = "false"
         ZOO_PORT_NUMBER                  = "2181"
-        ZOO_TICK_TIME                    = "2000"
-        ZOO_INIT_LIMIT                   = "10"
-        ZOO_SYNC_LIMIT                   = "5"
-        ZOO_PRE_ALLOC_SIZE               = "65536"
-        ZOO_SNAPCOUNT                    = "100000"
-        ZOO_MAX_CLIENT_CNXNS             = "60"
         ZOO_4LW_COMMANDS_WHITELIST       = "srvr, mntr, ruok"
         ZOO_AUTOPURGE_INTERVAL           = "1"
         ZOO_AUTOPURGE_RETAIN_COUNT       = "3"
-        ZOO_MAX_SESSION_TIMEOUT          = "40000"
         ZOO_SERVERS                      = "0.0.0.0:2888:3888::1"
-        ZOO_ENABLE_AUTH                  = "no"
-        ZOO_ENABLE_QUORUM_AUTH           = "no"
-        ZOO_HEAP_SIZE                    = "1024"
-        ZOO_LOG_LEVEL                    = "INFO"
+        ZOO_LOG_LEVEL                    = "DEBUG"
         ALLOW_ANONYMOUS_LOGIN            = "yes"
         ZOO_ENABLE_PROMETHEUS_METRICS    = "yes"
         ZOO_PROMETHEUS_METRICS_PORT_NUMBER = "9141"
@@ -258,7 +247,7 @@ EOF
       }
 
       config {
-        image = "signoz/zookeeper:3.7.1"
+        image = "docker.io/signoz/zookeeper:[[ var "zookeeper_version" . ]]"
         ports = ["client", "follower", "election", "metrics", "server"]
       }
 

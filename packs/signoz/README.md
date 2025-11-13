@@ -1,39 +1,66 @@
-# SigNoz
+# SigNoz on HashiCorp Nomad
 
-Easily deploy the [SigNoz](https://signoz.io) observability stack—including ClickHouse, ZooKeeper, the SigNoz application, and the OpenTelemetry Collector—on HashiCorp Nomad. This pack runs services as Docker containers using Nomad’s [Docker driver](https://www.nomadproject.io/docs/drivers/docker).
+Deploy the complete [SigNoz](https://signoz.io) observability stack on HashiCorp Nomad. This pack includes ClickHouse, ZooKeeper, the SigNoz application, and the OpenTelemetry Collector, all running as Docker containers via Nomad's [Docker driver](https://www.nomadproject.io/docs/drivers/docker).
 
 ## Prerequisites
 
-- An operational Nomad cluster
+Ensure your environment has:
+
+- A running Nomad cluster
 - Consul enabled for service discovery
-- Variable store for sensitive values (e.g., ClickHouse password)
-- Host volumes created for persistent storage
+- Nomad variable store configured
+- Host volumes set up for persistent storage
 
-### Setting Required Variables
+## Setup Guide
 
-Before deploying, store your ClickHouse password using Nomad variables:
+### Step 1: Configure ClickHouse Password
+
+Store your ClickHouse password securely using Nomad variables:
 
 ```hcl
 # spec.nv.hcl
-# Keep the path as "nomad/jobs" so that it would be accessible by all of jobs under the signoz pack
-path = "nomad/jobs"
+# Use path "nomad/jobs" to make it accessible to all jobs in the pack
+path = "nomad/jobs/<your_pack_release_name>"
 
 items {
-  clickhouse_password = "your_clickhouse_password"  # Update this value
+  clickhouse_password = "your_clickhouse_password"  # Change this
 }
 ```
 
-Load variables into Nomad with:
+Load the variables:
 
 ```bash
 nomad var put @spec.nv.hcl
 ```
 
-### Creating Persistent Host Volumes
+### Step 2: Create Access Policy
 
-This pack uses Nomad host volumes (via the built-in `mkdir` plugin) to persist data for each major component: ClickHouse, ZooKeeper, and SigNoz itself. 
+Define a policy that grants tasks read access to your variables:
 
-To create an example host volume:
+```hcl
+# signoz-shared-vars.policy.hcl
+namespace "<your-shared-namespace>" {
+  variables {
+    path "nomad/jobs/<your_release_name>" {
+      capabilities = ["read"]
+    }
+  }
+}
+```
+
+Apply the policy:
+
+```bash
+nomad acl policy apply \
+  -namespace <your-shared-namespace> \
+  -description "SigNoz Shared Variables policy" \
+  signoz-shared-vars \
+  signoz-shared-vars.policy.hcl
+```
+
+### Step 3: Create Persistent Volumes
+
+The pack requires three separate host volumes for data persistence. Here's an example volume configuration:
 
 ```hcl
 # signoz-volume.hcl
@@ -49,68 +76,86 @@ capability {
 }
 ```
 
-Create the volume with:
+Create the volume:
 
 ```bash
 nomad volume create packs/signoz/templates/volumes/signoz-volume.hcl
 ```
 
-> **Note:**  
-> Create a separate volume for each of ClickHouse, ZooKeeper, and SigNoz data.  
-> When running the pack, supply the names as variables:  
-> `nomad-pack run --var=signoz_volume_name=<SIGNOZ_VOLUME> --var=clickhouse_volume_name=<CLICKHOUSE_VOLUME> --var=zookeeper_volume_name=<ZOOKEEPER_VOLUME> signoz`
+**Important:** Create three separate volumes:
+- One for ClickHouse data
+- One for ZooKeeper data  
+- One for SigNoz application data
 
-## Consul Service Registration
+You'll reference these volume names when deploying the pack.
 
-On deployment, the pack registers multiple services in Consul for service discovery and health checking:
+## Deployment
 
-- `clickhouse`: HTTP + TCP health checks
-- `zookeeper`: Client and admin endpoint health checks
-- `signoz`: Public/internal HTTP and OpAMP TCP checks
-- `signoz-otel-collector` + `signoz-otel-collector-otlp[*]`: Metrics/OTLP TCP checks
+### Deploy with Volume Names
 
-These registrations allow inter-service communication and convenient monitoring via Consul.
-
-## Running the Pack
-
-To deploy SigNoz with defaults:
+**Required:** You must specify all three volume names when deploying:
 
 ```bash
-nomad-pack run signoz
+nomad-pack run signoz \
+  --release-name=<your-release-name> \
+  --var=signoz_volume_name=<SIGNOZ_VOLUME> \
+  --var=clickhouse_volume_name=<CLICKHOUSE_VOLUME> \
+  --var=zookeeper_volume_name=<ZOOKEEPER_VOLUME>
 ```
 
-To first render and inspect jobs:
+### Preview Before Deploying
+
+Render and inspect the job specifications:
 
 ```bash
 nomad-pack render signoz
 ```
-## Configuration
 
-Customize variables in `variables.hcl`. Common settings include:
+## Service Discovery
 
-- **Versions**:
-  - `signoz_version` – SigNoz application image version
-  - `otel_collector_version` – OTEL Collector image version
-  - `clickhouse_version` – ClickHouse DB image version
-  - `zookeeper_version` – Zookeeper image version
+The pack automatically registers these services in Consul with health checks:
 
-- **Resource Allocation**:
-  - `signoz_cpu`, `signoz_memory` – SigNoz app resources
-  - `clickhouse_cpu`, `clickhouse_memory` – ClickHouse resources
-  - `zookeeper_cpu`, `zookeeper_memory` – ZooKeeper resources
-  - `otel_collector_cpu`, `otel_collector_memory` – Collector resources
+| Service | Health Checks | Purpose |
+|---------|--------------|---------|
+| `clickhouse` | HTTP + TCP | Database access |
+| `zookeeper` | Client and admin endpoints | Coordination service |
+| `signoz` | HTTP (public/internal) + OpAMP TCP | Main application |
+| `signoz-otel-collector-otlp` | TCP metrics/OTLP | GRPC Telemetry collection |
+| `signoz-otel-collector-http` | TCP metrics | HTTP telemetry endpoint |
 
-- **Network**:
-  - `clickhouse_tcp_port`, `clickhouse_http_port` – ClickHouse endpoints
-  - `otel_collector_otlp_port`, `otel_collector_otlp_http_port` – Collector endpoints
+These registrations enable inter-service communication and monitoring through Consul.
 
-- **Authentication**:
-  - `clickhouse_user`, – ClickHouse DB credentials
+## Configuration Options
 
-- **Persistence**:
-  - `signoz_volume_name` – Volume for SigNoz data
-  - `clickhouse_volume_name` – Volume for ClickHouse data
-  - `zookeeper_volume_name` – Volume for ZooKeeper data
+Customize your deployment by modifying `variables.hcl`. Key configuration categories:
 
-- **Deployment & Scaling**:
-  -  `otel_collector_count` – Control number of replicas
+### Container Versions
+- `signoz_version` — SigNoz application image
+- `otel_collector_version` — OpenTelemetry Collector image
+- `clickhouse_version` — ClickHouse database image
+- `zookeeper_version` — ZooKeeper image
+
+### Resource Allocation
+- `signoz_cpu`, `signoz_memory` — SigNoz resources
+- `clickhouse_cpu`, `clickhouse_memory` — ClickHouse resources
+- `zookeeper_cpu`, `zookeeper_memory` — ZooKeeper resources
+- `otel_collector_cpu`, `otel_collector_memory` — Collector resources
+
+### Network Configuration
+- `clickhouse_tcp_port`, `clickhouse_http_port` — ClickHouse endpoints
+- `otel_collector_otlp_port`, `otel_collector_otlp_http_port` — Collector endpoints
+
+### Authentication
+- `clickhouse_user` — ClickHouse database credentials
+
+### Persistent Storage
+- `signoz_volume_name` — Volume for SigNoz data
+- `clickhouse_volume_name` — Volume for ClickHouse data
+- `zookeeper_volume_name` — Volume for ZooKeeper data
+
+### Scaling
+- `otel_collector_count` — Number of collector replicas
+
+## Next Steps
+
+After deployment, access SigNoz through its registered Consul service endpoint and begin collecting observability data from your applications.

@@ -33,10 +33,11 @@ it won't.
     env         = true
     change_mode = "restart"
     data        = <<EOF
-CLICKHOUSE_USER     = [[ var "clickhouse_user" . | quote ]]
-{{- with nomadVar "nomad/jobs" -}}
-CLICKHOUSE_PASSWORD = {{ .clickhouse_password }}
-{{- end -}}
+    error_on_missing_key = true
+CLICKHOUSE_USER=[[ var "clickhouse_user" . ]]
+{{- with nomadVar "nomad/jobs/[[ var "release_name" .  ]]" }}
+CLICKHOUSE_PASSWORD={{ .clickhouse_password }}
+{{- end }}
 EOF
   }
 [[- end -]]

@@ -1,5 +1,5 @@
 # SigNoz Main Application Job
-job "[[ var "job_name" . ]]_signoz"  {
+job "[[ var "release_name" . ]]_signoz"  {
   [[ template "region" . ]]
   datacenters = [[ var "datacenters" . | toStringList ]]
   type = "service"
@@ -7,9 +7,11 @@ job "[[ var "job_name" . ]]_signoz"  {
   group "signoz" {
     network {
       mode = "bridge"
-      port "http" { static = [[ var "signoz_http_port" . ]] }
-      port "http-internal" { static = [[ var "signoz_internal_port" . ]] }
-      port "opamp-internal" { static = [[ var "signoz_opamp_port" . ]] }
+      port "http" {
+        to = [[ var "signoz_http_port" . ]] 
+      }
+      port "http-internal" { to = [[ var "signoz_internal_port" . ]] }
+      port "opamp-internal" { to = [[ var "signoz_opamp_port" . ]] }
     }
 
     volume "signoz-db" {
@@ -26,7 +28,17 @@ job "[[ var "job_name" . ]]_signoz"  {
         sidecar = false
       }
       
-      [[ template "clickhouse_address" . ]]
+      template {
+        env         = true
+        data        = <<EOH
+{{range service "clickhouse-http"}}
+CLICKHOUSE_PORT={{ .Port }}
+CLICKHOUSE_HOST={{ .Address }}
+{{end}}
+EOH
+        destination = "local/clickhouse.env"
+        change_mode = "restart"
+      }
       
       config {
         image = "docker.io/busybox:1.35"
@@ -49,7 +61,7 @@ job "[[ var "job_name" . ]]_signoz"  {
       driver = "docker"
 
 template {
-  destination = "${NOMAD_SECRETS_DIR}/env.vars"
+  destination = "local/env.vars"
   env         = true
   change_mode = "restart"
   data        = <<EOF
@@ -59,10 +71,10 @@ CLICKHOUSE_USER=[[ var "clickhouse_user" . ]]
 {{- $clickhouse_port := .Port -}}
 CLICKHOUSE_HOST={{ $clickhouse_host }}
 CLICKHOUSE_PORT={{ $clickhouse_port }}
-{{- with nomadVar "nomad/jobs" -}}
+{{with nomadVar "nomad/jobs/[[ var "release_name" .  ]]"}}
 CLICKHOUSE_PASSWORD={{ .clickhouse_password }}
 SIGNOZ_TELEMETRYSTORE_CLICKHOUSE_DSN=tcp://[[ var "clickhouse_user" . ]]:{{ .clickhouse_password }}@{{ $clickhouse_host }}:{{ $clickhouse_port }}
-{{- end -}}
+{{end}}
 {{end}}
 EOF
 }
@@ -74,7 +86,6 @@ EOF
 
       config {
         image = "docker.io/signoz/signoz:[[ var "signoz_version" . ]]"
-        ports = ["http", "http-internal", "opamp-internal"]
       }
 
       volume_mount {
@@ -103,20 +114,7 @@ EOF
       }
 
       service {
-        name = "signoz"
-        port = "http-internal"
-
-        check {
-          name     = "http-internal"
-          type     = "tcp"
-          port     = "http-internal"
-          interval = "10s"
-          timeout  = "3s"
-        }
-      }
-
-      service {
-        name = "signoz"
+        name = "signoz-opamp"
         port = "opamp-internal"
 
         check {

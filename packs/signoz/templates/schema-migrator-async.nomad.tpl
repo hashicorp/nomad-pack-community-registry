@@ -1,5 +1,5 @@
 # Schema Migrator Async Job
-job "[[ var "job_name" . ]]_schema_migrator_async" {
+job "[[ var "release_name" . ]]_schema_migrator_async" {
   [[ template "region" . ]]
   datacenters = [[ var "datacenters" . | toStringList ]]
   type = "batch"
@@ -7,12 +7,15 @@ job "[[ var "job_name" . ]]_schema_migrator_async" {
   group "signoz-schema-migrator-async" {
     count = 1
 
-    restart {
-      attempts = 1
-      interval = "10m"
-      delay    = "10s"
-      mode     = "fail"
+    # reschedule the job if the previous allocation fails
+    reschedule {
+      attempts       = 3
+      interval       = "5m" 
+      delay          = "90s" 
+      delay_function = "constant" 
+      unlimited      = false
     }
+
     # Wait for ClickHouse HTTP ping
     task "schema-migrator-async-init" {
       driver = "docker"

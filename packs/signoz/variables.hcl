@@ -1,4 +1,4 @@
-variable "job_name" {
+variable "release_name" {
   # If "", the pack name will be used
   description = "The name to use as the job name which overrides using the pack name"
   type        = string
@@ -69,7 +69,7 @@ variable "clickhouse_cpu" {
 variable "clickhouse_memory" {
   description = "Memory allocation for ClickHouse (MB)"
   type        = number
-  default     = 1560
+  default     = 512
 }
 
 
@@ -99,6 +99,11 @@ variable "clickhouse_replicas" {
 }
 
 # ZooKeeper Configuration
+variable "zookeeper_version" {
+  description = "Zookeeper version to deploy"
+  type        = string
+  default     = "3.7.1"
+}
 variable "zookeeper_count" {
   description = "Number of ZooKeeper instances to deploy"
   type        = number
@@ -108,13 +113,13 @@ variable "zookeeper_count" {
 variable "zookeeper_cpu" {
   description = "CPU allocation for ZooKeeper (MHz)"
   type        = number
-  default     = 200
+  default     = 250
 }
 
 variable "zookeeper_memory" {
   description = "Memory allocation for ZooKeeper (MB)"
   type        = number
-  default     = 512
+  default     = 1024
 }
 
 

@@ -1,5 +1,5 @@
 # OpenTelemetry Collector Job
-job "[[ var "job_name" . ]]_otel_collector" {
+job "[[ var "release_name" . ]]_otel_collector" {
   [[ template "region" . ]]
   datacenters = [[ var "datacenters" . | toStringList ]]
   type = "service"
@@ -9,10 +9,10 @@ job "[[ var "job_name" . ]]_otel_collector" {
 
     network {
       mode = "bridge"
-      port "metrics" { static = [[ var "otel_collector_metrics_port" . ]] }
+      port "metrics" { to = [[ var "otel_collector_metrics_port" . ]] }
       port "otlp" { static = [[ var "otel_collector_otlp_port" . ]] }
       port "otlp_http" { static = [[ var "otel_collector_otlp_http_port" . ]] }
-      port "health" { static = [[ var "otel_collector_health_port" . ]] }
+      port "health" { to = [[ var "otel_collector_health_port" . ]] }
     }
 
     task "collector" {
@@ -20,20 +20,22 @@ job "[[ var "job_name" . ]]_otel_collector" {
       
       template {
         destination   = "/local/otel-collector-config.yaml"
+        perms         = "0644"
         change_mode   = "signal"
         change_signal = "SIGHUP"
-        data          = <<EOT
+        data          = <<EOH
 [[ fileContents "templates/configs/signoz/otel-collector-config.yaml" ]]
-        EOT
+        EOH
       }
       
       template {
-        destination   = "local/otel-collector-opamp-config.yaml"
-        change_mode   = "signal"
-        change_signal = "SIGHUP"
-        data          = <<-EOT
-          server_endpoint: ws://signoz.service.consul:[[ var "signoz_opamp_port" . ]]/v1/opamp
-          EOT
+        data        = <<EOF
+{{range service "signoz-opamp"}}
+server_endpoint: ws://{{.Address}}:{{.Port}}/v1/opamp
+{{end}}
+    EOF
+        destination = "local/otel-collector-opamp-config.yaml"
+        change_mode = "restart"
       }
       
       [[ template "clickhouse_address" . ]]
@@ -69,28 +71,6 @@ job "[[ var "job_name" . ]]_otel_collector" {
           interval      = "10s"
           timeout       = "5s"
           initial_status = "critical"
-        }
-      }
-
-      service {
-        name         = "signoz-otel-collector-otlp"
-        port         = "otlp"
-        check {
-          name         = "tcp-otlp"
-          type         = "tcp"
-          interval     = "15s"
-          timeout      = "3s"
-        }
-      }
-      
-      service {
-        name         = "signoz-otel-collector-otlp-http"
-        port         = "otlp_http"
-        check {
-          name         = "tcp-otlp-http"
-          type         = "tcp"
-          interval     = "15s"
-          timeout      = "3s"
         }
       }
 
