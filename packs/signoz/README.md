@@ -102,6 +102,11 @@ nomad-pack run signoz \
   --var=clickhouse_volume_name=<CLICKHOUSE_VOLUME> \
   --var=zookeeper_volume_name=<ZOOKEEPER_VOLUME>
 ```
+> [!WARNING]  
+> The schema migrator job automatically retries on failure but will 
+> disappear from active jobs after all attempts are exhausted. Use 
+> `nomad job status <job-name>` or toggle "Show Dead Jobs" in the UI 
+> to view completed/failed batch jobs. If needed, manually re-run
 
 ### Preview Before Deploying
 
