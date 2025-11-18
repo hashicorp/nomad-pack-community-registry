@@ -142,7 +142,7 @@ EOH
         env         = true
         change_mode = "restart"
         data        = <<EOF
-{{- with nomadVar "nomad/jobs/[[ var "release_name" .  ]]" -}}
+{{- with nomadVar "[[ var "release_name" .  ]]" -}}
 CLICKHOUSE_PASSWORD = {{ .clickhouse_password }}
 {{- end -}}
 EOF

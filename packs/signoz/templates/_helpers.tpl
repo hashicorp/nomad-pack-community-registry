@@ -35,7 +35,7 @@ it won't.
     data        = <<EOF
     error_on_missing_key = true
 CLICKHOUSE_USER=[[ var "clickhouse_user" . ]]
-{{- with nomadVar "nomad/jobs/[[ var "release_name" .  ]]" }}
+{{- with nomadVar "[[ var "release_name" .  ]]" }}
 CLICKHOUSE_PASSWORD={{ .clickhouse_password }}
 {{- end }}
 EOF

@@ -71,7 +71,7 @@ CLICKHOUSE_USER=[[ var "clickhouse_user" . ]]
 {{- $clickhouse_port := .Port -}}
 CLICKHOUSE_HOST={{ $clickhouse_host }}
 CLICKHOUSE_PORT={{ $clickhouse_port }}
-{{with nomadVar "nomad/jobs/[[ var "release_name" .  ]]"}}
+{{with nomadVar "[[ var "release_name" .  ]]"}}
 CLICKHOUSE_PASSWORD={{ .clickhouse_password }}
 SIGNOZ_TELEMETRYSTORE_CLICKHOUSE_DSN=tcp://[[ var "clickhouse_user" . ]]:{{ .clickhouse_password }}@{{ $clickhouse_host }}:{{ $clickhouse_port }}
 {{end}}

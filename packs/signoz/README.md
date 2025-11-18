@@ -20,7 +20,7 @@ Store your ClickHouse password securely using Nomad variables:
 ```hcl
 # spec.nv.hcl
 # Use path "nomad/jobs" to make it accessible to all jobs in the pack
-path = "nomad/jobs/<your_pack_release_name>"
+path = "<your_release_name>"
 
 items {
   clickhouse_password = "your_clickhouse_password"  # Change this
@@ -41,22 +41,32 @@ Define a policy that grants tasks read access to your variables:
 # signoz-shared-vars.policy.hcl
 namespace "<your-shared-namespace>" {
   variables {
-    path "nomad/jobs/<your_release_name>" {
+    path "<your_release_name>" {
       capabilities = ["read"]
     }
   }
 }
 ```
 
-Apply the policy:
+Apply the policy to each job that this pack deploys. Every job name is automatically prefixed with `<your-release-name>` (for example, `<release-name>_<job-name>`). The pack creates the following jobs:
+
+* signoz
+* clickhouse
+* otel_collector
+* schema_migrator_sync
+* schema_migrator_async
+
+Apply the policy to each of these jobs using the following command pattern:
 
 ```bash
 nomad acl policy apply \
   -namespace <your-shared-namespace> \
   -description "SigNoz Shared Variables policy" \
-  signoz-shared-vars \
+  -job <your-release-name>_job_name \
+  <your-release-name>_job_name \
   signoz-shared-vars.policy.hcl
 ```
+Replace `<your-release-name>_job_name` with each job name from the list above.
 
 ### Step 3: Create Persistent Volumes
 
@@ -103,10 +113,10 @@ nomad-pack run signoz \
   --var=zookeeper_volume_name=<ZOOKEEPER_VOLUME>
 ```
 > [!WARNING]  
-> The schema migrator job automatically retries on failure but will 
-> disappear from active jobs after all attempts are exhausted. Use 
-> `nomad job status <job-name>` or toggle "Show Dead Jobs" in the UI 
-> to view completed/failed batch jobs. If needed, manually re-run
+> If a job under this pack fails due to a "Failed Validation" error for ClickHouse variables (this can occur if ClickHouse is not yet available and the variables do not exist), it will automatically retry.
+> However, if all retry attempts are exhausted and the job still fails,
+> check its status using `nomad job status <job-name>` or in the Nomad UI,
+> then re-run the job manually.
 
 ### Preview Before Deploying
 
