@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!-- Copyright SigNoz: https://github.com/SigNoz/signoz/tree/main/deploy/common/clickhouse -->
+<clickhouse>
+    <!-- ZooKeeper is used to store metadata about replicas, when using Replicated tables.
+         Optional. If you don't use replicated tables, you could omit that.
+
+         See https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/replication/
+      -->
+    <zookeeper>
+        <node index="1">
+            <host from_env="ZOOKEEPER_HOST"/>
+            <port from_env="ZOOKEEPER_PORT"/>
+        </node>
+    </zookeeper>
+
+    <!-- Configuration of clusters that could be used in Distributed tables.
+         https://clickhouse.com/docs/en/operations/table_engines/distributed/
+      -->
+    <remote_servers>
+        <cluster>
+            <shard>
+                <replica>
+                    <host from_env="CLICKHOUSE_HOST"/>
+                    <port from_env="CLICKHOUSE_PORT"/>
+                    <!-- Optional. Priority of the replica for load_balancing. Default: 1 (less value has more priority). -->
+                    <!-- <priority>1</priority> -->
+                </replica>
+            </shard>
+        </cluster>
+    </remote_servers>
+</clickhouse>
