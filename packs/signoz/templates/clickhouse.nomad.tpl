@@ -1,9 +1,8 @@
 # ClickHouse Database Job
 job "[[ var "release_name" . ]]_clickhouse"  {
-  [[ template "region" . ]]
-  datacenters = [[ var "datacenters" . | toStringList ]]
-  type = "service"
-  node_pool   = [[ var "node_pool" . | quote ]]
+
+  [[ template "header" . ]]
+
   group "clickhouse" {
     count = [[ var "clickhouse_replicas" . ]]
 
@@ -142,7 +141,7 @@ EOH
         env         = true
         change_mode = "restart"
         data        = <<EOF
-{{- with nomadVar "[[ var "release_name" .  ]]" -}}
+{{- with nomadVar "[[ var "release_name" . ]]" -}}
 CLICKHOUSE_PASSWORD = {{ .clickhouse_password }}
 {{- end -}}
 EOF
@@ -154,50 +153,40 @@ EOF
         perms         = "0644"
         change_mode   = "signal"
         change_signal = "SIGHUP"
-        data          = <<EOH
-[[ fileContents "templates/configs/clickhouse/cluster.xml" ]]
-        EOH
+        data          = file("[[ var "config" .]]/clickhouse/cluster.xml")
       }
       template {
         destination   = "/local/users.xml"
         perms         = "0644"
         change_mode   = "signal"
         change_signal = "SIGHUP"
-        data          = <<EOH
-[[ fileContents "templates/configs/clickhouse/users.xml" ]]
-        EOH
+        data          = file("[[ var "config" .]]/clickhouse/users.xml")
       }
       template {
         destination   = "/local/config.xml"
         perms         = "0644"
         change_mode   = "signal"
         change_signal = "SIGHUP"
-        data          = <<EOH
-[[ fileContents "templates/configs/clickhouse/config.xml" ]]
-        EOH
+        data          = file("[[ var "config" .]]/clickhouse/config.xml")
       }
       template {
         destination   = "/local/storage.xml"
         perms         = "0644"
         change_mode   = "signal"
         change_signal = "SIGHUP"
-        data          = <<EOH
-[[ fileContents "templates/configs/clickhouse/storage.xml" ]]
-        EOH
+        data          = file("[[ var "config" .]]/clickhouse/storage.xml")
       }
       template {
         destination = "/local/custom-function.xml"
         perms       = "0644"
-        data        = <<EOH
-[[ fileContents "templates/configs/clickhouse/custom-function.xml" ]]
-        EOH
+        data          = file("[[ var "config" .]]/clickhouse/custom-function.xml")
       }
     }
   }
 
   group "zookeeper" {
     count = [[ var "zookeeper_count" . ]]
-    
+
     network {
       mode = "bridge"
       port "client" { to = 2181 }

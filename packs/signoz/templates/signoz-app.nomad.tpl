@@ -1,14 +1,13 @@
 # SigNoz Main Application Job
 job "[[ var "release_name" . ]]_signoz"  {
-  [[ template "region" . ]]
-  datacenters = [[ var "datacenters" . | toStringList ]]
-  type = "service"
-  node_pool   = [[ var "node_pool" . | quote ]]
+
+  [[ template "header" . ]]
+
   group "signoz" {
     network {
       mode = "bridge"
       port "http" {
-        to = [[ var "signoz_http_port" . ]] 
+        to = [[ var "signoz_http_port" . ]]
       }
       port "http-internal" { to = [[ var "signoz_internal_port" . ]] }
       port "opamp-internal" { to = [[ var "signoz_opamp_port" . ]] }
@@ -20,6 +19,7 @@ job "[[ var "release_name" . ]]_signoz"  {
       source = [[ var "signoz_volume_name" . | quote ]]
       attachment_mode="file-system"
     }
+
     # SigNoz initialization task
     task "signoz-init" {
       driver = "docker"
@@ -27,7 +27,7 @@ job "[[ var "release_name" . ]]_signoz"  {
         hook = "prestart"
         sidecar = false
       }
-      
+
       template {
         env         = true
         data        = <<EOH
@@ -39,7 +39,7 @@ EOH
         destination = "local/clickhouse.env"
         change_mode = "restart"
       }
-      
+
       config {
         image = "docker.io/busybox:1.35"
         command = "sh"
@@ -128,5 +128,3 @@ EOF
     }
   }
 }
-
-

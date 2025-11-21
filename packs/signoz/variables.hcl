@@ -1,3 +1,11 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
+variable "config" {
+  description = "The path to find a directory of configuration files"
+  type = string
+}
+
 variable "release_name" {
   # If "", the pack name will be used
   description = "The name to use as the job name which overrides using the pack name"
@@ -5,10 +13,16 @@ variable "release_name" {
   default     = "signoz"
 }
 
+variable "namespace" {
+  description = "The namespace where jobs will be deployed"
+  type        = string
+  default     = "default"
+}
+
 variable "region" {
   description = "The region where jobs will be deployed"
   type        = string
-  default     = ""
+  default     = "" # defaults to global region
 }
 
 variable "datacenters" {
@@ -23,29 +37,26 @@ variable "node_pool" {
   default     = "default"
 }
 
+# Zookeeper configuration
+
 variable "zookeeper_volume_name" {
   description = "Name of the host volume for ZooKeeper data"
   type        = string
-  default     = ""
+  default     = "zookeeper-data"
 }
+
+# Clickhouse configurations
 
 variable "clickhouse_volume_name" {
   description = "Name of the host volume for ClickHouse data"
   type        = string
-  default     = ""
+  default     = "clickhouse-data"
 }
 
 variable "signoz_volume_name" {
   description = "Name of the host volume for SigNoz data"
   type        = string
-  default     = ""
-}
-
-
-variable "clickhouse_version" {
-  description = "ClickHouse version to deploy"
-  type        = string
-  default     = "25.5.6"
+  default     = "signoz-data"
 }
 
 variable "clickhouse_http_port" {
@@ -71,8 +82,6 @@ variable "clickhouse_memory" {
   type        = number
   default     = 512
 }
-
-
 
 variable "clickhouse_cluster_name" {
   description = "ClickHouse cluster name"

@@ -1,9 +1,8 @@
 # OpenTelemetry Collector Job
 job "[[ var "release_name" . ]]_otel_collector" {
-  [[ template "region" . ]]
-  datacenters = [[ var "datacenters" . | toStringList ]]
-  type = "service"
-  node_pool   = [[ var "node_pool" . | quote ]]
+
+  [[ template "header" . ]]
+
   group "signoz-otel-collector" {
     count = [[ var "otel_collector_count" . ]]
 
@@ -17,17 +16,15 @@ job "[[ var "release_name" . ]]_otel_collector" {
 
     task "collector" {
       driver = "docker"
-      
+
       template {
         destination   = "/local/otel-collector-config.yaml"
         perms         = "0644"
         change_mode   = "signal"
         change_signal = "SIGHUP"
-        data          = <<EOH
-[[ fileContents "templates/configs/signoz/otel-collector-config.yaml" ]]
-        EOH
+        data          = file("[[ var "config" .]]/signoz/otel-collector-config.yaml")
       }
-      
+
       template {
         data        = <<EOF
 {{range service "signoz-opamp"}}
@@ -37,7 +34,7 @@ server_endpoint: ws://{{.Address}}:{{.Port}}/v1/opamp
         destination = "local/otel-collector-opamp-config.yaml"
         change_mode = "restart"
       }
-      
+
       [[ template "clickhouse_address" . ]]
       [[ template "clickhouse_password" . ]]
       env {

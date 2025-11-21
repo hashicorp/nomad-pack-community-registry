@@ -1,9 +1,9 @@
 # Schema Migrator Sync Job
 job "[[ var "release_name" . ]]_schema_migrator_sync"  {
-  [[ template "region" . ]]
-  datacenters = [[ var "datacenters" . | toStringList ]]
+
+  [[ template "header" . ]]
   type = "batch"
-  node_pool   = [[ var "node_pool" . | quote ]]
+
   group "signoz-schema-migrator-sync" {
     count = 1
 
@@ -11,9 +11,9 @@ job "[[ var "release_name" . ]]_schema_migrator_sync"  {
     # reschedule the job if the previous allocation fails
     reschedule {
       attempts       = 3
-      interval       = "5m" 
-      delay          = "60s" 
-      delay_function = "constant" 
+      interval       = "5m"
+      delay          = "60s"
+      delay_function = "constant"
       unlimited      = false
     }
 
@@ -63,7 +63,7 @@ EOH
         hook    = "prestart"
         sidecar = false
       }
-      
+
       [[ template "clickhouse_address" . ]]
       [[ template "clickhouse_password" . ]]
       env {
@@ -112,7 +112,7 @@ EOH
     # Main schema migrator task
     task "schema-migrator" {
       driver = "docker"
-      
+
       [[ template "clickhouse_address" . ]]
       [[ template "clickhouse_password" . ]]
 

@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 app {
   url = "https://signoz.io"
   author = "SigNoz"
@@ -8,4 +11,3 @@ pack {
   version     = "0.1.0"
   url         = "https://github.com/hashicorp/nomad-pack-community-registry/signoz"
 }
-

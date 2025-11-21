@@ -1,18 +1,18 @@
 # Schema Migrator Async Job
 job "[[ var "release_name" . ]]_schema_migrator_async" {
-  [[ template "region" . ]]
-  datacenters = [[ var "datacenters" . | toStringList ]]
+
+  [[ template "header" . ]]
   type = "batch"
-  node_pool   = [[ var "node_pool" . | quote ]]
+
   group "signoz-schema-migrator-async" {
     count = 1
 
     # reschedule the job if the previous allocation fails
     reschedule {
       attempts       = 3
-      interval       = "5m" 
-      delay          = "90s" 
-      delay_function = "constant" 
+      interval       = "5m"
+      delay          = "90s"
+      delay_function = "constant"
       unlimited      = false
     }
 
