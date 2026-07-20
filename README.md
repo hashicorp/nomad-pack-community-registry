@@ -2,11 +2,11 @@
 
 This is a registry of community-maintained packs for [Nomad Pack](https://github.com/hashicorp/nomad-pack).
 
-# Writing your own Packs
+# Writing your own packs
 
-For guidance on writing your own packs, see the [Writing Packs Guide](https://developer.hashicorp.com/nomad/tutorials/nomad-pack/nomad-pack-writing-packs) in the Nomad Pack repository.
+For guidance on writing your own packs, refer to the [Create custom packs guide](https://developer.hashicorp.com/nomad/tools/nomad-pack/create-packs) in the Nomad Pack documentation.
 
-# Contributions and Feedback
+# Contributions and feedback
 
 Contributions are welcome in any form.
 
