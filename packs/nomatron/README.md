@@ -124,12 +124,14 @@ Save each block below as a `*.vars.hcl` file and pass it with `nomad-pack run --
 
 Merge into production or HA vars. Client agent must set matching `node_pool` and `meta` — see [dedicated nodes guide](https://github.com/nomatronio/nomatron-pack/tree/main/docs/common/dedicated-nodes-and-placement.md).
 
+The pack always constrains to Linux clients (`attr.kernel.name = linux`). In `-var-file` HCL, escape Nomad interpolations as `$${...}` so nomad-pack does not treat them as variables.
+
 ```hcl
 node_pool = "nomatron"
 
 constraints = [
   {
-    attribute = "${meta.nomatron}"
+    attribute = "$${meta.nomatron}"
     operator  = "="
     value     = "true"
   }
@@ -162,7 +164,7 @@ http_port_static   = 4649
 
 node_pool = "nomatron"
 constraints = [
-  { attribute = "${meta.nomatron}", operator = "=", value = "true" }
+  { attribute = "$${meta.nomatron}", operator = "=", value = "true" }
 ]
 
 service_provider = "nomad" # use "consul" on older Nomad + Consul clusters
@@ -239,7 +241,7 @@ http_port_static   = 4649
 
 node_pool = "nomatron"
 constraints = [
-  { attribute = "${meta.nomatron}", operator = "=", value = "true" }
+  { attribute = "$${meta.nomatron}", operator = "=", value = "true" }
 ]
 
 public_hostname = "nomatron.example.com"
@@ -298,7 +300,7 @@ http_port_static   = 4649
 
 node_pool = "nomatron"
 constraints = [
-  { attribute = "${meta.nomatron}", operator = "=", value = "true" }
+  { attribute = "$${meta.nomatron}", operator = "=", value = "true" }
 ]
 
 service_provider = "nomad"
@@ -359,7 +361,7 @@ http_port_static   = 4649
 
 node_pool = "nomatron"
 constraints = [
-  { attribute = "${meta.nomatron}", operator = "=", value = "true" }
+  { attribute = "$${meta.nomatron}", operator = "=", value = "true" }
 ]
 
 service_provider = "nomad"

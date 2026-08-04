@@ -15,6 +15,8 @@
 
 ### Fixed
 
+- Escape Nomad interpolations in example/README var files (`$${meta.nomatron}`) so `-var-file` works with nomad-pack HCL.
+- Default job constraint `attr.kernel.name = linux` (Docker images and release binaries are Linux-only).
 - **Binary artifact path:** release tarballs unpack under the task `local/bin/` directory; exec `command` uses that relative path.
 - Config file path for Docker tasks: use `${NOMAD_TASK_DIR}/config/nomatron.hcl` (Nomad mounts `local/` as `NOMAD_TASK_DIR`, so do not double the `local/` prefix).
 - Serf `node_name` default uses Nomad template `{{ env "NOMAD_ALLOC_ID" }}` instead of literal `${NOMAD_ALLOC_ID}` in `nomatron.hcl` (Nomatron's HCL parser rejects variable interpolation).

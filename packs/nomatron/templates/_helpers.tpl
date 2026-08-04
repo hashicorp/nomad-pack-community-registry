@@ -22,6 +22,11 @@
 
 [[- define "job_placement" -]]
   node_pool   = [[ var "node_pool" . | quote ]]
+
+  constraint {
+    attribute = "${attr.kernel.name}"
+    value     = "linux"
+  }
 [[- if gt (len (var "constraints" .)) 0 ]]
   [[ template "constraints" (var "constraints" .) ]]
 [[- end ]]
